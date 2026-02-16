@@ -18,11 +18,14 @@ export async function GET() {
     .from(wallets)
     .where(eq(wallets.userId, userId));
 
+  const displayName = user?.name
+    || (user?.address
+      ? `${user.address.slice(0, 6)}...${user.address.slice(-4)}`
+      : "User");
+
   const data: SettingsData = {
     profile: {
-      name: user?.address
-        ? `${user.address.slice(0, 6)}...${user.address.slice(-4)}`
-        : "User",
+      name: displayName,
       email: "",
       tier: (user?.tier as Tier) || "bronze",
       tierPoints: 0,
@@ -52,16 +55,17 @@ const VALID_METHODS = new Set(["fifo", "lifo", "hifo", "avg"]);
 /**
  * PUT /api/dashboard/settings
  *
- * Body: { country?: TaxCountry, method?: TaxMethod }
+ * Body: { country?: TaxCountry, method?: TaxMethod, name?: string }
  */
 export async function PUT(request: Request) {
   const userId = await getAuthUserId();
   if (!userId) return unauthorizedResponse();
 
   const body = await request.json();
-  const { country, method } = body as {
+  const { country, method, name } = body as {
     country?: string;
     method?: string;
+    name?: string;
   };
 
   if (country && !VALID_COUNTRIES.has(country)) {
@@ -71,7 +75,7 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Invalid method" }, { status: 400 });
   }
 
-  if (!country && !method) {
+  if (!country && !method && name === undefined) {
     return NextResponse.json(
       { error: "Nothing to update" },
       { status: 400 },
@@ -81,6 +85,7 @@ export async function PUT(request: Request) {
   const updates: Record<string, string> = {};
   if (country) updates.taxCountry = country;
   if (method) updates.taxMethod = method;
+  if (name !== undefined) updates.name = name;
 
   await db
     .update(users)

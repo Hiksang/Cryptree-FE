@@ -1,44 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../lib/api-client";
-import type { PnlPeriod, LeaderboardTab } from "@/core/types";
+import type { LeaderboardTab } from "@/core/types";
 
 export function useDashboardStats() {
   return useQuery({
     queryKey: ["dashboard", "stats"],
     queryFn: api.getStats,
-  });
-}
-
-export function usePortfolio() {
-  return useQuery({
-    queryKey: ["dashboard", "portfolio"],
-    queryFn: api.getPortfolio,
-  });
-}
-
-export function usePnl(period: PnlPeriod) {
-  return useQuery({
-    queryKey: ["dashboard", "pnl", period],
-    queryFn: () => api.getPnl(period),
-  });
-}
-
-export function useTaxReport(country: string, method: string) {
-  return useQuery({
-    queryKey: ["dashboard", "tax", country, method],
-    queryFn: () => api.getTax(country, method),
-  });
-}
-
-export function useTransactions(params: {
-  page?: string;
-  chain?: string;
-  type?: string;
-  q?: string;
-}) {
-  return useQuery({
-    queryKey: ["dashboard", "transactions", params],
-    queryFn: () => api.getTransactions(params),
   });
 }
 

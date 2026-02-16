@@ -5,13 +5,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
-  Wallet,
-  TrendingUp,
   FileText,
-  ArrowLeftRight,
   Gift,
   Users,
-  Trophy,
   ShoppingBag,
   Settings,
   MoreHorizontal,
@@ -21,19 +17,15 @@ import { NAV_ITEMS } from "@/core/constants";
 
 const ICON_MAP = {
   LayoutDashboard,
-  Wallet,
-  TrendingUp,
   FileText,
-  ArrowLeftRight,
   Gift,
   Users,
-  Trophy,
   ShoppingBag,
   Settings,
 } as const;
 
-const MAIN_NAV = NAV_ITEMS.slice(0, 5);
-const MORE_NAV = NAV_ITEMS.slice(5);
+const MAIN_NAV = NAV_ITEMS.slice(0, 4);
+const MORE_NAV = NAV_ITEMS.slice(4);
 
 export function BottomNav() {
   const pathname = usePathname();

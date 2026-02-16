@@ -4,10 +4,6 @@ export { api } from "./lib/api-client";
 /* ───── Hooks ───── */
 export {
   useDashboardStats,
-  usePortfolio,
-  usePnl,
-  useTaxReport,
-  useTransactions,
   useSettings,
   useRewards,
   useReferral,
@@ -22,10 +18,6 @@ export {
   DashboardHeader,
   BottomNav,
   DashboardSkeleton,
-  PortfolioSkeleton,
-  PnlSkeleton,
-  TaxSkeleton,
-  TransactionsSkeleton,
   SettingsSkeleton,
   RewardsSkeleton,
   ReferralSkeleton,
@@ -35,45 +27,8 @@ export {
 /* ───── Overview ───── */
 export {
   InsightsCards,
-  PnlOverviewChart,
-  PortfolioList,
-  RecentTrades,
   StatsCards,
 } from "./components/overview";
-
-/* ───── PnL ───── */
-export {
-  ChainFilter,
-  ChainPnlCards,
-  PeriodSelector,
-  PnlAreaChart,
-  TopTradesTable,
-} from "./components/pnl";
-
-/* ───── Portfolio ───── */
-export {
-  AllocationChart,
-  ChainAssetList,
-  PortfolioSummary,
-} from "./components/portfolio";
-
-/* ───── Tax ───── */
-export {
-  ChainTaxBreakdown,
-  CountrySelector,
-  ExportCta,
-  MethodSelector,
-  TaxSummaryCard,
-} from "./components/tax";
-
-/* ───── Transactions ───── */
-export {
-  Pagination,
-  SearchBar,
-  StatusBadge,
-  TransactionFilters,
-  TransactionTable,
-} from "./components/transactions";
 
 /* ───── Settings ───── */
 export {
@@ -93,7 +48,6 @@ export {
 
 /* ───── Referral ───── */
 export {
-  InvitedFriendsList,
   ReferralCodeCard,
   ReferralStats,
   ShareButtons,
@@ -109,10 +63,8 @@ export {
 
 /* ───── Exchange ───── */
 export {
-  AdRevenueBanner,
   ExchangeHistoryTable,
   PointsBalanceHero,
   ProductCard,
   ProductGrid,
-  UsdcExchangeCard,
 } from "./components/exchange";

@@ -2,11 +2,53 @@
 
 import { useReferral } from "@/domains/dashboard/hooks/use-dashboard-queries";
 import { ReferralCodeCard } from "@/domains/dashboard";
-import { ReferralStats } from "@/domains/dashboard";
-import { InvitedFriendsList } from "@/domains/dashboard";
-import { ShareButtons } from "@/domains/dashboard";
 import { ErrorState } from "@/shared/ui";
-import { StatsCardSkeleton, TableCardSkeleton } from "@/shared/ui";
+import { StatsCardSkeleton } from "@/shared/ui";
+import { Link2, Users, Copy, Check } from "lucide-react";
+import { useState } from "react";
+import { toast } from "@/shared/ui";
+
+function LinkShareCard({ code }: { code: string }) {
+  const [copied, setCopied] = useState(false);
+  const referralUrl = `https://cryptree.xyz?ref=${code}`;
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(referralUrl);
+      setCopied(true);
+      toast.success("링크가 복사되었습니다");
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("복사에 실패했습니다");
+    }
+  }
+
+  return (
+    <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
+      <div className="flex items-center gap-2 mb-4">
+        <Link2 className="w-5 h-5 text-text-muted" />
+        <h3 className="text-[16px] font-semibold text-text-primary">링크 공유</h3>
+      </div>
+      <p className="text-[14px] text-text-secondary mb-4">
+        아래 링크를 공유하여 친구를 초대하세요.
+      </p>
+      <div className="flex items-center gap-2">
+        <div className="flex-1 h-10 px-3 bg-bg-surface-2 border border-border-default rounded-[6px] flex items-center">
+          <span className="text-[13px] text-text-secondary font-mono truncate">
+            {referralUrl}
+          </span>
+        </div>
+        <button
+          onClick={handleCopy}
+          className="h-10 px-4 bg-brand text-bg-primary text-[13px] font-semibold rounded-[6px] hover:bg-brand-hover transition-colors cursor-pointer flex items-center gap-2 shrink-0"
+        >
+          {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+          {copied ? "복사됨" : "링크 복사"}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function ReferralPage() {
   const { data, isLoading, isError, refetch } = useReferral();
@@ -16,12 +58,7 @@ export default function ReferralPage() {
       <div className="space-y-6 max-w-[1200px]">
         <div className="h-8 w-16 skeleton rounded-[4px]" />
         <StatsCardSkeleton />
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => (
-            <StatsCardSkeleton key={i} />
-          ))}
-        </div>
-        <TableCardSkeleton rows={5} />
+        <StatsCardSkeleton />
       </div>
     );
   }
@@ -43,11 +80,23 @@ export default function ReferralPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ReferralCodeCard code={data.code} />
-        <ShareButtons code={data.code} />
+        <LinkShareCard code={data.code} />
       </div>
 
-      <ReferralStats stats={data.stats} />
-      <InvitedFriendsList friends={data.friends} />
+      {/* Total referrals stat */}
+      <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-full bg-brand-muted flex items-center justify-center">
+            <Users className="w-6 h-6 text-brand" />
+          </div>
+          <div>
+            <p className="text-[12px] text-text-muted">총 추천</p>
+            <p className="text-[24px] font-bold text-text-primary tabular-nums">
+              {data.stats?.totalReferred ?? 0}명
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

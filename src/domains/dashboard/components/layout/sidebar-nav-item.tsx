@@ -4,26 +4,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
-  Wallet,
-  TrendingUp,
   FileText,
-  ArrowLeftRight,
   Gift,
   Users,
-  Trophy,
   ShoppingBag,
   Settings,
 } from "lucide-react";
 
 const ICON_MAP = {
   LayoutDashboard,
-  Wallet,
-  TrendingUp,
   FileText,
-  ArrowLeftRight,
   Gift,
   Users,
-  Trophy,
   ShoppingBag,
   Settings,
 } as const;

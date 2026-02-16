@@ -3,16 +3,33 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Menu, X, LogOut, LayoutDashboard } from "lucide-react";
-import { usePrivy } from "@privy-io/react-auth";
 
-const navLinks = [
-  { label: "Feature", href: "#features" },
+const hasPrivy = !!process.env.NEXT_PUBLIC_PRIVY_APP_ID;
+
+const NAV_LINKS = [
+  { label: "Features", href: "#features" },
   { label: "Integrate", href: "#integrate" },
-  { label: "Docs", href: "#" },
+  { label: "Docs", href: "#docs" },
 ];
 
+function usePrivyAuth() {
+  if (!hasPrivy) {
+    return {
+      ready: true,
+      authenticated: false,
+      login: () => {},
+      logout: () => {},
+      user: null,
+    };
+  }
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { ready, authenticated, login, logout, user } = require("@privy-io/react-auth").usePrivy();
+  return { ready, authenticated, login, logout, user };
+}
+
 function AuthButtons() {
-  const { ready, authenticated, login, logout } = usePrivy();
+  const { ready, authenticated, login, logout } = usePrivyAuth();
 
   if (!ready) return null;
 
@@ -43,17 +60,25 @@ function AuthButtons() {
   }
 
   return (
-    <button
-      onClick={() => login()}
-      className="h-8 px-4 bg-brand text-bg-primary text-[14px] font-semibold rounded-[6px] hover:bg-brand-hover transition-colors cursor-pointer"
-    >
-      Launch App
-    </button>
+    <>
+      <button
+        onClick={() => login()}
+        className="h-8 px-4 text-[14px] text-text-secondary hover:text-text-primary hover:bg-bg-surface rounded-[6px] transition-colors cursor-pointer"
+      >
+        로그인
+      </button>
+      <button
+        onClick={() => login()}
+        className="h-8 px-4 bg-brand text-bg-primary text-[14px] font-semibold rounded-[6px] hover:bg-brand-hover transition-colors cursor-pointer"
+      >
+        시작하기
+      </button>
+    </>
   );
 }
 
 function MobileAuthButtons({ onClose }: { onClose: () => void }) {
-  const { ready, authenticated, login, logout } = usePrivy();
+  const { ready, authenticated, login, logout } = usePrivyAuth();
 
   if (!ready) return null;
 
@@ -81,15 +106,26 @@ function MobileAuthButtons({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <button
-      onClick={() => {
-        login();
-        onClose();
-      }}
-      className="block w-full px-4 py-2 bg-brand text-bg-primary text-[14px] font-semibold rounded-[6px] text-center cursor-pointer"
-    >
-      Launch App
-    </button>
+    <>
+      <button
+        onClick={() => {
+          login();
+          onClose();
+        }}
+        className="block w-full px-4 py-2 text-left text-[14px] text-text-secondary hover:text-text-primary cursor-pointer"
+      >
+        로그인
+      </button>
+      <button
+        onClick={() => {
+          login();
+          onClose();
+        }}
+        className="block w-full px-4 py-2 bg-brand text-bg-primary text-[14px] font-semibold rounded-[6px] text-center cursor-pointer"
+      >
+        시작하기
+      </button>
+    </>
   );
 }
 
@@ -119,19 +155,23 @@ export function Header() {
           Cryptree
         </Link>
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-6">
-          {navLinks.map((link) => (
+        {/* Center nav links */}
+        <nav className="hidden md:flex items-center gap-8">
+          {NAV_LINKS.map((link) => (
             <a
-              key={link.label}
+              key={link.href}
               href={link.href}
-              className="text-[14px] text-text-secondary hover:text-text-primary transition-colors"
+              className="text-[16px] font-medium text-text-secondary hover:text-text-primary transition-colors"
             >
               {link.label}
             </a>
           ))}
-          <AuthButtons />
         </nav>
+
+        {/* Desktop auth */}
+        <div className="hidden md:flex items-center gap-3">
+          <AuthButtons />
+        </div>
 
         {/* Mobile hamburger */}
         <button
@@ -149,17 +189,19 @@ export function Header() {
       {/* Mobile menu */}
       {menuOpen && (
         <div className="md:hidden bg-bg-primary border-b border-border-default p-4 space-y-2">
-          {navLinks.map((link) => (
+          {NAV_LINKS.map((link) => (
             <a
-              key={link.label}
+              key={link.href}
               href={link.href}
-              className="block w-full px-4 py-2 text-[14px] text-text-secondary hover:text-text-primary"
               onClick={() => setMenuOpen(false)}
+              className="block w-full px-4 py-2 text-[14px] text-text-secondary hover:text-text-primary"
             >
               {link.label}
             </a>
           ))}
-          <MobileAuthButtons onClose={() => setMenuOpen(false)} />
+          <div className="border-t border-border-default pt-2 mt-2">
+            <MobileAuthButtons onClose={() => setMenuOpen(false)} />
+          </div>
         </div>
       )}
     </header>

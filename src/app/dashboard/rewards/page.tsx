@@ -1,15 +1,17 @@
 "use client";
 
-import { useRewards } from "@/domains/dashboard/hooks/use-dashboard-queries";
+import { useRewards, useLeaderboard } from "@/domains/dashboard/hooks/use-dashboard-queries";
 import { SeasonSummary } from "@/domains/dashboard";
 import { PointsBreakdown } from "@/domains/dashboard";
 import { ClaimCta } from "@/domains/dashboard";
 import { DistributionHistory } from "@/domains/dashboard";
+import { MyPosition, RankingsTable } from "@/domains/dashboard";
 import { ErrorState } from "@/shared/ui";
 import { StatsCardSkeleton, TableCardSkeleton } from "@/shared/ui";
 
 export default function RewardsPage() {
   const { data, isLoading, isError, refetch } = useRewards();
+  const { data: leaderboardData, isLoading: leaderboardLoading } = useLeaderboard("activity");
 
   if (isLoading) {
     return (
@@ -49,6 +51,24 @@ export default function RewardsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <PointsBreakdown points={data.points} />
         <DistributionHistory distributions={data.distributions} />
+      </div>
+
+      {/* Leaderboard Section */}
+      <div className="space-y-4">
+        <h2 className="text-[20px] leading-[28px] font-semibold text-text-primary">
+          리더보드
+        </h2>
+
+        {leaderboardLoading ? (
+          <TableCardSkeleton rows={5} />
+        ) : leaderboardData ? (
+          <>
+            {leaderboardData.myPosition && (
+              <MyPosition position={leaderboardData.myPosition} tab="activity" />
+            )}
+            <RankingsTable entries={leaderboardData.entries} tab="activity" />
+          </>
+        ) : null}
       </div>
     </div>
   );

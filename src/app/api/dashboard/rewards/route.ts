@@ -36,8 +36,8 @@ export async function GET() {
   const data: RewardsData = {
     season: {
       name: "Season 1",
-      startDate: "2025-01-01T00:00:00Z",
-      endDate: "2025-06-30T23:59:59Z",
+      startDate: "2026-02-01T00:00:00Z",
+      endDate: "2026-03-31T23:59:59Z",
       rank: 0,
       totalParticipants: 0,
       totalPoints: balance?.lifetimeEarned ?? 0,

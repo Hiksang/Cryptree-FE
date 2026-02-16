@@ -1,20 +1,37 @@
 import { NextResponse } from "next/server";
 import { getAuthUserId, unauthorizedResponse } from "@/core/auth";
 import { db } from "@/core/db";
-import { transactions } from "@/core/db/schema";
-import { eq, sql } from "drizzle-orm";
+import { transactions, wallets } from "@/core/db/schema";
+import { eq, sql, countDistinct } from "drizzle-orm";
 import type { DashboardStats } from "@/core/types";
 
 export async function GET() {
   const userId = await getAuthUserId();
   if (!userId) return unauthorizedResponse();
 
-  const [result] = await db
-    .select({
-      activePositions: sql<number>`count(distinct ${transactions.protocol})::int`,
-    })
-    .from(transactions)
-    .where(eq(transactions.userId, userId));
+  const [result, walletCount, chainBreakdown] = await Promise.all([
+    db
+      .select({
+        activePositions: sql<number>`count(distinct ${transactions.protocol})::int`,
+        totalTx: sql<number>`count(*)::int`,
+      })
+      .from(transactions)
+      .where(eq(transactions.userId, userId))
+      .then((r) => r[0]),
+    db
+      .select({ count: countDistinct(wallets.id) })
+      .from(wallets)
+      .where(eq(wallets.userId, userId))
+      .then((r) => r[0]?.count ?? 0),
+    db
+      .select({
+        chainId: transactions.chainId,
+        txCount: sql<number>`count(*)::int`,
+      })
+      .from(transactions)
+      .where(eq(transactions.userId, userId))
+      .groupBy(transactions.chainId),
+  ]);
 
   const stats: DashboardStats = {
     totalValue: 0,
@@ -25,5 +42,13 @@ export async function GET() {
     activePositionsChange: 0,
   };
 
-  return NextResponse.json({ stats, insights: [] });
+  return NextResponse.json({
+    stats,
+    insights: [],
+    walletCount,
+    chainBreakdown: chainBreakdown.map((c) => ({
+      chainId: c.chainId,
+      txCount: c.txCount,
+    })),
+  });
 }

@@ -4,10 +4,6 @@ export { DashboardHeader } from "./dashboard-header";
 export { BottomNav } from "./bottom-nav";
 export {
   DashboardSkeleton,
-  PortfolioSkeleton,
-  PnlSkeleton,
-  TaxSkeleton,
-  TransactionsSkeleton,
   SettingsSkeleton,
   RewardsSkeleton,
   ReferralSkeleton,

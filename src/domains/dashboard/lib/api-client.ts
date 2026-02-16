@@ -33,14 +33,6 @@ export const api = {
   // GET
   getStats: () =>
     fetchApi<{ stats: import("@/core/types").DashboardStats; insights: import("@/core/types").InsightCard[] }>("/stats"),
-  getPortfolio: () =>
-    fetchApi<import("@/core/types").PortfolioData>("/portfolio"),
-  getPnl: (period: string) =>
-    fetchApi<{ history: import("@/core/types").PnlDataPoint[]; chainPnl: import("@/core/types").ChainPnl[]; topTrades: import("@/core/types").TopTrade[] }>("/pnl", { period }),
-  getTax: (country: string, method: string) =>
-    fetchApi<import("@/core/types").TaxReportData>("/tax", { country, method }),
-  getTransactions: (params: { page?: string; chain?: string; type?: string; q?: string }) =>
-    fetchApi<{ transactions: import("@/core/types").TransactionFull[]; total: number }>("/transactions", params),
   getSettings: () =>
     fetchApi<import("@/core/types").SettingsData>("/settings"),
   getRewards: () =>
@@ -53,12 +45,12 @@ export const api = {
     fetchApi<import("@/core/types").ExchangeData>("/exchange"),
 
   // Mutations
-  exchangeUsdc: (points: number) =>
-    mutateApi<{ success: boolean; received: string }>(`${BASE}/exchange`, "POST", { type: "usdc", points }),
   exchangeProduct: (productId: string) =>
     mutateApi<{ success: boolean; received: string }>(`${BASE}/exchange`, "POST", { type: "product", productId }),
   updateSettings: (prefs: { country?: string; method?: string }) =>
     mutateApi<{ success: boolean }>(`${BASE}/settings`, "PUT", prefs),
+  updateProfile: (name: string) =>
+    mutateApi<{ success: boolean }>(`${BASE}/settings`, "PUT", { name }),
   addWallet: (address: string, label?: string) =>
     mutateApi<{ id: string; address: string }>("/api/wallets", "POST", { address, label }),
   deleteWallet: (walletId: string) =>

@@ -1,71 +1,23 @@
-"use client";
-
-import { useCryptreeStore } from "@/shared/store";
-import { useTaxReport } from "@/domains/dashboard/hooks/use-dashboard-queries";
-import { CountrySelector } from "@/domains/dashboard";
-import { MethodSelector } from "@/domains/dashboard";
-import { TaxSummaryCard } from "@/domains/dashboard";
-import { ChainTaxBreakdown } from "@/domains/dashboard";
-import { ExportCta } from "@/domains/dashboard";
-import { ErrorState } from "@/shared/ui";
-import { EmptyState } from "@/shared/ui";
-import { StatsCardSkeleton, TableCardSkeleton } from "@/shared/ui";
+import { FileText } from "lucide-react";
 
 export default function TaxPage() {
-  const { preferences, setPreferences } = useCryptreeStore();
-  const { country, method } = preferences;
-  const { data, isLoading, isError, refetch } = useTaxReport(country, method);
-
-  if (isError) {
-    return (
-      <div className="space-y-6 max-w-[1200px]">
-        <h1 className="text-[24px] leading-[32px] font-semibold text-text-primary">세금 보고</h1>
-        <ErrorState onRetry={() => refetch()} />
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6 max-w-[1200px]">
       <h1 className="text-[24px] leading-[32px] font-semibold text-text-primary">
-        세금 보고
+        세금 보고서
       </h1>
 
-      <div className="space-y-4">
-        <div>
-          <p className="text-[14px] text-text-secondary mb-2">국가</p>
-          <CountrySelector
-            selected={country}
-            onChange={(c) => setPreferences({ country: c })}
-          />
+      <div className="bg-bg-surface border border-border-default rounded-[8px] p-12 text-center">
+        <div className="w-16 h-16 rounded-full bg-bg-surface-2 flex items-center justify-center mx-auto mb-4">
+          <FileText className="w-8 h-8 text-text-muted" />
         </div>
-        <div>
-          <p className="text-[14px] text-text-secondary mb-2">계산 방법</p>
-          <MethodSelector
-            selected={method}
-            onChange={(m) => setPreferences({ method: m })}
-          />
-        </div>
+        <h2 className="text-[20px] font-semibold text-text-primary mb-2">
+          세금 보고서 기능은 추후 제공될 예정입니다.
+        </h2>
+        <p className="text-[14px] leading-[22px] text-text-secondary max-w-md mx-auto">
+          온체인 활동 기반의 세금 보고서를 자동으로 생성해 드립니다. 조금만 기다려 주세요.
+        </p>
       </div>
-
-      {isLoading ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <StatsCardSkeleton />
-          <TableCardSkeleton rows={5} />
-        </div>
-      ) : data && data.chainBreakdown.length > 0 ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <TaxSummaryCard data={data} />
-          <ChainTaxBreakdown chains={data.chainBreakdown} />
-        </div>
-      ) : (
-        <EmptyState
-          title="세금 데이터 준비 중"
-          description="거래 내역이 수집되면 세금 보고서가 자동 생성됩니다. 지갑을 연결하고 스캔을 완료해주세요."
-        />
-      )}
-
-      <ExportCta />
     </div>
   );
 }

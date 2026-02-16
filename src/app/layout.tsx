@@ -5,9 +5,9 @@ import { Toaster } from "sonner";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Cryptree - HyperEVM 온체인 활동 분석",
+  title: "Cryptree - 온체인 활동 분석 & 리워드 플랫폼",
   description:
-    "HyperEVM 트랜잭션 해석, 활동 스코어, DeFi DNA 분석, 등급 측정 & 보상",
+    "멀티체인 온체인 트랜잭션 분석, 활동 스코어, 타겟 광고 리워드 플랫폼",
 };
 
 export default function RootLayout({

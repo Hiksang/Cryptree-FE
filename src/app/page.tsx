@@ -17,6 +17,7 @@ export default function LandingPage() {
 
         {/* Footer CTA */}
         <section
+          id="docs"
           className="py-16 px-4 text-center"
           style={{
             background:

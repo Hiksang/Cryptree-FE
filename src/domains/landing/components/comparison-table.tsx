@@ -1,107 +1,59 @@
-import { Check, X } from "lucide-react";
+import { Zap, Gift, Shield, Coins } from "lucide-react";
 
-const rows = [
+const differentiators = [
   {
-    feature: "HyperEVM 해석",
-    debank: false,
-    koinly: false,
-    cryptree: "완벽",
+    icon: Zap,
+    title: "온체인 활동 자동 분석",
+    description:
+      "지갑 주소만 입력하면 모든 온체인 활동을 자동으로 분류하고 점수화합니다. 복잡한 설정 없이 바로 시작.",
   },
   {
-    feature: "활동 측정/등급",
-    debank: false,
-    koinly: false,
-    cryptree: true,
+    icon: Gift,
+    title: "활동 기반 리워드",
+    description:
+      "온체인 활동에 따라 등급이 부여되고, 등급에 맞는 맞춤형 광고 리워드를 받을 수 있습니다.",
   },
   {
-    feature: "활동 보상",
-    debank: false,
-    koinly: false,
-    cryptree: "USDC",
+    icon: Shield,
+    title: "완전 무료",
+    description:
+      "모든 기능을 무료로 제공합니다. 숨겨진 비용이나 프리미엄 구독 없이 온체인 분석과 리워드를 이용하세요.",
   },
   {
-    feature: "크로스체인 PnL",
-    debank: false,
-    koinly: true,
-    cryptree: "무료",
-  },
-  {
-    feature: "세금 리포트",
-    debank: false,
-    koinly: true,
-    cryptree: "무료",
-  },
-  {
-    feature: "비용",
-    debank: "무료",
-    koinly: "$49+/년",
-    cryptree: "무료",
+    icon: Coins,
+    title: "멀티체인 지원",
+    description:
+      "HyperEVM을 포함한 다양한 EVM 체인을 지원합니다. 여러 체인의 활동을 하나의 대시보드에서 관리하세요.",
   },
 ];
 
-function CellValue({ value }: { value: boolean | string }) {
-  if (value === true) {
-    return <Check className="w-4 h-4 text-positive mx-auto" />;
-  }
-  if (value === false) {
-    return <X className="w-4 h-4 text-text-muted mx-auto" />;
-  }
-  return (
-    <span className="text-[14px] font-medium text-text-primary">{value}</span>
-  );
-}
-
-function CryptreeCell({ value }: { value: boolean | string }) {
-  if (value === true) {
-    return <Check className="w-4 h-4 text-positive mx-auto" />;
-  }
-  return (
-    <span className="text-[14px] font-semibold text-brand">{value as string}</span>
-  );
-}
-
 export function ComparisonTable() {
   return (
-    <section id="integrate" className="py-12 px-4">
-      <div className="max-w-[800px] mx-auto">
-        <h2 className="text-[30px] leading-[36px] font-semibold text-text-primary text-center tracking-[-0.01em] mb-8">
+    <section id="integrate" className="py-16 px-4">
+      <div className="max-w-[1280px] mx-auto">
+        <h2 className="text-[28px] md:text-[32px] leading-[36px] font-bold text-text-primary text-center tracking-[-0.01em] mb-3">
           왜 Cryptree인가?
         </h2>
+        <p className="text-[16px] md:text-[18px] leading-[28px] text-text-secondary text-center mb-10 max-w-xl mx-auto">
+          기존 플랫폼과는 다릅니다. 분석만 하지 않고, 보상까지 제공합니다.
+        </p>
 
-        <div className="bg-bg-surface border border-border-default rounded-[8px] overflow-hidden">
-          {/* Header */}
-          <div className="grid grid-cols-4 bg-bg-surface-2">
-            <div className="p-3 text-[12px] font-medium text-text-muted" />
-            <div className="p-3 text-[12px] font-medium text-text-muted text-center">
-              DeBank
-            </div>
-            <div className="p-3 text-[12px] font-medium text-text-muted text-center">
-              Koinly
-            </div>
-            <div className="p-3 text-[12px] font-medium text-center text-brand border-t-2 border-brand bg-brand-muted">
-              Cryptree
-            </div>
-          </div>
-
-          {/* Rows */}
-          {rows.map((row, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {differentiators.map((item) => (
             <div
-              key={row.feature}
-              className={`grid grid-cols-4 ${
-                i < rows.length - 1 ? "border-b border-border-default" : ""
-              }`}
+              key={item.title}
+              className="bg-bg-surface border border-border-default rounded-[8px] p-6 flex gap-4"
             >
-              <div className="p-3 flex items-center text-[14px] text-text-secondary">
-                {row.feature}
+              <div className="w-12 h-12 rounded-[8px] bg-brand-muted flex items-center justify-center shrink-0">
+                <item.icon className="w-6 h-6 text-brand" />
               </div>
-              <div className="p-3 flex items-center justify-center">
-                <CellValue value={row.debank} />
-              </div>
-              <div className="p-3 flex items-center justify-center">
-                <CellValue value={row.koinly} />
-              </div>
-              <div className="p-3 flex items-center justify-center bg-brand-muted">
-                <CryptreeCell value={row.cryptree} />
+              <div>
+                <h3 className="text-[18px] leading-[26px] font-semibold text-text-primary mb-1">
+                  {item.title}
+                </h3>
+                <p className="text-[14px] leading-[22px] text-text-secondary">
+                  {item.description}
+                </p>
               </div>
             </div>
           ))}

@@ -3,13 +3,38 @@
 import { useState } from "react";
 import type { ConnectedWallet } from "@/core/types";
 import { CHAIN_COLORS, CHAIN_NAMES } from "@/core/constants";
-import { Plus, Trash2, Star, Loader2, X } from "lucide-react";
+import { Plus, Trash2, Star, Loader2, X, Copy, Check } from "lucide-react";
 import { toast } from "@/shared/ui";
 import { api } from "@/domains/dashboard/lib/api-client";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface ConnectedWalletsProps {
   wallets: ConnectedWallet[];
+}
+
+function CopyAddressButton({ address }: { address: string }) {
+  const [copied, setCopied] = useState(false);
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(address);
+      setCopied(true);
+      toast.success("주소가 복사되었습니다");
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("복사에 실패했습니다");
+    }
+  }
+
+  return (
+    <button
+      onClick={handleCopy}
+      className="w-8 h-8 flex items-center justify-center text-text-muted hover:text-brand transition-colors cursor-pointer"
+      title="주소 복사"
+    >
+      {copied ? <Check className="w-4 h-4 text-positive" /> : <Copy className="w-4 h-4" />}
+    </button>
+  );
 }
 
 export function ConnectedWallets({ wallets }: ConnectedWalletsProps) {
@@ -107,22 +132,25 @@ export function ConnectedWallets({ wallets }: ConnectedWalletsProps) {
         {wallets.map((wallet) => (
           <div
             key={wallet.address}
-            className="flex items-center justify-between p-3 bg-bg-surface-2 rounded-[6px]"
+            className="flex items-center justify-between p-4 bg-bg-surface-2 rounded-[6px]"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 min-w-0">
               <div
-                className="w-2 h-2 rounded-full"
+                className="w-2.5 h-2.5 rounded-full shrink-0"
                 style={{
                   backgroundColor: CHAIN_COLORS[wallet.chainId] || "#888",
                 }}
               />
-              <div>
+              <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-[14px] font-medium text-text-primary font-mono">
-                    {wallet.address}
+                  <span className="text-[14px] font-medium text-text-primary font-mono truncate md:overflow-visible">
+                    <span className="hidden md:inline">{wallet.address}</span>
+                    <span className="md:hidden">
+                      {wallet.address.slice(0, 6)}...{wallet.address.slice(-4)}
+                    </span>
                   </span>
                   {wallet.isPrimary && (
-                    <Star className="w-3 h-3 text-warning fill-warning" />
+                    <Star className="w-3 h-3 text-warning fill-warning shrink-0" />
                   )}
                 </div>
                 <div className="flex items-center gap-2 text-[12px] text-text-muted">
@@ -133,19 +161,22 @@ export function ConnectedWallets({ wallets }: ConnectedWalletsProps) {
               </div>
             </div>
 
-            {!wallet.isPrimary && (
-              <button
-                onClick={() => handleDelete(wallet)}
-                disabled={deletingId === wallet.id}
-                className="w-8 h-8 flex items-center justify-center text-text-muted hover:text-negative transition-colors cursor-pointer disabled:opacity-50"
-              >
-                {deletingId === wallet.id ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Trash2 className="w-4 h-4" />
-                )}
-              </button>
-            )}
+            <div className="flex items-center gap-1 shrink-0">
+              <CopyAddressButton address={wallet.address} />
+              {!wallet.isPrimary && (
+                <button
+                  onClick={() => handleDelete(wallet)}
+                  disabled={deletingId === wallet.id}
+                  className="w-8 h-8 flex items-center justify-center text-text-muted hover:text-negative transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  {deletingId === wallet.id ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="w-4 h-4" />
+                  )}
+                </button>
+              )}
+            </div>
           </div>
         ))}
       </div>

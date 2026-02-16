@@ -2,8 +2,6 @@
 
 import { useExchange } from "@/domains/dashboard/hooks/use-dashboard-queries";
 import { PointsBalanceHero } from "@/domains/dashboard";
-import { AdRevenueBanner } from "@/domains/dashboard";
-import { UsdcExchangeCard } from "@/domains/dashboard";
 import { ProductGrid } from "@/domains/dashboard";
 import { ExchangeHistoryTable } from "@/domains/dashboard";
 import { ErrorState } from "@/shared/ui";
@@ -18,10 +16,6 @@ export default function ExchangePage() {
         <div className="h-8 w-24 skeleton rounded-[4px]" />
         <StatsCardSkeleton />
         <StatsCardSkeleton />
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <StatsCardSkeleton />
-          <StatsCardSkeleton />
-        </div>
         <TableCardSkeleton rows={4} />
       </div>
     );
@@ -50,26 +44,10 @@ export default function ExchangePage() {
         lifetimeSpent={data.lifetimeSpent}
       />
 
-      <AdRevenueBanner
-        totalAdRevenue={data.adRevenueShare.totalAdRevenue}
-        yourShare={data.adRevenueShare.yourShare}
-        sharePercent={data.adRevenueShare.sharePercent}
+      <ProductGrid
+        products={data.products}
+        pointsBalance={data.pointsBalance}
       />
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <ProductGrid
-            products={data.products}
-            pointsBalance={data.pointsBalance}
-          />
-        </div>
-        <div>
-          <UsdcExchangeCard
-            exchangeRate={data.exchangeRate}
-            pointsBalance={data.pointsBalance}
-          />
-        </div>
-      </div>
 
       <ExchangeHistoryTable history={data.history} />
     </div>

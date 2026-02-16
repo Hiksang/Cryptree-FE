@@ -30,7 +30,7 @@ export function Sidebar() {
       <aside className="hidden md:flex lg:hidden flex-col w-16 h-screen fixed left-0 top-0 bg-bg-surface border-r border-border-default z-40">
         <div className="h-16 flex items-center justify-center">
           <Link href="/" className="text-[16px] font-bold text-brand">
-            HV
+            CT
           </Link>
         </div>
         <nav className="flex-1 px-2 py-2 space-y-1">

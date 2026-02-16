@@ -13,6 +13,7 @@ import {
 export const users = pgTable("users", {
   authId: text("auth_id").primaryKey(),
   address: text("address"),
+  name: text("name"),
   tier: text("tier").default("bronze"),
   referralCode: text("referral_code").unique(),
   taxCountry: text("tax_country").default("kr"),

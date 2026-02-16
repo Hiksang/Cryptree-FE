@@ -40,13 +40,9 @@ export const TIER_CONFIG = {
 
 export const NAV_ITEMS = [
   { href: "/dashboard", label: "대시보드", icon: "LayoutDashboard" },
-  { href: "/dashboard/portfolio", label: "포트폴리오", icon: "Wallet" },
-  { href: "/dashboard/pnl", label: "PnL 분석", icon: "TrendingUp" },
-  { href: "/dashboard/tax", label: "세금 보고", icon: "FileText" },
-  { href: "/dashboard/transactions", label: "거래 내역", icon: "ArrowLeftRight" },
+  { href: "/dashboard/tax", label: "세금 보고서", icon: "FileText" },
   { href: "/dashboard/rewards", label: "리워드", icon: "Gift" },
   { href: "/dashboard/referral", label: "추천", icon: "Users" },
-  { href: "/dashboard/leaderboard", label: "리더보드", icon: "Trophy" },
   { href: "/dashboard/exchange", label: "포인트샵", icon: "ShoppingBag" },
   { href: "/dashboard/settings", label: "설정", icon: "Settings" },
 ] as const;
