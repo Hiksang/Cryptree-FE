@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import type { TaxCountry, TaxMethod } from "@/core/types";
 import { CountrySelector } from "../tax/country-selector";
 import { MethodSelector } from "../tax/method-selector";
-import { useCryptreeStore } from "@/shared/store";
+import { useHyperViewStore } from "@/shared/store";
 import { api } from "@/domains/dashboard/lib/api-client";
 import { toast } from "@/shared/ui";
 
@@ -15,8 +15,8 @@ interface PreferencesFormProps {
 }
 
 export function PreferencesForm({ country, method }: PreferencesFormProps) {
-  const setPreferences = useCryptreeStore((s) => s.setPreferences);
-  const storePrefs = useCryptreeStore((s) => s.preferences);
+  const setPreferences = useHyperViewStore((s) => s.setPreferences);
+  const storePrefs = useHyperViewStore((s) => s.preferences);
   const [saving, setSaving] = useState(false);
 
   const currentCountry = storePrefs.country || country;

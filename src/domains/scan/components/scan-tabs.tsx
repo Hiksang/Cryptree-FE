@@ -7,7 +7,7 @@ import { PnlChart, PnlByChain } from "@/domains/pnl";
 import { TaxPreview } from "@/domains/tax";
 import { CHAIN_COLORS } from "@/core/constants";
 import { formatCurrency } from "@/core/utils";
-import { Download, Link2, Share2 } from "lucide-react";
+import { Download, Link2, Share2, Clock } from "lucide-react";
 
 const TABS = ["활동 분석", "PnL 분석", "세금 미리보기"] as const;
 
@@ -41,7 +41,13 @@ export function ScanTabs({ data }: ScanTabsProps) {
       <div className="animate-fade-in-up">
         {activeTab === "활동 분석" && <ActivityTab data={data} />}
         {activeTab === "PnL 분석" && <PnlTab data={data} />}
-        {activeTab === "세금 미리보기" && <TaxPreview data={data.taxSummary} />}
+        {activeTab === "세금 미리보기" && (
+          data.taxSummary.totalGains === 0 && data.taxSummary.totalLosses === 0 ? (
+            <ComingSoonCard message="세금 미리보기는 준비 중입니다." />
+          ) : (
+            <TaxPreview data={data.taxSummary} />
+          )
+        )}
       </div>
     </div>
   );
@@ -148,7 +154,31 @@ function ActivityTab({ data }: { data: ScanResult }) {
   );
 }
 
+function ComingSoonCard({ message }: { message: string }) {
+  return (
+    <div className="bg-bg-surface border border-border-default rounded-[8px] p-8 text-center">
+      <div className="w-12 h-12 rounded-full bg-bg-surface-2 flex items-center justify-center mx-auto mb-4">
+        <Clock className="w-6 h-6 text-text-muted" />
+      </div>
+      <p className="text-[16px] text-text-secondary mb-2">{message}</p>
+      <p className="text-[13px] text-text-muted">
+        곧 제공될 예정입니다
+      </p>
+    </div>
+  );
+}
+
 function PnlTab({ data }: { data: ScanResult }) {
+  const hasPnlData = data.pnlHistory.length > 0;
+
+  if (!hasPnlData) {
+    return (
+      <div className="space-y-6">
+        <ComingSoonCard message="PnL 분석 데이터를 준비 중입니다." />
+      </div>
+    );
+  }
+
   const [period, setPeriod] = useState("전체");
   const periods = ["7일", "30일", "90일", "1년", "전체"];
   const totalPnl = data.pnlHistory[data.pnlHistory.length - 1]?.value ?? 0;

@@ -1,30 +1,25 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-const DEV_USER_ID = "dev_user_001";
-
 /**
  * Privy 키가 설정되어 있으면 privy-token 쿠키 검증,
- * 없으면 개발용 userId 반환.
+ * 없으면 인증 거부 (null 반환).
  */
 export async function getAuthUserId(): Promise<string | null> {
   const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
   const privyAppSecret = process.env.PRIVY_APP_SECRET;
 
-  if (!privyAppId || !privyAppSecret) return DEV_USER_ID;
+  if (!privyAppId || !privyAppSecret) return null;
 
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get("privy-token")?.value;
     if (!token) return null;
 
-    const { PrivyClient } = await import("@privy-io/node");
-    const client = new PrivyClient({
-      appId: privyAppId,
-      appSecret: privyAppSecret,
-    });
-    const claims = await client.utils().auth().verifyAccessToken(token);
-    return claims.user_id;
+    const { PrivyClient } = await import("@privy-io/server-auth");
+    const client = new PrivyClient(privyAppId, privyAppSecret);
+    const claims = await client.verifyAuthToken(token);
+    return claims.userId;
   } catch {
     return null;
   }

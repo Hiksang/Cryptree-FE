@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { Webhook } from "svix";
 import { db } from "@/core/db";
-import { users, pointBalances, wallets } from "@/core/db/schema";
-import { eq } from "drizzle-orm";
+import { users, pointBalances, pointLedger, wallets } from "@/core/db/schema";
+import { eq, sql } from "drizzle-orm";
 
 interface PrivyLinkedAccount {
   type: string;
@@ -66,14 +66,29 @@ export async function POST(request: Request) {
     );
     const address = walletAccount?.address || null;
 
+    const SIGNUP_BONUS = 100;
+
     await db
       .insert(users)
       .values({ authId, address, referralCode })
       .onConflictDoNothing();
     await db
       .insert(pointBalances)
-      .values({ userId: authId, balance: 0, lifetimeEarned: 0, lifetimeSpent: 0 })
+      .values({
+        userId: authId,
+        balance: SIGNUP_BONUS,
+        lifetimeEarned: SIGNUP_BONUS,
+        lifetimeSpent: 0,
+      })
       .onConflictDoNothing();
+    await db
+      .insert(pointLedger)
+      .values({
+        userId: authId,
+        amount: SIGNUP_BONUS,
+        type: "signup_bonus",
+        description: "회원가입 보너스",
+      });
 
     // 지갑 주소가 있으면 wallets 테이블에도 자동 등록
     if (address) {

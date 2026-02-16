@@ -42,7 +42,7 @@ export function ConditionalPrivyProvider({
           theme: "dark",
           accentColor: "#00D4AA",
         },
-        loginMethods: ["wallet", "email"],
+        loginMethods: ["wallet", "google"],
         embeddedWallets: {
           ethereum: {
             createOnLogin: "users-without-wallets",

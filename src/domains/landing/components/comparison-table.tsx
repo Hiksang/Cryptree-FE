@@ -29,7 +29,7 @@ const differentiators = [
 
 export function ComparisonTable() {
   return (
-    <section id="integrate" className="py-16 px-4">
+    <section className="py-16 px-4">
       <div className="max-w-[1280px] mx-auto">
         <h2 className="text-[28px] md:text-[32px] leading-[36px] font-bold text-text-primary text-center tracking-[-0.01em] mb-3">
           왜 Cryptree인가?

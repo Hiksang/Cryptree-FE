@@ -103,7 +103,7 @@ export function TaxPreview({ data }: TaxPreviewProps) {
         </button>
 
         <p className="text-[12px] leading-[16px] text-text-muted mt-3">
-          Koinly에서는 $49/년. Cryptree에서는 무료.
+          Koinly에서는 $49/년. HyperView에서는 무료.
         </p>
       </div>
     </div>

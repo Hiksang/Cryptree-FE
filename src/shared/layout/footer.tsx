@@ -5,17 +5,12 @@ export function Footer() {
         <span className="text-[12px] leading-[16px] text-text-muted">
           &copy; 2025 Cryptree
         </span>
-        <div className="flex items-center gap-4">
-          {["Twitter", "Discord", "Docs"].map((link) => (
-            <a
-              key={link}
-              href="#"
-              className="text-[12px] leading-[16px] text-text-muted hover:text-text-secondary transition-colors"
-            >
-              {link}
-            </a>
-          ))}
-        </div>
+        <a
+          href="#docs"
+          className="text-[12px] leading-[16px] text-text-muted hover:text-text-secondary transition-colors"
+        >
+          Docs
+        </a>
       </div>
     </footer>
   );

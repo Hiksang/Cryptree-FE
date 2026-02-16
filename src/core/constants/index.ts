@@ -1,6 +1,6 @@
 import type { TaxCountry, TaxMethod, TransactionType } from "@/core/types";
 
-/* ───── Chain & Identity Constants (from mock-data) ───── */
+/* ───── Chain & Identity Constants ───── */
 
 export const CHAIN_COLORS: Record<string, string> = {
   hyperevm: "#00D4AA",
@@ -10,6 +10,7 @@ export const CHAIN_COLORS: Record<string, string> = {
   ethereum: "#627EEA",
   optimism: "#FF0420",
   polygon: "#8247E5",
+  bnb: "#F0B90B",
 };
 
 export const CHAIN_NAMES: Record<string, string> = {
@@ -20,6 +21,7 @@ export const CHAIN_NAMES: Record<string, string> = {
   ethereum: "Ethereum",
   optimism: "Optimism",
   polygon: "Polygon",
+  bnb: "BNB Chain",
 };
 
 export const DNA_COLORS: Record<string, string> = {

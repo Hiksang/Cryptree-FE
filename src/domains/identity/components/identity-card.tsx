@@ -64,7 +64,7 @@ export function IdentityCard({ data }: IdentityCardProps) {
 
       {/* Footer */}
       <p className="text-[12px] leading-[16px] text-text-muted text-center">
-        cryptree.xyz
+        hyperview.xyz
       </p>
     </div>
   );

@@ -3,6 +3,7 @@ import { Footer } from "@/shared/layout";
 import { Hero } from "@/domains/landing";
 import { Features } from "@/domains/landing";
 import { ComparisonTable } from "@/domains/landing";
+import { Integrate } from "@/domains/landing";
 import { ScanInput } from "@/domains/scan";
 
 export default function LandingPage() {
@@ -14,6 +15,7 @@ export default function LandingPage() {
         <Hero />
         <Features />
         <ComparisonTable />
+        <Integrate />
 
         {/* Footer CTA */}
         <section

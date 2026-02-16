@@ -5,16 +5,17 @@ import { useParams, useRouter } from "next/navigation";
 import { Header } from "@/shared/layout";
 import { ScanProgress } from "@/domains/scan";
 import { ScanTabs } from "@/domains/scan";
-import { mockScanResult } from "@/core/mock";
+import { useScan } from "@/domains/scan";
 import { shortenAddress } from "@/core/utils";
-import { ArrowLeft, Copy, Check, Lock } from "lucide-react";
+import { ArrowLeft, Copy, Check, Lock, AlertCircle } from "lucide-react";
 
 export default function AddressPage() {
   const params = useParams();
   const router = useRouter();
   const address = params.address as string;
-  const [scanning, setScanning] = useState(true);
   const [copied, setCopied] = useState(false);
+
+  const { data, isLoading } = useScan(address);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(address);
@@ -27,12 +28,29 @@ export default function AddressPage() {
       <Header />
 
       <main className="pt-16">
-        {scanning ? (
-          <ScanProgress
-            address={address}
-            onComplete={() => setScanning(false)}
-          />
-        ) : (
+        {isLoading ? (
+          <ScanProgress address={address} />
+        ) : data && !data.found ? (
+          /* Empty state when no data found */
+          <div className="max-w-[640px] mx-auto pt-16 px-4 text-center">
+            <div className="w-16 h-16 rounded-full bg-bg-surface-2 flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="w-8 h-8 text-text-muted" />
+            </div>
+            <h2 className="text-[24px] leading-[32px] font-semibold text-text-primary mb-2">
+              이 주소의 데이터가 없습니다
+            </h2>
+            <p className="text-[16px] text-text-secondary mb-6">
+              {shortenAddress(address, 6)} 주소에 대한 온체인 활동이 아직
+              기록되지 않았습니다.
+            </p>
+            <button
+              onClick={() => router.push("/")}
+              className="h-10 px-5 bg-brand text-bg-primary font-semibold text-[14px] rounded-[6px] hover:bg-brand-hover transition-colors cursor-pointer"
+            >
+              다른 주소 분석하기
+            </button>
+          </div>
+        ) : data ? (
           <div className="max-w-[960px] mx-auto px-4 py-6">
             {/* Top navigation */}
             <div className="flex items-center justify-between mb-4 gap-2">
@@ -69,7 +87,7 @@ export default function AddressPage() {
             </div>
 
             {/* Tabs */}
-            <ScanTabs data={mockScanResult} />
+            <ScanTabs data={data} />
 
             {/* Signup banner */}
             <div className="mt-8 bg-bg-surface border border-border-default border-t-2 border-t-brand rounded-[8px] p-6">
@@ -91,7 +109,7 @@ export default function AddressPage() {
               </div>
             </div>
           </div>
-        )}
+        ) : null}
       </main>
     </div>
   );

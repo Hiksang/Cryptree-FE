@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Menu, X, LogOut, LayoutDashboard } from "lucide-react";
-import { usePrivy } from "@privy-io/react-auth";
+
+const hasPrivy = !!process.env.NEXT_PUBLIC_PRIVY_APP_ID;
 
 const NAV_LINKS = [
   { label: "Features", href: "#features" },
@@ -11,8 +12,24 @@ const NAV_LINKS = [
   { label: "Docs", href: "#docs" },
 ];
 
+function usePrivyAuth() {
+  if (!hasPrivy) {
+    return {
+      ready: true,
+      authenticated: false,
+      login: () => {},
+      logout: () => {},
+      user: null,
+    };
+  }
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { ready, authenticated, login, logout, user } = require("@privy-io/react-auth").usePrivy();
+  return { ready, authenticated, login, logout, user };
+}
+
 function AuthButtons() {
-  const { ready, authenticated, login, logout } = usePrivy();
+  const { ready, authenticated, login, logout } = usePrivyAuth();
 
   if (!ready) return null;
 
@@ -43,25 +60,17 @@ function AuthButtons() {
   }
 
   return (
-    <>
-      <button
-        onClick={() => login()}
-        className="h-8 px-4 text-[14px] text-text-secondary hover:text-text-primary hover:bg-bg-surface rounded-[6px] transition-colors cursor-pointer"
-      >
-        로그인
-      </button>
-      <button
-        onClick={() => login()}
-        className="h-8 px-4 bg-brand text-bg-primary text-[14px] font-semibold rounded-[6px] hover:bg-brand-hover transition-colors cursor-pointer"
-      >
-        시작하기
-      </button>
-    </>
+    <button
+      onClick={() => login()}
+      className="h-8 px-4 bg-brand text-bg-primary text-[14px] font-semibold rounded-[6px] hover:bg-brand-hover transition-colors cursor-pointer"
+    >
+      시작하기
+    </button>
   );
 }
 
 function MobileAuthButtons({ onClose }: { onClose: () => void }) {
-  const { ready, authenticated, login, logout } = usePrivy();
+  const { ready, authenticated, login, logout } = usePrivyAuth();
 
   if (!ready) return null;
 
@@ -89,26 +98,15 @@ function MobileAuthButtons({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <>
-      <button
-        onClick={() => {
-          login();
-          onClose();
-        }}
-        className="block w-full px-4 py-2 text-left text-[14px] text-text-secondary hover:text-text-primary cursor-pointer"
-      >
-        로그인
-      </button>
-      <button
-        onClick={() => {
-          login();
-          onClose();
-        }}
-        className="block w-full px-4 py-2 bg-brand text-bg-primary text-[14px] font-semibold rounded-[6px] text-center cursor-pointer"
-      >
-        시작하기
-      </button>
-    </>
+    <button
+      onClick={() => {
+        login();
+        onClose();
+      }}
+      className="block w-full px-4 py-2 bg-brand text-bg-primary text-[14px] font-semibold rounded-[6px] text-center cursor-pointer"
+    >
+      시작하기
+    </button>
   );
 }
 

@@ -112,47 +112,55 @@ async function handleUsdcExchange(
     );
   }
 
-  // 잔고 확인
-  const balance = await db.query.pointBalances.findFirst({
-    where: eq(pointBalances.userId, userId),
-  });
-
-  if (!balance || balance.balance < points) {
-    return NextResponse.json(
-      { error: "Insufficient balance" },
-      { status: 400 },
-    );
-  }
-
   const usdcAmount = (points / RATE).toFixed(2);
   const received = `${usdcAmount} USDC`;
 
-  // 포인트 차감 + 기록 (atomic)
-  await db.transaction(async (tx) => {
-    await tx
-      .update(pointBalances)
-      .set({
-        balance: sql`${pointBalances.balance} - ${points}`,
-        lifetimeSpent: sql`${pointBalances.lifetimeSpent} + ${points}`,
-        updatedAt: new Date(),
-      })
-      .where(eq(pointBalances.userId, userId));
+  // 잔고 확인 + 차감 + 기록 (atomic, SELECT FOR UPDATE로 TOCTOU 방지)
+  try {
+    await db.transaction(async (tx) => {
+      const [balance] = await tx
+        .select()
+        .from(pointBalances)
+        .where(eq(pointBalances.userId, userId))
+        .for("update");
 
-    await tx.insert(pointLedger).values({
-      userId,
-      amount: -points,
-      type: "exchange",
-      description: `USDC 교환 (${points.toLocaleString()}P → ${received})`,
-    });
+      if (!balance || balance.balance < points) {
+        throw new Error("INSUFFICIENT_BALANCE");
+      }
 
-    await tx.insert(exchangeHistory).values({
-      userId,
-      type: "usdc",
-      pointsSpent: points,
-      received,
-      status: "completed",
+      await tx
+        .update(pointBalances)
+        .set({
+          balance: sql`${pointBalances.balance} - ${points}`,
+          lifetimeSpent: sql`${pointBalances.lifetimeSpent} + ${points}`,
+          updatedAt: new Date(),
+        })
+        .where(eq(pointBalances.userId, userId));
+
+      await tx.insert(pointLedger).values({
+        userId,
+        amount: -points,
+        type: "exchange",
+        description: `USDC 교환 (${points.toLocaleString()}P → ${received})`,
+      });
+
+      await tx.insert(exchangeHistory).values({
+        userId,
+        type: "usdc",
+        pointsSpent: points,
+        received,
+        status: "completed",
+      });
     });
-  });
+  } catch (error) {
+    if (error instanceof Error && error.message === "INSUFFICIENT_BALANCE") {
+      return NextResponse.json(
+        { error: "Insufficient balance" },
+        { status: 400 },
+      );
+    }
+    throw error;
+  }
 
   return NextResponse.json({ success: true, received }, { status: 201 });
 }
@@ -185,54 +193,62 @@ async function handleProductExchange(
     return NextResponse.json({ error: "Out of stock" }, { status: 400 });
   }
 
-  // 잔고 확인
-  const balance = await db.query.pointBalances.findFirst({
-    where: eq(pointBalances.userId, userId),
-  });
-
-  if (!balance || balance.balance < product.pointsCost) {
-    return NextResponse.json(
-      { error: "Insufficient balance" },
-      { status: 400 },
-    );
-  }
-
   const points = product.pointsCost;
 
-  // 포인트 차감 + 재고 감소 + 기록 (atomic)
-  await db.transaction(async (tx) => {
-    await tx
-      .update(pointBalances)
-      .set({
-        balance: sql`${pointBalances.balance} - ${points}`,
-        lifetimeSpent: sql`${pointBalances.lifetimeSpent} + ${points}`,
-        updatedAt: new Date(),
-      })
-      .where(eq(pointBalances.userId, userId));
+  // 잔고 확인 + 차감 + 재고 감소 + 기록 (atomic, SELECT FOR UPDATE로 TOCTOU 방지)
+  try {
+    await db.transaction(async (tx) => {
+      const [balance] = await tx
+        .select()
+        .from(pointBalances)
+        .where(eq(pointBalances.userId, userId))
+        .for("update");
 
-    if (product.stock !== null) {
+      if (!balance || balance.balance < points) {
+        throw new Error("INSUFFICIENT_BALANCE");
+      }
+
       await tx
-        .update(shopProducts)
-        .set({ stock: sql`${shopProducts.stock} - 1` })
-        .where(eq(shopProducts.id, productId));
+        .update(pointBalances)
+        .set({
+          balance: sql`${pointBalances.balance} - ${points}`,
+          lifetimeSpent: sql`${pointBalances.lifetimeSpent} + ${points}`,
+          updatedAt: new Date(),
+        })
+        .where(eq(pointBalances.userId, userId));
+
+      if (product.stock !== null) {
+        await tx
+          .update(shopProducts)
+          .set({ stock: sql`${shopProducts.stock} - 1` })
+          .where(eq(shopProducts.id, productId));
+      }
+
+      await tx.insert(pointLedger).values({
+        userId,
+        amount: -points,
+        type: "purchase",
+        description: `${product.name} 교환`,
+      });
+
+      await tx.insert(exchangeHistory).values({
+        userId,
+        type: "product",
+        productId,
+        pointsSpent: points,
+        received: product.name,
+        status: "processing",
+      });
+    });
+  } catch (error) {
+    if (error instanceof Error && error.message === "INSUFFICIENT_BALANCE") {
+      return NextResponse.json(
+        { error: "Insufficient balance" },
+        { status: 400 },
+      );
     }
-
-    await tx.insert(pointLedger).values({
-      userId,
-      amount: -points,
-      type: "purchase",
-      description: `${product.name} 교환`,
-    });
-
-    await tx.insert(exchangeHistory).values({
-      userId,
-      type: "product",
-      productId,
-      pointsSpent: points,
-      received: product.name,
-      status: "processing",
-    });
-  });
+    throw error;
+  }
 
   return NextResponse.json(
     { success: true, received: product.name },

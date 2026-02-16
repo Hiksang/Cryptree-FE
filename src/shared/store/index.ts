@@ -6,7 +6,7 @@ interface UserPreferences {
   method: TaxMethod;
 }
 
-interface CryptreeStore {
+interface HyperViewStore {
   preferences: UserPreferences;
   wallets: ConnectedWallet[];
   setPreferences: (p: Partial<UserPreferences>) => void;
@@ -14,7 +14,7 @@ interface CryptreeStore {
   removeWallet: (address: string) => void;
 }
 
-export const useCryptreeStore = create<CryptreeStore>((set) => ({
+export const useHyperViewStore = create<HyperViewStore>((set) => ({
   preferences: { country: "kr", method: "fifo" },
   wallets: [],
   setPreferences: (p) =>

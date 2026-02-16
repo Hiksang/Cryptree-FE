@@ -7,7 +7,7 @@ interface ShareButtonsProps {
 }
 
 export function ShareButtons({ code }: ShareButtonsProps) {
-  const shareText = `Cryptree로 온체인 활동을 분석해보세요! 추천 코드: ${code}`;
+  const shareText = `HyperView로 온체인 활동을 분석해보세요! 추천 코드: ${code}`;
 
   const handleTwitter = () => {
     window.open(

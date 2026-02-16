@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getAuthUserId, unauthorizedResponse } from "@/core/auth";
 import { db } from "@/core/db";
 import { wallets } from "@/core/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 
 export async function POST(request: Request) {
   const userId = await getAuthUserId();
@@ -21,6 +21,10 @@ export async function POST(request: Request) {
       userId,
       address: address.toLowerCase(),
       label: label || "",
+    })
+    .onConflictDoUpdate({
+      target: [wallets.userId, wallets.address],
+      set: { label: sql`COALESCE(NULLIF(${label || ""}, ''), ${wallets.label})` },
     })
     .returning();
 

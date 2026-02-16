@@ -8,7 +8,10 @@ import {
   bigint,
   numeric,
   jsonb,
+  unique,
+  check,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
 export const users = pgTable("users", {
   authId: text("auth_id").primaryKey(),
@@ -32,7 +35,9 @@ export const wallets = pgTable("wallets", {
   lastScannedBlock: jsonb("last_scanned_block").default({}),
   lastScannedAt: timestamp("last_scanned_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
-});
+}, (table) => [
+  unique("wallets_user_address_uniq").on(table.userId, table.address),
+]);
 
 export const transactions = pgTable("transactions", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -83,7 +88,9 @@ export const pointBalances = pgTable("point_balances", {
   lifetimeEarned: integer("lifetime_earned").notNull().default(0),
   lifetimeSpent: integer("lifetime_spent").notNull().default(0),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
-});
+}, (table) => [
+  check("balance_non_negative", sql`${table.balance} >= 0`),
+]);
 
 export const pointLedger = pgTable("point_ledger", {
   id: uuid("id").primaryKey().defaultRandom(),

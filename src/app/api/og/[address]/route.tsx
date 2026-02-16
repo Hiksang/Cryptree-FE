@@ -187,7 +187,7 @@ export async function GET(
             justifyContent: "center",
           }}
         >
-          cryptree.xyz
+          hyperview.xyz
         </div>
       </div>
     ),
