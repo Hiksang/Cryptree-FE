@@ -5,6 +5,12 @@ import Link from "next/link";
 import { Menu, X, LogOut, LayoutDashboard } from "lucide-react";
 import { usePrivy } from "@privy-io/react-auth";
 
+const navLinks = [
+  { label: "Feature", href: "#features" },
+  { label: "Integrate", href: "#integrate" },
+  { label: "Docs", href: "#" },
+];
+
 function AuthButtons() {
   const { ready, authenticated, login, logout } = usePrivy();
 
@@ -37,20 +43,12 @@ function AuthButtons() {
   }
 
   return (
-    <>
-      <button
-        onClick={() => login()}
-        className="h-8 px-4 text-[14px] text-text-secondary hover:text-text-primary hover:bg-bg-surface rounded-[6px] transition-colors cursor-pointer"
-      >
-        로그인
-      </button>
-      <button
-        onClick={() => login()}
-        className="h-8 px-4 bg-brand text-bg-primary text-[14px] font-semibold rounded-[6px] hover:bg-brand-hover transition-colors cursor-pointer"
-      >
-        시작하기
-      </button>
-    </>
+    <button
+      onClick={() => login()}
+      className="h-8 px-4 bg-brand text-bg-primary text-[14px] font-semibold rounded-[6px] hover:bg-brand-hover transition-colors cursor-pointer"
+    >
+      Launch App
+    </button>
   );
 }
 
@@ -83,26 +81,15 @@ function MobileAuthButtons({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <>
-      <button
-        onClick={() => {
-          login();
-          onClose();
-        }}
-        className="block w-full px-4 py-2 text-left text-[14px] text-text-secondary hover:text-text-primary cursor-pointer"
-      >
-        로그인
-      </button>
-      <button
-        onClick={() => {
-          login();
-          onClose();
-        }}
-        className="block w-full px-4 py-2 bg-brand text-bg-primary text-[14px] font-semibold rounded-[6px] text-center cursor-pointer"
-      >
-        시작하기
-      </button>
-    </>
+    <button
+      onClick={() => {
+        login();
+        onClose();
+      }}
+      className="block w-full px-4 py-2 bg-brand text-bg-primary text-[14px] font-semibold rounded-[6px] text-center cursor-pointer"
+    >
+      Launch App
+    </button>
   );
 }
 
@@ -133,9 +120,18 @@ export function Header() {
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-3">
+        <nav className="hidden md:flex items-center gap-6">
+          {navLinks.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              className="text-[14px] text-text-secondary hover:text-text-primary transition-colors"
+            >
+              {link.label}
+            </a>
+          ))}
           <AuthButtons />
-        </div>
+        </nav>
 
         {/* Mobile hamburger */}
         <button
@@ -153,6 +149,16 @@ export function Header() {
       {/* Mobile menu */}
       {menuOpen && (
         <div className="md:hidden bg-bg-primary border-b border-border-default p-4 space-y-2">
+          {navLinks.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              className="block w-full px-4 py-2 text-[14px] text-text-secondary hover:text-text-primary"
+              onClick={() => setMenuOpen(false)}
+            >
+              {link.label}
+            </a>
+          ))}
           <MobileAuthButtons onClose={() => setMenuOpen(false)} />
         </div>
       )}

@@ -62,7 +62,7 @@ function CryptreeCell({ value }: { value: boolean | string }) {
 
 export function ComparisonTable() {
   return (
-    <section className="py-12 px-4">
+    <section id="integrate" className="py-12 px-4">
       <div className="max-w-[800px] mx-auto">
         <h2 className="text-[30px] leading-[36px] font-semibold text-text-primary text-center tracking-[-0.01em] mb-8">
           왜 Cryptree인가?
