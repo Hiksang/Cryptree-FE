@@ -12,14 +12,12 @@ interface PrivyLinkedAccount {
 
 interface PrivyWebhookEvent {
   type: string;
-  data: {
-    user: {
-      id: string;
-      linked_accounts: PrivyLinkedAccount[];
-    };
-    account?: PrivyLinkedAccount;
-    wallet?: PrivyLinkedAccount;
+  user: {
+    id: string;
+    linked_accounts: PrivyLinkedAccount[];
   };
+  account?: PrivyLinkedAccount;
+  wallet?: PrivyLinkedAccount;
 }
 
 export async function POST(request: Request) {
@@ -56,14 +54,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  const { type, data } = event;
-  const authId = data.user.id;
+  const { type, user, account, wallet } = event;
+  const authId = user.id;
 
   if (type === "user.created") {
     const referralCode = `HYPER-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
 
     // linked_accounts에서 지갑 주소 추출
-    const walletAccount = data.user.linked_accounts.find(
+    const walletAccount = user.linked_accounts.find(
       (a) => a.type === "wallet" && a.address,
     );
     const address = walletAccount?.address || null;
@@ -90,7 +88,6 @@ export async function POST(request: Request) {
         .onConflictDoNothing();
     }
   } else if (type === "user.linked_account") {
-    const account = data.account;
     if (account?.type === "wallet" && account.address) {
       await db
         .insert(wallets)
@@ -112,7 +109,6 @@ export async function POST(request: Request) {
       }
     }
   } else if (type === "user.wallet_created") {
-    const wallet = data.wallet;
     if (wallet?.address) {
       await db
         .insert(wallets)
