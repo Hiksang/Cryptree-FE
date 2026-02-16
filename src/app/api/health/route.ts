@@ -11,7 +11,7 @@ export async function GET() {
     await db.execute(sql`SELECT 1`);
   } catch (e) {
     dbStatus = "error";
-    dbError = e instanceof Error ? e.message : String(e);
+    dbError = e instanceof Error ? `${e.message} | ${(e as Record<string, unknown>).code ?? ""} | ${(e as Record<string, unknown>).detail ?? ""}` : String(e);
   }
 
   const authConfigured = !!process.env.NEXT_PUBLIC_PRIVY_APP_ID;
@@ -37,6 +37,7 @@ export async function GET() {
     services: {
       database: dbStatus,
       dbError: dbError || undefined,
+      dbUrl: process.env.DATABASE_URL ? process.env.DATABASE_URL.replace(/:[^:@]+@/, ":***@") : "NOT_SET",
       auth: authConfigured ? "privy" : "dev_mode",
       worker: workerStatus,
     },
