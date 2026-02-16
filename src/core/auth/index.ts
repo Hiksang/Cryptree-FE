@@ -18,10 +18,13 @@ export async function getAuthUserId(): Promise<string | null> {
     const token = cookieStore.get("privy-token")?.value;
     if (!token) return null;
 
-    const { PrivyClient } = await import("@privy-io/server-auth");
-    const client = new PrivyClient(privyAppId, privyAppSecret);
-    const claims = await client.verifyAuthToken(token);
-    return claims.userId;
+    const { PrivyClient } = await import("@privy-io/node");
+    const client = new PrivyClient({
+      appId: privyAppId,
+      appSecret: privyAppSecret,
+    });
+    const claims = await client.utils().auth().verifyAccessToken(token);
+    return claims.user_id;
   } catch {
     return null;
   }
