@@ -2,7 +2,7 @@
 
 import { PrivyProvider as BasePrivyProvider } from "@privy-io/react-auth";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { usePrivy } from "@privy-io/react-auth";
 
 const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
@@ -50,7 +50,9 @@ export function ConditionalPrivyProvider({
         },
       }}
     >
-      <LoginTrigger />
+      <Suspense>
+        <LoginTrigger />
+      </Suspense>
       {children}
     </BasePrivyProvider>
   );
