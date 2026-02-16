@@ -1,26 +1,21 @@
 "use client";
 
 import { PrivyProvider as BasePrivyProvider } from "@privy-io/react-auth";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { usePrivy } from "@privy-io/react-auth";
 
 const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
 
-function LoginTrigger() {
-  const searchParams = useSearchParams();
+function LoginRedirect() {
   const router = useRouter();
-  const { login, ready, authenticated } = usePrivy();
+  const { ready, authenticated } = usePrivy();
 
   useEffect(() => {
-    if (searchParams.get("login") === "required" && ready && !authenticated) {
-      login();
-      // URL에서 파라미터 제거
-      const url = new URL(window.location.href);
-      url.searchParams.delete("login");
-      router.replace(url.pathname + url.search);
+    if (ready && authenticated && window.location.pathname === "/") {
+      router.replace("/dashboard");
     }
-  }, [searchParams, ready, authenticated, login, router]);
+  }, [ready, authenticated, router]);
 
   return null;
 }
@@ -50,9 +45,7 @@ export function ConditionalPrivyProvider({
         },
       }}
     >
-      <Suspense>
-        <LoginTrigger />
-      </Suspense>
+      <LoginRedirect />
       {children}
     </BasePrivyProvider>
   );
