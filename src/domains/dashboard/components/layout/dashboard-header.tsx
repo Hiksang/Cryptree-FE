@@ -2,27 +2,10 @@
 
 import Link from "next/link";
 import { LogOut } from "lucide-react";
-
-const hasPrivy = !!process.env.NEXT_PUBLIC_PRIVY_APP_ID;
-
-function usePrivyAuth() {
-  if (!hasPrivy) {
-    return {
-      ready: true,
-      authenticated: false,
-      login: () => {},
-      logout: () => {},
-      user: null,
-    };
-  }
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { ready, authenticated, login, logout, user } = require("@privy-io/react-auth").usePrivy();
-  return { ready, authenticated, login, logout, user };
-}
+import { usePrivy } from "@privy-io/react-auth";
 
 export function DashboardHeader() {
-  const { ready, authenticated, login, logout } = usePrivyAuth();
+  const { ready, authenticated, login, logout } = usePrivy();
 
   return (
     <header className="h-16 bg-bg-surface border-b border-border-default flex items-center justify-between px-6 sticky top-0 z-30">
