@@ -6,12 +6,10 @@ export async function GET() {
   const now = new Date().toISOString();
 
   let dbStatus = "ok";
-  let dbError = "";
   try {
     await db.execute(sql`SELECT 1`);
-  } catch (e) {
+  } catch {
     dbStatus = "error";
-    try { dbError = JSON.stringify(e, Object.getOwnPropertyNames(e as object)); } catch { dbError = String(e); }
   }
 
   const authConfigured = !!process.env.NEXT_PUBLIC_PRIVY_APP_ID;
@@ -36,8 +34,6 @@ export async function GET() {
     timestamp: now,
     services: {
       database: dbStatus,
-      dbError: dbError || undefined,
-      dbUrl: process.env.DATABASE_URL ? process.env.DATABASE_URL.replace(/:[^:@]+@/, ":***@") : "NOT_SET",
       auth: authConfigured ? "privy" : "dev_mode",
       worker: workerStatus,
     },
