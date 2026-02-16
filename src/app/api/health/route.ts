@@ -11,7 +11,7 @@ export async function GET() {
     await db.execute(sql`SELECT 1`);
   } catch (e) {
     dbStatus = "error";
-    dbError = e instanceof Error ? `${e.message} | ${(e as Record<string, unknown>).code ?? ""} | ${(e as Record<string, unknown>).detail ?? ""}` : String(e);
+    dbError = e instanceof Error ? `${e.message} | ${String((e as unknown as Record<string, unknown>).code ?? "")} | ${String((e as unknown as Record<string, unknown>).detail ?? "")}` : String(e);
   }
 
   const authConfigured = !!process.env.NEXT_PUBLIC_PRIVY_APP_ID;
