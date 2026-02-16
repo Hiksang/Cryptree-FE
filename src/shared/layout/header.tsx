@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Menu, X, LogOut, LayoutDashboard } from "lucide-react";
-
-const hasPrivy = !!process.env.NEXT_PUBLIC_PRIVY_APP_ID;
+import { usePrivy } from "@privy-io/react-auth";
 
 const NAV_LINKS = [
   { label: "Features", href: "#features" },
@@ -12,24 +11,8 @@ const NAV_LINKS = [
   { label: "Docs", href: "#docs" },
 ];
 
-function usePrivyAuth() {
-  if (!hasPrivy) {
-    return {
-      ready: true,
-      authenticated: false,
-      login: () => {},
-      logout: () => {},
-      user: null,
-    };
-  }
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { ready, authenticated, login, logout, user } = require("@privy-io/react-auth").usePrivy();
-  return { ready, authenticated, login, logout, user };
-}
-
 function AuthButtons() {
-  const { ready, authenticated, login, logout } = usePrivyAuth();
+  const { ready, authenticated, login, logout } = usePrivy();
 
   if (!ready) return null;
 
@@ -78,7 +61,7 @@ function AuthButtons() {
 }
 
 function MobileAuthButtons({ onClose }: { onClose: () => void }) {
-  const { ready, authenticated, login, logout } = usePrivyAuth();
+  const { ready, authenticated, login, logout } = usePrivy();
 
   if (!ready) return null;
 
