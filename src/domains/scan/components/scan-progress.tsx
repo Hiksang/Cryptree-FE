@@ -48,9 +48,6 @@ export function ScanProgress({ address }: ScanProgressProps) {
           <div className="h-full rounded-full bg-gradient-to-r from-brand to-brand-hover animate-pulse w-full" />
         </div>
       </div>
-      <p className="text-[12px] leading-[16px] text-text-muted">
-        Etherscan · Blockscout API에서 트랜잭션을 조회하고 있습니다
-      </p>
     </div>
   );
 }

@@ -7,13 +7,23 @@ import { ScanProgress } from "@/domains/scan";
 import { ScanTabs } from "@/domains/scan";
 import { useScan } from "@/domains/scan";
 import { shortenAddress } from "@/core/utils";
-import { ArrowLeft, Copy, Check, Lock, AlertCircle } from "lucide-react";
+import { ArrowLeft, Copy, Check, Lock, AlertCircle, Gift, Shield, TrendingUp } from "lucide-react";
+
+const hasPrivy = !!process.env.NEXT_PUBLIC_PRIVY_APP_ID;
+
+function usePrivyLogin() {
+  if (!hasPrivy) return () => {};
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { login } = require("@privy-io/react-auth").usePrivy();
+  return login;
+}
 
 export default function AddressPage() {
   const params = useParams();
   const router = useRouter();
   const address = params.address as string;
   const [copied, setCopied] = useState(false);
+  const login = usePrivyLogin();
 
   const { data, isLoading } = useScan(address);
 
@@ -89,23 +99,46 @@ export default function AddressPage() {
             {/* Tabs */}
             <ScanTabs data={data} />
 
-            {/* Signup banner */}
-            <div className="mt-8 bg-bg-surface border border-border-default border-t-2 border-t-brand rounded-[8px] p-6">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <Lock className="w-4 h-4 text-brand" />
-                    <span className="text-[16px] font-medium text-text-primary">
-                      결과를 저장하고 더 자세한 분석을 받아보세요
-                    </span>
+            {/* Signup CTA */}
+            <div className="mt-8 bg-bg-surface border border-border-default rounded-[8px] overflow-hidden">
+              <div className="bg-gradient-to-r from-brand/10 to-brand-hover/10 px-6 py-4 border-b border-border-default">
+                <h3 className="text-[18px] font-semibold text-text-primary">
+                  지금 가입하고 더 많은 기능을 이용하세요
+                </h3>
+              </div>
+              <div className="p-6 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="flex items-start gap-3">
+                    <Shield className="w-5 h-5 text-brand shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-[14px] font-medium text-text-primary">분석 결과 저장</p>
+                      <p className="text-[12px] text-text-muted">대시보드에서 언제든 확인</p>
+                    </div>
                   </div>
-                  <p className="text-[12px] text-text-muted">
-                    무료 가입 · 이메일 또는 Google로 10초만에
-                  </p>
+                  <div className="flex items-start gap-3">
+                    <TrendingUp className="w-5 h-5 text-brand shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-[14px] font-medium text-text-primary">세금 리포트</p>
+                      <p className="text-[12px] text-text-muted">PnL 분석 및 세금 미리보기</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Gift className="w-5 h-5 text-brand shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-[14px] font-medium text-text-primary">100P 즉시 지급</p>
+                      <p className="text-[12px] text-text-muted">가입만 해도 포인트 지급</p>
+                    </div>
+                  </div>
                 </div>
-                <button className="h-10 px-5 bg-brand text-bg-primary font-semibold text-[14px] rounded-[6px] hover:bg-brand-hover transition-colors whitespace-nowrap cursor-pointer">
-                  무료 가입하기
+                <button
+                  onClick={() => login()}
+                  className="w-full h-11 bg-brand text-bg-primary font-semibold text-[15px] rounded-[6px] hover:bg-brand-hover transition-colors cursor-pointer"
+                >
+                  무료로 시작하기
                 </button>
+                <p className="text-[12px] text-text-muted text-center">
+                  Google 또는 지갑으로 10초만에 가입
+                </p>
               </div>
             </div>
           </div>
