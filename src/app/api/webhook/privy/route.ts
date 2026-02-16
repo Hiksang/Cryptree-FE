@@ -17,6 +17,8 @@ interface PrivyWebhookEvent {
       id: string;
       linked_accounts: PrivyLinkedAccount[];
     };
+    account?: PrivyLinkedAccount;
+    wallet?: PrivyLinkedAccount;
   };
 }
 
@@ -87,8 +89,49 @@ export async function POST(request: Request) {
         })
         .onConflictDoNothing();
     }
-  } else if (type === "user.deleted") {
-    await db.delete(users).where(eq(users.authId, authId));
+  } else if (type === "user.linked_account") {
+    const account = data.account;
+    if (account?.type === "wallet" && account.address) {
+      await db
+        .insert(wallets)
+        .values({
+          userId: authId,
+          address: account.address.toLowerCase(),
+          label: "",
+        })
+        .onConflictDoNothing();
+
+      // Worker에 스캔 요청
+      const workerUrl = process.env.WORKER_URL;
+      if (workerUrl) {
+        fetch(`${workerUrl}/webhook/wallet-added`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ address: account.address.toLowerCase(), userId: authId }),
+        }).catch(() => {});
+      }
+    }
+  } else if (type === "user.wallet_created") {
+    const wallet = data.wallet;
+    if (wallet?.address) {
+      await db
+        .insert(wallets)
+        .values({
+          userId: authId,
+          address: wallet.address.toLowerCase(),
+          label: "Embedded",
+        })
+        .onConflictDoNothing();
+
+      const workerUrl = process.env.WORKER_URL;
+      if (workerUrl) {
+        fetch(`${workerUrl}/webhook/wallet-added`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ address: wallet.address.toLowerCase(), userId: authId }),
+        }).catch(() => {});
+      }
+    }
   }
 
   return NextResponse.json({ success: true });
