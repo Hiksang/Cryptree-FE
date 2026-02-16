@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const protectedPaths = ["/dashboard"];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
 
   // dev 모드: Privy 키 없으면 보호하지 않음
