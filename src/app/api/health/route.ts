@@ -6,10 +6,12 @@ export async function GET() {
   const now = new Date().toISOString();
 
   let dbStatus = "ok";
+  let dbError = "";
   try {
     await db.execute(sql`SELECT 1`);
-  } catch {
+  } catch (e) {
     dbStatus = "error";
+    dbError = e instanceof Error ? e.message : String(e);
   }
 
   const authConfigured = !!process.env.NEXT_PUBLIC_PRIVY_APP_ID;
@@ -34,6 +36,7 @@ export async function GET() {
     timestamp: now,
     services: {
       database: dbStatus,
+      dbError: dbError || undefined,
       auth: authConfigured ? "privy" : "dev_mode",
       worker: workerStatus,
     },
