@@ -113,6 +113,25 @@ export async function POST(request: Request) {
         })
         .onConflictDoNothing();
 
+      // 지갑 추가 보너스 50P
+      const WALLET_BONUS = 50;
+      await db
+        .update(pointBalances)
+        .set({
+          balance: sql`${pointBalances.balance} + ${WALLET_BONUS}`,
+          lifetimeEarned: sql`${pointBalances.lifetimeEarned} + ${WALLET_BONUS}`,
+          updatedAt: new Date(),
+        })
+        .where(eq(pointBalances.userId, authId));
+      await db
+        .insert(pointLedger)
+        .values({
+          userId: authId,
+          amount: WALLET_BONUS,
+          type: "wallet_bonus",
+          description: "지갑 추가 보너스",
+        });
+
       // Worker에 스캔 요청
       const workerUrl = process.env.WORKER_URL;
       if (workerUrl) {
@@ -133,6 +152,25 @@ export async function POST(request: Request) {
           label: "Embedded",
         })
         .onConflictDoNothing();
+
+      // 지갑 추가 보너스 50P
+      const WALLET_BONUS = 50;
+      await db
+        .update(pointBalances)
+        .set({
+          balance: sql`${pointBalances.balance} + ${WALLET_BONUS}`,
+          lifetimeEarned: sql`${pointBalances.lifetimeEarned} + ${WALLET_BONUS}`,
+          updatedAt: new Date(),
+        })
+        .where(eq(pointBalances.userId, authId));
+      await db
+        .insert(pointLedger)
+        .values({
+          userId: authId,
+          amount: WALLET_BONUS,
+          type: "wallet_bonus",
+          description: "지갑 추가 보너스",
+        });
 
       const workerUrl = process.env.WORKER_URL;
       if (workerUrl) {

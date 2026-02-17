@@ -1,11 +1,20 @@
 "use client";
 
+import { useMemo } from "react";
 import { useDashboardStats, useSettings } from "@/domains/dashboard/hooks/use-dashboard-queries";
 import { TIER_CONFIG } from "@/core/constants";
 import { ErrorState } from "@/shared/ui";
 import { StatsCardSkeleton } from "@/shared/ui";
 import { Wallet, Plus, Activity, Link2 } from "lucide-react";
 import Link from "next/link";
+
+function getGreeting(name: string): string {
+  const hour = new Date().getHours();
+  if (hour < 6) return `${name}님, 늦은 시간까지 수고하세요`;
+  if (hour < 12) return `${name}님, 좋은 아침이에요`;
+  if (hour < 18) return `${name}님, 좋은 오후에요`;
+  return `${name}님, 좋은 저녁이에요`;
+}
 
 export default function DashboardPage() {
   const { data: statsData, isLoading: statsLoading, isError: statsError, refetch: refetchStats } = useDashboardStats();
@@ -25,6 +34,7 @@ export default function DashboardPage() {
   const tier = settingsData?.profile?.tier ?? "bronze";
   const tierConfig = TIER_CONFIG[tier];
   const profileName = settingsData?.profile?.name ?? "User";
+  const greeting = useMemo(() => getGreeting(profileName), [profileName]);
 
   if (isLoading) {
     return (
@@ -56,7 +66,7 @@ export default function DashboardPage() {
           </div>
           <div>
             <h2 className="text-[20px] font-semibold text-text-primary">
-              안녕하세요, {profileName}님
+              {greeting}
             </h2>
             <div className="flex items-center gap-3 mt-1">
               <span

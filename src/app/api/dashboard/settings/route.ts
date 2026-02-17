@@ -75,17 +75,26 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Invalid method" }, { status: 400 });
   }
 
-  if (!country && !method && name === undefined) {
+  // Trim and validate name
+  const trimmedName = typeof name === "string" ? name.trim() : undefined;
+  if (trimmedName !== undefined && trimmedName.length === 0) {
+    return NextResponse.json({ error: "Name cannot be empty" }, { status: 400 });
+  }
+  if (trimmedName !== undefined && trimmedName.length > 50) {
+    return NextResponse.json({ error: "Name too long (max 50 chars)" }, { status: 400 });
+  }
+
+  if (!country && !method && trimmedName === undefined) {
     return NextResponse.json(
       { error: "Nothing to update" },
       { status: 400 },
     );
   }
 
-  const updates: Record<string, string> = {};
+  const updates: Partial<{ taxCountry: string; taxMethod: string; name: string }> = {};
   if (country) updates.taxCountry = country;
   if (method) updates.taxMethod = method;
-  if (name !== undefined) updates.name = name;
+  if (trimmedName !== undefined) updates.name = trimmedName;
 
   await db
     .update(users)

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { LogOut } from "lucide-react";
 
 const hasPrivy = !!process.env.NEXT_PUBLIC_PRIVY_APP_ID;
@@ -27,8 +28,9 @@ export function DashboardHeader() {
   return (
     <header className="h-16 bg-bg-surface border-b border-border-default flex items-center justify-between px-6 sticky top-0 z-30">
       {/* Mobile logo */}
-      <Link href="/" className="md:hidden text-[18px] font-bold text-brand">
-        Cryptree
+      <Link href="/dashboard" className="md:hidden flex items-center gap-2">
+        <Image src="/icon.png" alt="Cryptree" width={22} height={25} />
+        <span className="text-[18px] font-bold text-brand">Cryptree</span>
       </Link>
 
       <div className="hidden md:block" />

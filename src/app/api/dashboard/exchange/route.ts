@@ -35,10 +35,10 @@ export async function GET() {
       sharePercent: 0,
     },
     exchangeRate: {
-      pointsPerUsdc: 100,
-      minPoints: 100,
-      maxPoints: 10000,
-      dailyLimit: 5000,
+      pointsPerUsdc: 1000,
+      minPoints: 1000,
+      maxPoints: 50000,
+      dailyLimit: 50000,
       dailyUsed: 0,
       fee: 0,
     },
@@ -101,9 +101,9 @@ async function handleUsdcExchange(
     return NextResponse.json({ error: "Invalid points" }, { status: 400 });
   }
 
-  const RATE = 100; // 100P = 1 USDC
-  const MIN = 100;
-  const MAX = 10000;
+  const RATE = 1000; // 1000P = 1 USDC
+  const MIN = 1000;
+  const MAX = 50000;
 
   if (points < MIN || points > MAX) {
     return NextResponse.json(
