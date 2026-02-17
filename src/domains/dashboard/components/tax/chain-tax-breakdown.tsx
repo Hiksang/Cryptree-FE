@@ -1,15 +1,20 @@
+"use client";
+
 import type { ChainTaxBreakdown as ChainTaxBreakdownType } from "@/core/types";
 import { CHAIN_COLORS } from "@/core/constants";
+import { useT } from "@/core/i18n";
 
 interface ChainTaxBreakdownProps {
   chains: ChainTaxBreakdownType[];
 }
 
 export function ChainTaxBreakdown({ chains }: ChainTaxBreakdownProps) {
+  const t = useT();
+
   return (
     <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
       <h3 className="text-[16px] leading-[24px] font-semibold text-text-primary mb-4">
-        체인별 세금 상세
+        {t.dashboard.tax.chainTaxDetail}
       </h3>
       <div className="space-y-4">
         {chains.map((chain) => (
@@ -27,7 +32,7 @@ export function ChainTaxBreakdown({ chains }: ChainTaxBreakdownProps) {
                   {chain.name}
                 </span>
                 <span className="text-[12px] text-text-muted">
-                  {chain.events}건
+                  {chain.events}{t.dashboard.tax.eventsCount}
                 </span>
               </div>
               <span
@@ -40,10 +45,10 @@ export function ChainTaxBreakdown({ chains }: ChainTaxBreakdownProps) {
             </div>
             <div className="flex gap-4 text-[12px] leading-[16px]">
               <span className="text-positive tabular-nums">
-                수익 +${chain.gains.toLocaleString()}
+                {t.dashboard.tax.gains} +${chain.gains.toLocaleString()}
               </span>
               <span className="text-negative tabular-nums">
-                손실 -${chain.losses.toLocaleString()}
+                {t.dashboard.tax.losses} -${chain.losses.toLocaleString()}
               </span>
             </div>
           </div>

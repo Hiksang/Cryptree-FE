@@ -1,25 +1,30 @@
+"use client";
+
 import type { ReferredFriend } from "@/core/types";
+import { useT } from "@/core/i18n";
 
 interface InvitedFriendsListProps {
   friends: ReferredFriend[];
 }
 
 export function InvitedFriendsList({ friends }: InvitedFriendsListProps) {
+  const t = useT();
+
   return (
     <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
       <h3 className="text-[16px] leading-[24px] font-semibold text-text-primary mb-4">
-        초대한 친구
+        {t.dashboard.referral.invitedFriends}
       </h3>
 
       <div className="overflow-x-auto">
         <table className="w-full text-[14px]">
           <thead>
             <tr className="text-text-muted text-left">
-              <th className="pb-3 font-medium">주소</th>
-              <th className="pb-3 font-medium">가입일</th>
-              <th className="pb-3 font-medium text-right">거래량</th>
-              <th className="pb-3 font-medium text-right">수익</th>
-              <th className="pb-3 font-medium text-right">상태</th>
+              <th className="pb-3 font-medium">{t.dashboard.referral.colAddress}</th>
+              <th className="pb-3 font-medium">{t.dashboard.referral.colJoinedAt}</th>
+              <th className="pb-3 font-medium text-right">{t.dashboard.referral.colVolume}</th>
+              <th className="pb-3 font-medium text-right">{t.dashboard.referral.colEarned}</th>
+              <th className="pb-3 font-medium text-right">{t.dashboard.referral.colStatus}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border-subtle">
@@ -45,7 +50,7 @@ export function InvitedFriendsList({ friends }: InvitedFriendsListProps) {
                         : "text-text-muted bg-bg-surface-3"
                     }`}
                   >
-                    {friend.status === "active" ? "활성" : "비활성"}
+                    {friend.status === "active" ? t.dashboard.referral.statusActive : t.dashboard.referral.statusInactive}
                   </span>
                 </td>
               </tr>

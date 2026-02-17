@@ -8,6 +8,7 @@ import { toast } from "@/shared/ui";
 import { api } from "@/domains/dashboard/lib/api-client";
 import { useQueryClient } from "@tanstack/react-query";
 import { AddWalletModal } from "@/domains/dashboard/components/add-wallet-modal";
+import { useT } from "@/core/i18n";
 
 interface ConnectedWalletsProps {
   wallets: ConnectedWallet[];
@@ -15,15 +16,16 @@ interface ConnectedWalletsProps {
 
 function CopyAddressButton({ address }: { address: string }) {
   const [copied, setCopied] = useState(false);
+  const t = useT();
 
   async function handleCopy() {
     try {
       await navigator.clipboard.writeText(address);
       setCopied(true);
-      toast.success("주소가 복사되었습니다");
+      toast.success(t.common.addressCopied);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      toast.error("복사에 실패했습니다");
+      toast.error(t.common.copyFailed);
     }
   }
 
@@ -31,25 +33,26 @@ function CopyAddressButton({ address }: { address: string }) {
     <button
       onClick={handleCopy}
       className="w-8 h-8 flex items-center justify-center text-text-muted hover:text-brand transition-colors cursor-pointer"
-      title="주소 복사"
+      title={t.common.copyAddress}
     >
       {copied ? <Check className="w-4 h-4 text-positive" /> : <Copy className="w-4 h-4" />}
     </button>
   );
 }
 
-const STATUS_CONFIG: Record<WalletScanStatus, {
-  label: string;
-  className: string;
-  icon?: "spinner" | "check" | "alert";
-}> = {
-  idle: { label: "대기 중", className: "text-text-muted bg-bg-surface" },
-  scanning: { label: "스캔 중", className: "text-brand bg-brand/10", icon: "spinner" },
-  completed: { label: "완료", className: "text-positive bg-positive/10", icon: "check" },
-  failed: { label: "실패", className: "text-negative bg-negative/10", icon: "alert" },
-};
-
 function ScanStatusBadge({ wallet }: { wallet: ConnectedWallet }) {
+  const t = useT();
+  const STATUS_CONFIG: Record<WalletScanStatus, {
+    label: string;
+    className: string;
+    icon?: "spinner" | "check" | "alert";
+  }> = {
+    idle: { label: t.dashboard.settings.scanStatus.idle, className: "text-text-muted bg-bg-surface" },
+    scanning: { label: t.dashboard.settings.scanStatus.scanning, className: "text-brand bg-brand/10", icon: "spinner" },
+    completed: { label: t.dashboard.settings.scanStatus.completed, className: "text-positive bg-positive/10", icon: "check" },
+    failed: { label: t.dashboard.settings.scanStatus.failed, className: "text-negative bg-negative/10", icon: "alert" },
+  };
+
   const config = STATUS_CONFIG[wallet.scanStatus];
   const progress = wallet.scanProgress;
 
@@ -60,9 +63,9 @@ function ScanStatusBadge({ wallet }: { wallet: ConnectedWallet }) {
       {config.icon === "alert" && <AlertCircle className="w-3 h-3" />}
       <span>
         {wallet.scanStatus === "scanning" && progress
-          ? `스캔 중 ${progress.completed}/${progress.total}`
+          ? t.dashboard.settings.scanProgress(progress.completed, progress.total)
           : wallet.scanStatus === "completed" && wallet.txCount
-            ? `${wallet.txCount.toLocaleString()}건 수집`
+            ? t.dashboard.settings.txCollected(wallet.txCount.toLocaleString())
             : config.label}
       </span>
     </div>
@@ -73,15 +76,16 @@ export function ConnectedWallets({ wallets }: ConnectedWalletsProps) {
   const [showAddModal, setShowAddModal] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const queryClient = useQueryClient();
+  const t = useT();
 
   async function handleDelete(wallet: ConnectedWallet) {
     setDeletingId(wallet.id);
     try {
       await api.deleteWallet(wallet.id);
-      toast.success("지갑이 삭제되었습니다");
+      toast.success(t.dashboard.settings.walletDeleted);
       queryClient.invalidateQueries({ queryKey: ["dashboard", "settings"] });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "지갑 삭제에 실패했습니다");
+      toast.error(err instanceof Error ? err.message : t.dashboard.settings.walletDeleteFailed);
     } finally {
       setDeletingId(null);
     }
@@ -91,14 +95,14 @@ export function ConnectedWallets({ wallets }: ConnectedWalletsProps) {
     <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-[16px] leading-[24px] font-semibold text-text-primary">
-          연결된 지갑
+          {t.dashboard.settings.connectedWallets}
         </h3>
         <button
           onClick={() => setShowAddModal(true)}
           className="flex items-center gap-1 h-8 px-3 text-[13px] font-medium text-brand border border-brand/30 rounded-[6px] hover:bg-brand-muted transition-colors cursor-pointer"
         >
           <Plus className="w-4 h-4" />
-          지갑 추가
+          {t.dashboard.settings.addWallet}
         </button>
       </div>
 
@@ -110,7 +114,7 @@ export function ConnectedWallets({ wallets }: ConnectedWalletsProps) {
       <div className="space-y-3">
         {wallets.length === 0 && (
           <p className="text-[14px] text-text-muted text-center py-6">
-            연결된 지갑이 없습니다. 지갑을 추가해 주세요.
+            {t.dashboard.settings.noWallets}
           </p>
         )}
         {wallets.map((wallet) => (

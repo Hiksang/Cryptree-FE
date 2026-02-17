@@ -6,9 +6,11 @@ import { ProductGrid } from "@/domains/dashboard";
 import { ExchangeHistoryTable } from "@/domains/dashboard";
 import { ErrorState } from "@/shared/ui";
 import { StatsCardSkeleton, TableCardSkeleton } from "@/shared/ui";
+import { useT } from "@/core/i18n";
 
 export default function ExchangePage() {
   const { data, isLoading, isError, refetch } = useExchange();
+  const t = useT();
 
   if (isLoading) {
     return (
@@ -25,7 +27,7 @@ export default function ExchangePage() {
     return (
       <div className="space-y-6 max-w-[1200px]">
         <h1 className="text-[24px] leading-[32px] font-semibold text-text-primary">
-          포인트샵
+          {t.dashboard.exchange.title}
         </h1>
         <ErrorState onRetry={() => refetch()} />
       </div>
@@ -35,7 +37,7 @@ export default function ExchangePage() {
   return (
     <div className="space-y-6 max-w-[1200px]">
       <h1 className="text-[24px] leading-[32px] font-semibold text-text-primary">
-        포인트샵
+        {t.dashboard.exchange.title}
       </h1>
 
       <PointsBalanceHero

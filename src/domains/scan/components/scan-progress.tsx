@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { CHAIN_NAMES } from "@/core/constants";
 import { shortenAddress } from "@/core/utils";
+import { useT } from "@/core/i18n";
 import { Search, Loader2, Check } from "lucide-react";
 
 interface ScanProgressProps {
@@ -20,14 +21,6 @@ const SCAN_CHAIN_IDS = [
   "hyperevm",
 ];
 
-const TIP_MESSAGES = [
-  "6개 체인의 트랜잭션을 분석하고 있습니다",
-  "DeFi 활동 패턴을 분류 중입니다",
-  "스왑, 스테이킹, 렌딩 내역을 수집 중입니다",
-  "온체인 활동 점수를 계산하고 있습니다",
-  "체인별 거래량을 합산 중입니다",
-];
-
 /**
  * Exponential progress: fast early, slows down asymptotically
  * 0→60% in ~3s, →85% in ~8s, →95% in ~15s
@@ -39,9 +32,18 @@ function computeProgress(elapsedMs: number): number {
 }
 
 export function ScanProgress({ address, isComplete = false }: ScanProgressProps) {
+  const t = useT();
   const [progress, setProgress] = useState(0);
   const [tipIndex, setTipIndex] = useState(0);
   const [tipKey, setTipKey] = useState(0);
+
+  const TIP_MESSAGES = [
+    t.scan.progress.tip1,
+    t.scan.progress.tip2,
+    t.scan.progress.tip3,
+    t.scan.progress.tip4,
+    t.scan.progress.tip5,
+  ];
 
   // Time-based progress bar
   useEffect(() => {
@@ -69,7 +71,7 @@ export function ScanProgress({ address, isComplete = false }: ScanProgressProps)
     }, 2500);
 
     return () => clearInterval(interval);
-  }, [isComplete]);
+  }, [isComplete, TIP_MESSAGES.length]);
 
   return (
     <div className="max-w-[640px] mx-auto pt-16 px-4">
@@ -80,7 +82,7 @@ export function ScanProgress({ address, isComplete = false }: ScanProgressProps)
       <div className="flex items-center gap-2 mb-6">
         <Search className="w-6 h-6 text-brand" />
         <h2 className="text-[24px] leading-[32px] font-semibold text-text-primary">
-          온체인 활동 분석 중...
+          {t.scan.progress.title}
         </h2>
       </div>
 
@@ -106,7 +108,7 @@ export function ScanProgress({ address, isComplete = false }: ScanProgressProps)
                   isComplete ? "text-positive" : "text-text-secondary"
                 }`}
               >
-                {isComplete ? "완료" : "스캔 중..."}
+                {isComplete ? t.scan.progress.complete : t.scan.progress.scanning}
               </span>
             </div>
         ))}

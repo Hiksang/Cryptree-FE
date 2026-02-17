@@ -3,9 +3,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { NAV_ITEMS } from "@/core/constants";
+import { useT } from "@/core/i18n";
 import { SidebarNavItem } from "./sidebar-nav-item";
 
 export function Sidebar() {
+  const t = useT();
+
   return (
     <>
       {/* Desktop sidebar — 240px */}
@@ -21,7 +24,7 @@ export function Sidebar() {
             <SidebarNavItem
               key={item.href}
               href={item.href}
-              label={item.label}
+              label={t.nav[item.labelKey]}
               icon={item.icon}
             />
           ))}
@@ -46,7 +49,7 @@ export function Sidebar() {
             <SidebarNavItem
               key={item.href}
               href={item.href}
-              label={item.label}
+              label={t.nav[item.labelKey]}
               icon={item.icon}
               collapsed
             />

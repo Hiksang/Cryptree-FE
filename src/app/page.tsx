@@ -1,3 +1,5 @@
+"use client";
+
 import { Suspense } from "react";
 import { Header } from "@/shared/layout";
 import { Footer } from "@/shared/layout";
@@ -7,8 +9,11 @@ import { ComparisonTable } from "@/domains/landing";
 import { Integrate } from "@/domains/landing";
 import { ScanInput } from "@/domains/scan";
 import { ReferralCapture } from "@/shared/ui/referral-capture";
+import { useT } from "@/core/i18n";
 
 export default function LandingPage() {
+  const t = useT();
+
   return (
     <div className="min-h-screen bg-bg-primary">
       <Suspense><ReferralCapture /></Suspense>
@@ -30,10 +35,10 @@ export default function LandingPage() {
           }}
         >
           <h2 className="text-[30px] leading-[36px] font-semibold text-text-primary tracking-[-0.01em] mb-3">
-            지금 바로 분석해보세요
+            {t.landing.cta.title}
           </h2>
           <p className="text-[18px] leading-[28px] text-text-secondary mb-6">
-            지갑 주소만 넣으면 됩니다
+            {t.landing.cta.subtitle}
           </p>
           <ScanInput size="lg" className="max-w-[480px] mx-auto" />
         </section>

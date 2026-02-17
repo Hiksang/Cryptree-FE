@@ -1,18 +1,22 @@
+"use client";
+
 import type { ChainActivity } from "@/core/types";
 import { CHAIN_COLORS } from "@/core/constants";
 import { formatCurrency, formatNumber } from "@/core/utils";
+import { useT } from "@/core/i18n";
 
 interface ChainBreakdownProps {
   chains: ChainActivity[];
 }
 
 export function ChainBreakdown({ chains }: ChainBreakdownProps) {
+  const t = useT();
   const maxVolume = Math.max(...chains.map((c) => c.volume));
 
   return (
     <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
       <h3 className="text-[20px] leading-[28px] font-semibold text-text-primary mb-4">
-        체인별 활동
+        {t.scan.chainBreakdown}
       </h3>
       <div className="space-y-4">
         {chains.map((chain) => (

@@ -1,6 +1,7 @@
 "use client";
 
 import { Gift } from "lucide-react";
+import { useT } from "@/core/i18n";
 
 interface ClaimCtaProps {
   amount: number;
@@ -8,6 +9,8 @@ interface ClaimCtaProps {
 }
 
 export function ClaimCta({ amount, token }: ClaimCtaProps) {
+  const t = useT();
+
   return (
     <div className="bg-gradient-to-r from-brand/10 to-brand/5 border border-brand/20 rounded-[8px] p-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
@@ -16,7 +19,7 @@ export function ClaimCta({ amount, token }: ClaimCtaProps) {
             <Gift className="w-6 h-6 text-brand" />
           </div>
           <div>
-            <p className="text-[14px] text-text-secondary">클레임 가능</p>
+            <p className="text-[14px] text-text-secondary">{t.dashboard.rewards.claimable}</p>
             <p className="text-[24px] font-bold text-text-primary tabular-nums">
               {amount.toLocaleString()} {token}
             </p>
@@ -26,7 +29,7 @@ export function ClaimCta({ amount, token }: ClaimCtaProps) {
           disabled
           className="h-10 px-6 bg-bg-surface-2 text-text-muted text-[14px] font-semibold rounded-[6px] cursor-not-allowed"
         >
-          준비 중
+          {t.dashboard.rewards.preparing}
         </button>
       </div>
     </div>

@@ -1,4 +1,7 @@
+"use client";
+
 import type { InsightCard } from "@/core/types";
+import { useT } from "@/core/i18n";
 import { AlertTriangle, TrendingUp, Zap, FileText } from "lucide-react";
 
 const ICON_MAP = {
@@ -20,10 +23,11 @@ interface InsightsCardsProps {
 }
 
 export function InsightsCards({ insights }: InsightsCardsProps) {
+  const t = useT();
   return (
     <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
       <h3 className="text-[14px] leading-[20px] text-text-secondary mb-4">
-        인사이트
+        {t.dashboard.overview.insights}
       </h3>
       <div className="space-y-3">
         {insights.map((insight) => {

@@ -2,6 +2,7 @@
 
 import type { TaxMethod } from "@/core/types";
 import { TAX_METHODS } from "@/core/constants";
+import { useT } from "@/core/i18n";
 
 interface MethodSelectorProps {
   selected: TaxMethod;
@@ -9,6 +10,8 @@ interface MethodSelectorProps {
 }
 
 export function MethodSelector({ selected, onChange }: MethodSelectorProps) {
+  const t = useT();
+
   return (
     <div className="flex gap-2">
       {TAX_METHODS.map((method) => (
@@ -20,9 +23,9 @@ export function MethodSelector({ selected, onChange }: MethodSelectorProps) {
               ? "border-brand text-brand bg-brand-muted"
               : "border-border-default text-text-muted hover:text-text-secondary"
           }`}
-          title={method.description}
+          title={t.taxMethods[method.labelKey as keyof typeof t.taxMethods].description}
         >
-          {method.label}
+          {t.taxMethods[method.labelKey as keyof typeof t.taxMethods].label}
         </button>
       ))}
     </div>

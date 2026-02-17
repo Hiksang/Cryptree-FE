@@ -10,6 +10,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import type { PnlDataPoint } from "@/core/types";
+import { useT } from "@/core/i18n";
 
 interface PnlChartProps {
   data: PnlDataPoint[];
@@ -34,6 +35,8 @@ function CustomTooltip({ active, payload, label }: { active?: boolean; payload?:
 }
 
 export function PnlChart({ data, totalPnl }: PnlChartProps) {
+  const t = useT();
+
   return (
     <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
       <div className="mb-4">
@@ -45,7 +48,7 @@ export function PnlChart({ data, totalPnl }: PnlChartProps) {
           {totalPnl >= 0 ? "+" : ""}${totalPnl.toLocaleString()}
         </p>
         <p className="text-[12px] leading-[16px] text-text-muted mt-1">
-          전체 기간 기준
+          {t.scan.pnlChart.allPeriod}
         </p>
       </div>
 

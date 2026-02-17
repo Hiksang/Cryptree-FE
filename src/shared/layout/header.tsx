@@ -5,11 +5,13 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { Menu, X, LogOut, LayoutDashboard } from "lucide-react";
 import { usePrivy } from "@privy-io/react-auth";
+import { useT } from "@/core/i18n";
+import { LanguageToggle } from "@/shared/ui/language-toggle";
 
 const NAV_LINKS = [
-  { label: "Features", href: "#features" },
-  { label: "Integrate", href: "#integrate" },
-  { label: "Docs", href: "#docs" },
+  { labelKey: "features" as const, href: "#features" },
+  { labelKey: "integrate" as const, href: "#integrate" },
+  { labelKey: "docs" as const, href: "#docs" },
 ];
 
 function usePrivyAuth() {
@@ -22,6 +24,7 @@ function AuthButtons() {
   const router = useRouter();
   const pathname = usePathname();
   const wasAuthenticated = useRef(false);
+  const t = useT();
 
   useEffect(() => {
     if (ready && authenticated && !wasAuthenticated.current && pathname === "/") {
@@ -42,14 +45,14 @@ function AuthButtons() {
             className="flex items-center gap-2 px-3 py-2 text-[14px] text-text-secondary hover:text-text-primary hover:bg-bg-surface-2 rounded-t-[6px]"
           >
             <LayoutDashboard className="w-4 h-4" />
-            대시보드
+            {t.header.dashboard}
           </Link>
           <button
             onClick={() => logout()}
             className="flex items-center gap-2 w-full px-3 py-2 text-[14px] text-text-secondary hover:text-text-primary hover:bg-bg-surface-2 rounded-b-[6px] cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
-            로그아웃
+            {t.common.logout}
           </button>
         </div>
       </div>
@@ -61,13 +64,14 @@ function AuthButtons() {
       onClick={() => login()}
       className="h-8 px-4 bg-brand text-bg-primary text-[14px] font-semibold rounded-[6px] hover:bg-brand-hover transition-colors cursor-pointer"
     >
-      시작하기
+      {t.common.start}
     </button>
   );
 }
 
 function MobileAuthButtons({ onClose }: { onClose: () => void }) {
   const { ready, authenticated, login, logout } = usePrivyAuth();
+  const t = useT();
 
   if (ready && authenticated) {
     return (
@@ -77,7 +81,7 @@ function MobileAuthButtons({ onClose }: { onClose: () => void }) {
           className="block w-full px-4 py-2 text-[14px] text-text-secondary hover:text-text-primary"
           onClick={onClose}
         >
-          대시보드
+          {t.header.dashboard}
         </Link>
         <button
           onClick={() => {
@@ -86,7 +90,7 @@ function MobileAuthButtons({ onClose }: { onClose: () => void }) {
           }}
           className="block w-full px-4 py-2 text-left text-[14px] text-text-secondary hover:text-text-primary cursor-pointer"
         >
-          로그아웃
+          {t.common.logout}
         </button>
       </>
     );
@@ -100,7 +104,7 @@ function MobileAuthButtons({ onClose }: { onClose: () => void }) {
       }}
       className="block w-full px-4 py-2 bg-brand text-bg-primary text-[14px] font-semibold rounded-[6px] text-center cursor-pointer"
     >
-      시작하기
+      {t.common.start}
     </button>
   );
 }
@@ -108,6 +112,7 @@ function MobileAuthButtons({ onClose }: { onClose: () => void }) {
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const t = useT();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -139,13 +144,14 @@ export function Header() {
               href={link.href}
               className="text-[16px] font-medium text-text-secondary hover:text-text-primary transition-colors"
             >
-              {link.label}
+              {t.header[link.labelKey]}
             </a>
           ))}
         </nav>
 
         {/* Desktop auth */}
         <div className="hidden md:flex items-center gap-3">
+          <LanguageToggle />
           <AuthButtons />
         </div>
 
@@ -172,9 +178,12 @@ export function Header() {
               onClick={() => setMenuOpen(false)}
               className="block w-full px-4 py-2 text-[14px] text-text-secondary hover:text-text-primary"
             >
-              {link.label}
+              {t.header[link.labelKey]}
             </a>
           ))}
+          <div className="px-4 py-2">
+            <LanguageToggle />
+          </div>
           <div className="border-t border-border-default pt-2 mt-2">
             <MobileAuthButtons onClose={() => setMenuOpen(false)} />
           </div>

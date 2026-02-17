@@ -11,12 +11,14 @@ import {
 import { ErrorState, StatsCardSkeleton } from "@/shared/ui";
 import { ArrowLeftRight } from "lucide-react";
 import type { ChainId, TransactionType } from "@/core/types";
+import { useT } from "@/core/i18n";
 
 export default function TransactionsPage() {
   const [page, setPage] = useState(1);
   const [chainFilter, setChainFilter] = useState<ChainId | "all">("all");
   const [typeFilter, setTypeFilter] = useState<TransactionType | "all">("all");
   const [search, setSearch] = useState("");
+  const t = useT();
 
   const { data, isLoading, isError, refetch } = useTransactions({
     page,
@@ -44,7 +46,7 @@ export default function TransactionsPage() {
   if (isError) {
     return (
       <div className="space-y-6 max-w-[1200px]">
-        <h1 className="text-[24px] leading-[32px] font-semibold text-text-primary">거래 내역</h1>
+        <h1 className="text-[24px] leading-[32px] font-semibold text-text-primary">{t.dashboard.transactions.title}</h1>
         <ErrorState onRetry={() => refetch()} />
       </div>
     );
@@ -56,12 +58,12 @@ export default function TransactionsPage() {
         <div className="flex items-center gap-3">
           <ArrowLeftRight className="w-6 h-6 text-brand" />
           <h1 className="text-[24px] leading-[32px] font-semibold text-text-primary">
-            거래 내역
+            {t.dashboard.transactions.title}
           </h1>
         </div>
         {data && (
           <span className="text-[14px] text-text-muted">
-            총 {data.total.toLocaleString()}건
+            {t.dashboard.transactions.total} {data.total.toLocaleString()}{t.dashboard.transactions.count}
           </span>
         )}
       </div>

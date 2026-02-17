@@ -13,6 +13,7 @@ import { toast } from "@/shared/ui";
 import { api } from "@/domains/dashboard/lib/api-client";
 import { useQueryClient } from "@tanstack/react-query";
 import type { ShopProduct } from "@/core/types";
+import { useT } from "@/core/i18n";
 
 const CATEGORY_CONFIG = {
   digital: {
@@ -50,6 +51,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, pointsBalance }: ProductCardProps) {
+  const t = useT();
   const config = CATEGORY_CONFIG[product.category];
   const Icon = config.icon;
   const canAfford = pointsBalance >= product.pointsCost;
@@ -62,10 +64,10 @@ export function ProductCard({ product, pointsBalance }: ProductCardProps) {
     setLoading(true);
     try {
       await api.exchangeProduct(product.id);
-      toast.success("교환이 완료되었습니다!");
+      toast.success(t.dashboard.exchange.exchangeSuccess);
       queryClient.invalidateQueries({ queryKey: ["exchange"] });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "교환에 실패했습니다");
+      toast.error(err instanceof Error ? err.message : t.dashboard.exchange.exchangeFailed);
     } finally {
       setLoading(false);
     }
@@ -88,7 +90,7 @@ export function ProductCard({ product, pointsBalance }: ProductCardProps) {
         {isSoldOut && (
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
             <span className="text-[14px] font-bold text-text-disabled">
-              품절
+              {t.dashboard.exchange.soldOut}
             </span>
           </div>
         )}
@@ -109,7 +111,7 @@ export function ProductCard({ product, pointsBalance }: ProductCardProps) {
           </span>
           {product.stock !== null && product.stock > 0 && (
             <span className="text-[11px] text-text-muted">
-              {product.stock}개 남음
+              {t.dashboard.exchange.stockRemaining(product.stock)}
             </span>
           )}
         </div>
@@ -125,12 +127,12 @@ export function ProductCard({ product, pointsBalance }: ProductCardProps) {
             <ShoppingCart className="w-3.5 h-3.5" />
           )}
           {loading
-            ? "교환 중..."
+            ? t.dashboard.exchange.exchanging
             : isSoldOut
-              ? "품절"
+              ? t.dashboard.exchange.soldOut
               : canAfford
-                ? "교환하기"
-                : "포인트 부족"}
+                ? t.dashboard.exchange.exchange
+                : t.dashboard.exchange.insufficientPoints}
         </button>
       </div>
     </div>

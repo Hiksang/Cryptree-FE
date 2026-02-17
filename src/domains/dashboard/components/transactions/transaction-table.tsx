@@ -1,17 +1,22 @@
+"use client";
+
 import type { TransactionFull } from "@/core/types";
 import { CHAIN_COLORS, CHAIN_NAMES } from "@/core/constants";
 import { formatCurrency, formatDate } from "@/core/utils";
 import { StatusBadge } from "./status-badge";
+import { useT } from "@/core/i18n";
 
 interface TransactionTableProps {
   transactions: TransactionFull[];
 }
 
 export function TransactionTable({ transactions }: TransactionTableProps) {
+  const t = useT();
+
   if (transactions.length === 0) {
     return (
       <div className="bg-bg-surface border border-border-default rounded-[8px] p-12 text-center">
-        <p className="text-[14px] text-text-muted">조건에 맞는 거래가 없습니다.</p>
+        <p className="text-[14px] text-text-muted">{t.dashboard.transactions.noMatchingTx}</p>
       </div>
     );
   }
@@ -24,28 +29,28 @@ export function TransactionTable({ transactions }: TransactionTableProps) {
           <thead>
             <tr className="border-b border-border-default">
               <th className="text-left text-[12px] leading-[16px] text-text-muted font-medium px-4 py-3">
-                시간
+                {t.dashboard.transactions.colTime}
               </th>
               <th className="text-left text-[12px] leading-[16px] text-text-muted font-medium px-4 py-3">
-                유형
+                {t.dashboard.transactions.colType}
               </th>
               <th className="text-left text-[12px] leading-[16px] text-text-muted font-medium px-4 py-3">
-                프로토콜
+                {t.dashboard.transactions.colProtocol}
               </th>
               <th className="text-left text-[12px] leading-[16px] text-text-muted font-medium px-4 py-3">
-                체인
+                {t.dashboard.transactions.colChain}
               </th>
               <th className="text-right text-[12px] leading-[16px] text-text-muted font-medium px-4 py-3">
-                금액
+                {t.dashboard.transactions.colAmount}
               </th>
               <th className="text-right text-[12px] leading-[16px] text-text-muted font-medium px-4 py-3">
-                수수료
+                {t.dashboard.transactions.colFee}
               </th>
               <th className="text-center text-[12px] leading-[16px] text-text-muted font-medium px-4 py-3">
-                상태
+                {t.dashboard.transactions.colStatus}
               </th>
               <th className="text-left text-[12px] leading-[16px] text-text-muted font-medium px-4 py-3">
-                해시
+                {t.dashboard.transactions.colHash}
               </th>
             </tr>
           </thead>

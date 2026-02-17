@@ -4,6 +4,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import type { ChainPortfolio } from "@/core/types";
 import { CHAIN_COLORS } from "@/core/constants";
 import { formatCurrency } from "@/core/utils";
+import { useT } from "@/core/i18n";
 
 interface AllocationChartProps {
   chains: ChainPortfolio[];
@@ -22,6 +23,7 @@ function ChartTooltip({ active, payload }: { active?: boolean; payload?: Array<{
 }
 
 export function AllocationChart({ chains }: AllocationChartProps) {
+  const t = useT();
   const data = chains.map((c) => ({
     name: c.name,
     value: c.totalValue,
@@ -31,7 +33,7 @@ export function AllocationChart({ chains }: AllocationChartProps) {
   return (
     <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
       <h3 className="text-[14px] leading-[20px] text-text-secondary mb-4">
-        자산 배분
+        {t.dashboard.portfolio.assetAllocation}
       </h3>
       <div className="h-[240px]">
         <ResponsiveContainer width="100%" height="100%">

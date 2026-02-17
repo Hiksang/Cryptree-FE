@@ -1,18 +1,22 @@
+"use client";
+
 import type { TransactionFull } from "@/core/types";
 import { CHAIN_COLORS } from "@/core/constants";
 import { formatCurrency, formatDate } from "@/core/utils";
+import { useT } from "@/core/i18n";
 
 interface RecentTradesProps {
   transactions: TransactionFull[];
 }
 
 export function RecentTrades({ transactions }: RecentTradesProps) {
+  const t = useT();
   const recent = transactions.slice(0, 5);
 
   return (
     <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
       <h3 className="text-[14px] leading-[20px] text-text-secondary mb-4">
-        최근 거래
+        {t.dashboard.overview.recentTrades}
       </h3>
       <div className="space-y-3">
         {recent.map((tx) => (
@@ -50,7 +54,7 @@ export function RecentTrades({ transactions }: RecentTradesProps) {
                     : "text-negative"
                 }`}
               >
-                {tx.status === "completed" ? "완료" : tx.status === "pending" ? "대기" : "실패"}
+                {tx.status === "completed" ? t.common.complete : tx.status === "pending" ? t.common.pending : t.common.failed}
               </span>
             </div>
           </div>

@@ -1,11 +1,16 @@
+"use client";
+
 import type { SeasonSummary as SeasonSummaryType } from "@/core/types";
 import { Calendar, Trophy } from "lucide-react";
+import { useT } from "@/core/i18n";
 
 interface SeasonSummaryProps {
   season: SeasonSummaryType;
 }
 
 export function SeasonSummary({ season }: SeasonSummaryProps) {
+  const t = useT();
+
   const statusColors = {
     active: "text-positive bg-positive-bg",
     ended: "text-text-muted bg-bg-surface-3",
@@ -13,9 +18,9 @@ export function SeasonSummary({ season }: SeasonSummaryProps) {
   };
 
   const statusLabels = {
-    active: "진행중",
-    ended: "종료",
-    upcoming: "예정",
+    active: t.dashboard.rewards.seasonStatusActive,
+    ended: t.dashboard.rewards.seasonStatusEnded,
+    upcoming: t.dashboard.rewards.seasonStatusUpcoming,
   };
 
   return (
@@ -42,7 +47,7 @@ export function SeasonSummary({ season }: SeasonSummaryProps) {
 
       <div className="grid grid-cols-3 gap-4">
         <div>
-          <p className="text-[12px] text-text-muted mb-1">랭크</p>
+          <p className="text-[12px] text-text-muted mb-1">{t.dashboard.rewards.rank}</p>
           <div className="flex items-center gap-1">
             <Trophy className="w-4 h-4 text-warning" />
             <span className="text-[20px] font-bold text-text-primary tabular-nums">
@@ -50,17 +55,17 @@ export function SeasonSummary({ season }: SeasonSummaryProps) {
             </span>
           </div>
           <p className="text-[12px] text-text-muted">
-            / {season.totalParticipants.toLocaleString()}명
+            / {season.totalParticipants.toLocaleString()}{t.dashboard.rewards.personSuffix}
           </p>
         </div>
         <div>
-          <p className="text-[12px] text-text-muted mb-1">총 포인트</p>
+          <p className="text-[12px] text-text-muted mb-1">{t.dashboard.rewards.totalPoints}</p>
           <p className="text-[20px] font-bold text-text-primary tabular-nums">
             {season.totalPoints.toLocaleString()}
           </p>
         </div>
         <div>
-          <p className="text-[12px] text-text-muted mb-1">상위</p>
+          <p className="text-[12px] text-text-muted mb-1">{t.dashboard.rewards.topPercent}</p>
           <p className="text-[20px] font-bold text-brand tabular-nums">
             {((season.rank / season.totalParticipants) * 100).toFixed(1)}%
           </p>

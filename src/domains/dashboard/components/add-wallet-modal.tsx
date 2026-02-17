@@ -5,6 +5,7 @@ import { X, Loader2, Wallet } from "lucide-react";
 import { toast } from "@/shared/ui";
 import { api } from "@/domains/dashboard/lib/api-client";
 import { useQueryClient } from "@tanstack/react-query";
+import { useT } from "@/core/i18n";
 
 interface AddWalletModalProps {
   open: boolean;
@@ -19,6 +20,7 @@ export function AddWalletModal({ open, onClose }: AddWalletModalProps) {
   const [label, setLabel] = useState("");
   const [adding, setAdding] = useState(false);
   const [error, setError] = useState("");
+  const t = useT();
 
   // 모달 열릴 때 폼 초기화
   useEffect(() => {
@@ -52,7 +54,7 @@ export function AddWalletModal({ open, onClose }: AddWalletModalProps) {
     if (!trimmed) return;
 
     if (!ADDRESS_RE.test(trimmed)) {
-      setError("올바른 지갑 주소를 입력해 주세요 (0x + 40자리 hex)");
+      setError(t.dashboard.addWallet.addressError);
       return;
     }
 
@@ -61,14 +63,14 @@ export function AddWalletModal({ open, onClose }: AddWalletModalProps) {
     try {
       await api.addWallet(trimmed, label.trim() || undefined);
       await queryClient.invalidateQueries({ queryKey: ["dashboard", "settings"] });
-      toast.success("지갑이 추가되었습니다");
+      toast.success(t.dashboard.addWallet.walletAdded);
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "지갑 추가에 실패했습니다");
+      setError(err instanceof Error ? err.message : t.dashboard.addWallet.walletAddFailed);
     } finally {
       setAdding(false);
     }
-  }, [address, label, onClose, queryClient]);
+  }, [address, label, onClose, queryClient, t]);
 
   if (!open) return null;
 
@@ -89,7 +91,7 @@ export function AddWalletModal({ open, onClose }: AddWalletModalProps) {
               <Wallet className="w-4.5 h-4.5 text-brand" />
             </div>
             <h2 className="text-[16px] font-semibold text-text-primary">
-              지갑 추가
+              {t.dashboard.addWallet.title}
             </h2>
           </div>
           <button
@@ -104,7 +106,7 @@ export function AddWalletModal({ open, onClose }: AddWalletModalProps) {
         <div className="p-5 space-y-4">
           <div>
             <label className="text-[13px] font-medium text-text-secondary mb-1.5 block">
-              지갑 주소
+              {t.dashboard.addWallet.addressLabel}
             </label>
             <input
               type="text"
@@ -124,13 +126,13 @@ export function AddWalletModal({ open, onClose }: AddWalletModalProps) {
 
           <div>
             <label className="text-[13px] font-medium text-text-secondary mb-1.5 block">
-              라벨 <span className="text-text-muted font-normal">(선택)</span>
+              {t.dashboard.addWallet.labelField} <span className="text-text-muted font-normal">{t.dashboard.addWallet.labelOptional}</span>
             </label>
             <input
               type="text"
               value={label}
               onChange={(e) => setLabel(e.target.value)}
-              placeholder="메인 지갑"
+              placeholder={t.dashboard.addWallet.labelPlaceholder}
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleSubmit();
               }}
@@ -149,7 +151,7 @@ export function AddWalletModal({ open, onClose }: AddWalletModalProps) {
             onClick={onClose}
             className="h-10 px-4 text-[14px] font-medium text-text-secondary bg-bg-surface-2 rounded-[8px] hover:bg-bg-surface-2/80 transition-colors cursor-pointer"
           >
-            취소
+            {t.common.cancel}
           </button>
           <button
             onClick={handleSubmit}
@@ -157,7 +159,7 @@ export function AddWalletModal({ open, onClose }: AddWalletModalProps) {
             className="h-10 px-5 bg-brand text-bg-primary text-[14px] font-semibold rounded-[8px] hover:bg-brand-hover disabled:opacity-50 transition-colors cursor-pointer disabled:cursor-not-allowed flex items-center gap-2"
           >
             {adding && <Loader2 className="w-4 h-4 animate-spin" />}
-            {adding ? "추가 중..." : "지갑 추가"}
+            {adding ? t.dashboard.addWallet.adding : t.dashboard.addWallet.title}
           </button>
         </div>
       </div>

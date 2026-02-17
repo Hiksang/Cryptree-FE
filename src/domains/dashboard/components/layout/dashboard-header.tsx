@@ -5,9 +5,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { LogOut, Settings, ChevronDown } from "lucide-react";
 import { usePrivy } from "@privy-io/react-auth";
+import { useT } from "@/core/i18n";
+import { LanguageToggle } from "@/shared/ui/language-toggle";
 import { useSettings } from "@/domains/dashboard/hooks/use-dashboard-queries";
 
 export function DashboardHeader() {
+  const t = useT();
   const { ready, authenticated, login, logout } = usePrivy();
   const { data: settingsData } = useSettings();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -39,6 +42,7 @@ export function DashboardHeader() {
       <div className="hidden md:block" />
 
       <div className="flex items-center gap-4">
+        <LanguageToggle />
         {ready && authenticated ? (
           <div className="relative" ref={menuRef}>
             <button
@@ -62,7 +66,7 @@ export function DashboardHeader() {
                   className="flex items-center gap-2.5 px-3.5 py-2.5 text-[14px] text-text-secondary hover:text-text-primary hover:bg-bg-surface-2 transition-colors"
                 >
                   <Settings className="w-4 h-4" />
-                  설정
+                  {t.nav.settings}
                 </Link>
                 <div className="h-px bg-border-default mx-2 my-1" />
                 <button
@@ -73,7 +77,7 @@ export function DashboardHeader() {
                   className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[14px] text-negative hover:bg-negative/5 transition-colors cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" />
-                  로그아웃
+                  {t.common.logout}
                 </button>
               </div>
             )}
@@ -83,7 +87,7 @@ export function DashboardHeader() {
             onClick={() => login()}
             className="text-[14px] text-text-secondary hover:text-text-primary cursor-pointer"
           >
-            로그인
+            {t.common.login}
           </button>
         ) : (
           <div className="w-7 h-7 rounded-full bg-brand-muted" />

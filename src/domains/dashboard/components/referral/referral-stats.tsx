@@ -1,16 +1,21 @@
+"use client";
+
 import type { ReferralStats as ReferralStatsType } from "@/core/types";
 import { Users, UserCheck, DollarSign, Clock } from "lucide-react";
+import { useT } from "@/core/i18n";
 
 interface ReferralStatsProps {
   stats: ReferralStatsType;
 }
 
 export function ReferralStats({ stats }: ReferralStatsProps) {
+  const t = useT();
+
   const items = [
-    { label: "총 추천", value: stats.totalReferred, icon: Users, suffix: "명" },
-    { label: "활성 추천", value: stats.activeReferred, icon: UserCheck, suffix: "명" },
-    { label: "총 수익", value: stats.totalEarned, icon: DollarSign, prefix: "$" },
-    { label: "대기 보상", value: stats.pendingRewards, icon: Clock, prefix: "$" },
+    { label: t.dashboard.referral.totalReferrals, value: stats.totalReferred, icon: Users, suffix: t.common.person },
+    { label: t.dashboard.referral.activeReferrals, value: stats.activeReferred, icon: UserCheck, suffix: t.common.person },
+    { label: t.dashboard.referral.totalEarnings, value: stats.totalEarned, icon: DollarSign, prefix: "$" },
+    { label: t.dashboard.referral.pendingRewards, value: stats.pendingRewards, icon: Clock, prefix: "$" },
   ];
 
   return (

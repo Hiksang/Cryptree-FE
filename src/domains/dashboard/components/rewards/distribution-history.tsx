@@ -1,10 +1,15 @@
+"use client";
+
 import type { DistributionEvent } from "@/core/types";
+import { useT } from "@/core/i18n";
 
 interface DistributionHistoryProps {
   distributions: DistributionEvent[];
 }
 
 export function DistributionHistory({ distributions }: DistributionHistoryProps) {
+  const t = useT();
+
   const statusColors = {
     claimed: "text-text-muted bg-bg-surface-3",
     claimable: "text-brand bg-brand-muted",
@@ -12,25 +17,25 @@ export function DistributionHistory({ distributions }: DistributionHistoryProps)
   };
 
   const statusLabels = {
-    claimed: "수령 완료",
-    claimable: "수령 가능",
-    pending: "대기중",
+    claimed: t.dashboard.rewards.statusClaimed,
+    claimable: t.dashboard.rewards.statusClaimable,
+    pending: t.dashboard.rewards.statusPending,
   };
 
   return (
     <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
       <h3 className="text-[16px] leading-[24px] font-semibold text-text-primary mb-4">
-        배분 내역
+        {t.dashboard.rewards.distributionHistory}
       </h3>
 
       <div className="overflow-x-auto">
         <table className="w-full text-[14px]">
           <thead>
             <tr className="text-text-muted text-left">
-              <th className="pb-3 font-medium">날짜</th>
-              <th className="pb-3 font-medium">시즌</th>
-              <th className="pb-3 font-medium text-right">수량</th>
-              <th className="pb-3 font-medium text-right">상태</th>
+              <th className="pb-3 font-medium">{t.dashboard.rewards.colDate}</th>
+              <th className="pb-3 font-medium">{t.dashboard.rewards.colSeason}</th>
+              <th className="pb-3 font-medium text-right">{t.dashboard.rewards.colQuantity}</th>
+              <th className="pb-3 font-medium text-right">{t.dashboard.rewards.colStatus}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border-subtle">

@@ -6,6 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Search, Loader2 } from "lucide-react";
 import { getScanResult } from "../lib/api";
 import { SCAN_QUERY_KEY } from "../hooks/use-scan";
+import { useT } from "@/core/i18n";
 
 interface ScanInputProps {
   size?: "md" | "lg";
@@ -22,6 +23,7 @@ export function ScanInput({ size = "lg", className }: ScanInputProps) {
   const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
+  const t = useT();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +33,7 @@ export function ScanInput({ size = "lg", className }: ScanInputProps) {
 
     // Validate Ethereum address format
     if (!isValidEthAddress(trimmed)) {
-      setError("올바른 이더리움 주소 형식이 아닙니다 (0x + 40자리 hex)");
+      setError(t.scan.input.invalidAddress);
       return;
     }
 
@@ -63,7 +65,7 @@ export function ScanInput({ size = "lg", className }: ScanInputProps) {
               setAddress(e.target.value);
               if (error) setError(null);
             }}
-            placeholder="0x... 지갑 주소 입력"
+            placeholder={t.scan.input.placeholder}
             className={`w-full ${inputHeight} pl-11 pr-4 bg-bg-surface-3 border ${
               error ? "border-negative" : "border-border-default"
             } rounded-l-[6px] text-[16px] text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-colors`}
@@ -77,10 +79,10 @@ export function ScanInput({ size = "lg", className }: ScanInputProps) {
           {submitting ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              분석 시작...
+              {t.scan.input.analyzing}
             </>
           ) : (
-            "분석하기"
+            t.scan.input.analyze
           )}
         </button>
       </div>

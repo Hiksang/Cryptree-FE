@@ -1,38 +1,42 @@
+"use client";
+
 import type { LeaderboardEntry, LeaderboardTab } from "@/core/types";
 import { TIER_CONFIG } from "@/core/constants";
 import { RankBadge } from "./rank-badge";
+import { useT } from "@/core/i18n";
 
 interface RankingsTableProps {
   entries: LeaderboardEntry[];
   tab: LeaderboardTab;
 }
 
-const TAB_LABELS: Record<LeaderboardTab, string> = {
-  pnl: "수익",
-  volume: "거래량",
-  activity: "활동점수",
-  referral: "추천수",
-};
-
-const TAB_FORMAT: Record<LeaderboardTab, (v: number) => string> = {
-  pnl: (v) => `$${v.toLocaleString()}`,
-  volume: (v) => `$${v.toLocaleString()}`,
-  activity: (v) => v.toLocaleString(),
-  referral: (v) => `${v}명`,
-};
-
 export function RankingsTable({ entries, tab }: RankingsTableProps) {
+  const t = useT();
+
+  const TAB_LABELS: Record<LeaderboardTab, string> = {
+    pnl: t.dashboard.leaderboard.pnl,
+    volume: t.dashboard.leaderboard.volume,
+    activity: t.dashboard.leaderboard.activityScore,
+    referral: t.dashboard.leaderboard.referralCount,
+  };
+
+  const TAB_FORMAT: Record<LeaderboardTab, (v: number) => string> = {
+    pnl: (v) => `$${v.toLocaleString()}`,
+    volume: (v) => `$${v.toLocaleString()}`,
+    activity: (v) => v.toLocaleString(),
+    referral: (v) => `${v}${t.common.person}`,
+  };
   return (
     <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
       <div className="overflow-x-auto">
         <table className="w-full text-[14px]">
           <thead>
             <tr className="text-text-muted text-left">
-              <th className="pb-3 font-medium w-12">순위</th>
-              <th className="pb-3 font-medium">주소</th>
-              <th className="pb-3 font-medium">티어</th>
+              <th className="pb-3 font-medium w-12">{t.dashboard.leaderboard.colRank}</th>
+              <th className="pb-3 font-medium">{t.dashboard.leaderboard.colAddress}</th>
+              <th className="pb-3 font-medium">{t.dashboard.leaderboard.colTier}</th>
               <th className="pb-3 font-medium text-right">{TAB_LABELS[tab]}</th>
-              <th className="pb-3 font-medium text-right w-20">변동</th>
+              <th className="pb-3 font-medium text-right w-20">{t.dashboard.leaderboard.colChange}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border-subtle">
@@ -54,7 +58,7 @@ export function RankingsTable({ entries, tab }: RankingsTableProps) {
                     {entry.address}
                     {entry.isMe && (
                       <span className="ml-2 text-[12px] text-brand font-sans font-medium">
-                        (나)
+                        {t.dashboard.leaderboard.me}
                       </span>
                     )}
                   </td>

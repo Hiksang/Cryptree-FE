@@ -41,42 +41,42 @@ export const TIER_CONFIG = {
 /* ───── Navigation & UI Constants (from constants) ───── */
 
 export const NAV_ITEMS = [
-  { href: "/dashboard", label: "대시보드", icon: "LayoutDashboard" },
-  // { href: "/dashboard/transactions", label: "거래 내역", icon: "ArrowLeftRight" },  // 추후 공개
-  { href: "/dashboard/tax", label: "세금 보고서", icon: "FileText" },
-  { href: "/dashboard/rewards", label: "리워드", icon: "Gift" },
-  { href: "/dashboard/referral", label: "추천", icon: "Users" },
-  { href: "/dashboard/exchange", label: "포인트샵", icon: "ShoppingBag" },
-  { href: "/dashboard/settings", label: "설정", icon: "Settings" },
+  { href: "/dashboard", labelKey: "dashboard" as const, icon: "LayoutDashboard" },
+  // { href: "/dashboard/transactions", labelKey: "transactions" as const, icon: "ArrowLeftRight" },  // 추후 공개
+  { href: "/dashboard/tax", labelKey: "taxReport" as const, icon: "FileText" },
+  { href: "/dashboard/rewards", labelKey: "rewards" as const, icon: "Gift" },
+  { href: "/dashboard/referral", labelKey: "referral" as const, icon: "Users" },
+  { href: "/dashboard/exchange", labelKey: "pointShop" as const, icon: "ShoppingBag" },
+  { href: "/dashboard/settings", labelKey: "settings" as const, icon: "Settings" },
 ] as const;
 
-export const TAX_COUNTRIES: { value: TaxCountry; label: string; flag: string }[] = [
-  { value: "kr", label: "한국", flag: "🇰🇷" },
-  { value: "us", label: "미국", flag: "🇺🇸" },
-  { value: "jp", label: "일본", flag: "🇯🇵" },
-  { value: "de", label: "독일", flag: "🇩🇪" },
-  { value: "uk", label: "영국", flag: "🇬🇧" },
-  { value: "au", label: "호주", flag: "🇦🇺" },
-  { value: "ca", label: "캐나다", flag: "🇨🇦" },
+export const TAX_COUNTRIES: { value: TaxCountry; labelKey: string; flag: string }[] = [
+  { value: "kr", labelKey: "kr", flag: "🇰🇷" },
+  { value: "us", labelKey: "us", flag: "🇺🇸" },
+  { value: "jp", labelKey: "jp", flag: "🇯🇵" },
+  { value: "de", labelKey: "de", flag: "🇩🇪" },
+  { value: "uk", labelKey: "uk", flag: "🇬🇧" },
+  { value: "au", labelKey: "au", flag: "🇦🇺" },
+  { value: "ca", labelKey: "ca", flag: "🇨🇦" },
 ];
 
-export const TAX_METHODS: { value: TaxMethod; label: string; description: string }[] = [
-  { value: "fifo", label: "FIFO", description: "선입선출" },
-  { value: "lifo", label: "LIFO", description: "후입선출" },
-  { value: "hifo", label: "HIFO", description: "최고가 우선" },
-  { value: "avg", label: "이동평균", description: "평균 취득가" },
+export const TAX_METHODS: { value: TaxMethod; labelKey: string }[] = [
+  { value: "fifo", labelKey: "fifo" },
+  { value: "lifo", labelKey: "lifo" },
+  { value: "hifo", labelKey: "hifo" },
+  { value: "avg", labelKey: "avg" },
 ];
 
-export const TRANSACTION_TYPE_LABELS: Record<TransactionType, string> = {
-  swap: "스왑",
-  transfer: "전송",
-  bridge: "브릿지",
-  stake: "스테이킹",
-  unstake: "언스테이킹",
-  lp_add: "LP 추가",
-  lp_remove: "LP 제거",
-  borrow: "대출",
-  repay: "상환",
-  claim: "클레임",
-  approve: "승인",
+export const TRANSACTION_TYPE_KEYS: Record<TransactionType, string> = {
+  swap: "swap",
+  transfer: "transfer",
+  bridge: "bridge",
+  stake: "stake",
+  unstake: "unstake",
+  lp_add: "lp_add",
+  lp_remove: "lp_remove",
+  borrow: "borrow",
+  repay: "repay",
+  claim: "claim",
+  approve: "approve",
 };

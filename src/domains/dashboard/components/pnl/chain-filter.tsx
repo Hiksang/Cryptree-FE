@@ -2,6 +2,7 @@
 
 import type { ChainId } from "@/core/types";
 import { CHAIN_COLORS, CHAIN_NAMES } from "@/core/constants";
+import { useT } from "@/core/i18n";
 
 const CHAINS: ChainId[] = ["hyperliquid", "hyperevm", "arbitrum", "base", "ethereum"];
 
@@ -11,6 +12,7 @@ interface ChainFilterProps {
 }
 
 export function ChainFilter({ selected, onChange }: ChainFilterProps) {
+  const t = useT();
   return (
     <div className="flex flex-wrap gap-2">
       <button
@@ -21,7 +23,7 @@ export function ChainFilter({ selected, onChange }: ChainFilterProps) {
             : "border-border-default text-text-muted hover:text-text-secondary"
         }`}
       >
-        전체
+        {t.common.all}
       </button>
       {CHAINS.map((chain) => (
         <button

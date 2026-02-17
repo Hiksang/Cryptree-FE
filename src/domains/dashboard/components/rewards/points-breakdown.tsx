@@ -1,3 +1,5 @@
+"use client";
+
 import type { PointsBreakdown as PointsBreakdownType } from "@/core/types";
 import {
   TrendingUp,
@@ -6,6 +8,7 @@ import {
   Users,
   Activity,
 } from "lucide-react";
+import { useT } from "@/core/i18n";
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   TrendingUp,
@@ -20,12 +23,13 @@ interface PointsBreakdownProps {
 }
 
 export function PointsBreakdown({ points }: PointsBreakdownProps) {
+  const t = useT();
   const total = points.reduce((sum, p) => sum + p.points, 0);
 
   return (
     <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
       <h3 className="text-[16px] leading-[24px] font-semibold text-text-primary mb-4">
-        포인트 분류
+        {t.dashboard.rewards.pointsBreakdown}
       </h3>
 
       <div className="space-y-3">

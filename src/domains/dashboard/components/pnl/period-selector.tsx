@@ -1,14 +1,9 @@
 "use client";
 
 import type { PnlPeriod } from "@/core/types";
+import { useT } from "@/core/i18n";
 
-const PERIODS: { value: PnlPeriod; label: string }[] = [
-  { value: "7d", label: "7일" },
-  { value: "30d", label: "30일" },
-  { value: "90d", label: "90일" },
-  { value: "1y", label: "1년" },
-  { value: "all", label: "전체" },
-];
+const PERIOD_VALUES: PnlPeriod[] = ["7d", "30d", "90d", "1y", "all"];
 
 interface PeriodSelectorProps {
   selected: PnlPeriod;
@@ -16,19 +11,27 @@ interface PeriodSelectorProps {
 }
 
 export function PeriodSelector({ selected, onChange }: PeriodSelectorProps) {
+  const t = useT();
+  const periodLabels: Record<PnlPeriod, string> = {
+    "7d": t.dashboard.pnl.period7d,
+    "30d": t.dashboard.pnl.period30d,
+    "90d": t.dashboard.pnl.period90d,
+    "1y": t.dashboard.pnl.period1y,
+    "all": t.dashboard.pnl.periodAll,
+  };
   return (
     <div className="flex gap-1 bg-bg-surface-2 rounded-[6px] p-1">
-      {PERIODS.map((p) => (
+      {PERIOD_VALUES.map((value) => (
         <button
-          key={p.value}
-          onClick={() => onChange(p.value)}
+          key={value}
+          onClick={() => onChange(value)}
           className={`px-3 py-1.5 text-[14px] leading-[20px] rounded-[4px] transition-colors cursor-pointer ${
-            selected === p.value
+            selected === value
               ? "bg-bg-surface text-text-primary font-medium"
               : "text-text-muted hover:text-text-secondary"
           }`}
         >
-          {p.label}
+          {periodLabels[value]}
         </button>
       ))}
     </div>

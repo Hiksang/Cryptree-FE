@@ -7,6 +7,8 @@ import { User, Pencil, Check, X, Loader2 } from "lucide-react";
 import { toast } from "@/shared/ui";
 import { api } from "@/domains/dashboard/lib/api-client";
 import { useQueryClient } from "@tanstack/react-query";
+import { useT } from "@/core/i18n";
+import { useHyperViewStore } from "@/shared/store";
 
 interface ProfileCardProps {
   profile: UserProfile;
@@ -18,6 +20,8 @@ export function ProfileCard({ profile }: ProfileCardProps) {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(profile.name);
   const [saving, setSaving] = useState(false);
+  const t = useT();
+  const locale = useHyperViewStore((s) => s.locale);
 
   // profile prop이 바뀌면 name state도 동기화
   useEffect(() => {
@@ -30,10 +34,10 @@ export function ProfileCard({ profile }: ProfileCardProps) {
     try {
       await api.updateProfile(name.trim());
       await queryClient.invalidateQueries({ queryKey: ["dashboard", "settings"] });
-      toast.success("이름이 변경되었습니다");
+      toast.success(t.dashboard.settings.nameChanged);
       setEditing(false);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "이름 변경에 실패했습니다");
+      toast.error(err instanceof Error ? err.message : t.dashboard.settings.nameChangeFailed);
     } finally {
       setSaving(false);
     }
@@ -47,7 +51,7 @@ export function ProfileCard({ profile }: ProfileCardProps) {
   return (
     <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
       <h3 className="text-[16px] leading-[24px] font-semibold text-text-primary mb-4">
-        프로필
+        {t.dashboard.settings.profile}
       </h3>
 
       <div className="flex items-start gap-4">
@@ -111,7 +115,7 @@ export function ProfileCard({ profile }: ProfileCardProps) {
               {tier.icon} {tier.label}
             </span>
             <span className="text-[12px] text-text-muted">
-              가입일: {new Date(profile.joinedAt).toLocaleDateString("ko-KR")}
+              {t.dashboard.settings.joinedAt} {new Date(profile.joinedAt).toLocaleDateString(locale === "en" ? "en-US" : "ko-KR")}
             </span>
           </div>
         </div>

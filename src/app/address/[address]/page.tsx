@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Header } from "@/shared/layout";
 import { ScanProgress, ScanResultSkeleton, ScanTabs, useScan } from "@/domains/scan";
 import { shortenAddress } from "@/core/utils";
+import { useT } from "@/core/i18n";
 import { track } from "@vercel/analytics";
 import { ArrowLeft, Copy, Check, AlertCircle, Gift, Shield, TrendingUp, X, Sparkles } from "lucide-react";
 
@@ -23,6 +24,7 @@ const SKELETON_DELAY_MS = 2500;
 const POPUP_DELAY_MS = 8000;
 
 export default function AddressPage() {
+  const t = useT();
   const params = useParams();
   const router = useRouter();
   const address = params.address as string;
@@ -113,17 +115,17 @@ export default function AddressPage() {
                 <AlertCircle className="w-8 h-8 text-text-muted" />
               </div>
               <h2 className="text-[24px] leading-[32px] font-semibold text-text-primary mb-2">
-                이 주소의 데이터가 없습니다
+                {t.scan.result.noData}
               </h2>
               <p className="text-[16px] text-text-secondary mb-6">
-                {shortenAddress(address, 6)} 주소에 대한 온체인 활동이 아직
-                기록되지 않았습니다.
+                {shortenAddress(address, 6)} {t.scan.result.noDataDesc}
+                {t.scan.result.noDataDesc2}
               </p>
               <button
                 onClick={() => router.push("/")}
                 className="h-10 px-5 bg-brand text-bg-primary font-semibold text-[14px] rounded-[6px] hover:bg-brand-hover transition-colors cursor-pointer"
               >
-                다른 주소 분석하기
+                {t.scan.result.analyzeOther}
               </button>
             </div>
           ) : phase === "results" && data ? (
@@ -136,13 +138,13 @@ export default function AddressPage() {
                   className="text-[14px] text-text-secondary hover:text-text-primary transition-colors flex items-center gap-1 cursor-pointer shrink-0"
                 >
                   <ArrowLeft className="w-4 h-4" />
-                  홈
+                  {t.common.home}
                 </button>
                 <button
                   onClick={() => router.push("/")}
                   className="h-8 px-3 md:px-4 bg-brand text-bg-primary text-[13px] md:text-[14px] font-semibold rounded-[6px] hover:bg-brand-hover transition-colors cursor-pointer whitespace-nowrap"
                 >
-                  내 지갑 분석하기
+                  {t.scan.result.analyzeMyWallet}
                 </button>
               </div>
 
@@ -170,7 +172,7 @@ export default function AddressPage() {
               <div className="mt-8 mb-24 bg-bg-surface border border-border-default rounded-[8px] overflow-hidden">
                 <div className="bg-gradient-to-r from-brand/10 to-brand-hover/10 px-6 py-4 border-b border-border-default">
                   <h3 className="text-[18px] font-semibold text-text-primary">
-                    지금 가입하고 더 많은 기능을 이용하세요
+                    {t.scan.result.signupCta}
                   </h3>
                 </div>
                 <div className="p-6 space-y-4">
@@ -178,22 +180,22 @@ export default function AddressPage() {
                     <div className="flex items-start gap-3">
                       <Shield className="w-5 h-5 text-brand shrink-0 mt-0.5" />
                       <div>
-                        <p className="text-[14px] font-medium text-text-primary">분석 결과 저장</p>
-                        <p className="text-[12px] text-text-muted">대시보드에서 언제든 확인</p>
+                        <p className="text-[14px] font-medium text-text-primary">{t.scan.result.saveResults}</p>
+                        <p className="text-[12px] text-text-muted">{t.scan.result.saveResultsDesc}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <TrendingUp className="w-5 h-5 text-brand shrink-0 mt-0.5" />
                       <div>
-                        <p className="text-[14px] font-medium text-text-primary">세금 리포트</p>
-                        <p className="text-[12px] text-text-muted">PnL 분석 및 세금 미리보기</p>
+                        <p className="text-[14px] font-medium text-text-primary">{t.scan.result.taxReport}</p>
+                        <p className="text-[12px] text-text-muted">{t.scan.result.taxReportDesc}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <Gift className="w-5 h-5 text-brand shrink-0 mt-0.5" />
                       <div>
-                        <p className="text-[14px] font-medium text-text-primary">100P 즉시 지급</p>
-                        <p className="text-[12px] text-text-muted">가입만 해도 포인트 지급</p>
+                        <p className="text-[14px] font-medium text-text-primary">{t.scan.result.instantPoints}</p>
+                        <p className="text-[12px] text-text-muted">{t.scan.result.instantPointsDesc}</p>
                       </div>
                     </div>
                   </div>
@@ -201,10 +203,10 @@ export default function AddressPage() {
                     onClick={() => handleSignup("inline_card")}
                     className="w-full h-11 bg-brand text-bg-primary font-semibold text-[15px] rounded-[6px] hover:bg-brand-hover transition-colors cursor-pointer"
                   >
-                    무료로 시작하기
+                    {t.common.freeStart}
                   </button>
                   <p className="text-[12px] text-text-muted text-center">
-                    Google 또는 지갑으로 10초만에 가입
+                    {t.common.signupGoogle}
                   </p>
                 </div>
               </div>
@@ -215,20 +217,20 @@ export default function AddressPage() {
               <div className="max-w-[960px] mx-auto px-4 py-3 flex items-center justify-between gap-4">
                 <div className="hidden sm:block">
                   <p className="text-[14px] font-medium text-text-primary">
-                    무료 가입하고 전체 분석 결과를 확인하세요
+                    {t.scan.result.stickyTitle}
                   </p>
                   <p className="text-[12px] text-text-muted">
-                    PnL 분석 · 세금 리포트 · 100P 즉시 지급
+                    {t.scan.result.stickySubtitle}
                   </p>
                 </div>
                 <p className="sm:hidden text-[13px] font-medium text-text-primary">
-                  가입하고 전체 분석 보기
+                  {t.scan.result.stickyMobile}
                 </p>
                 <button
                   onClick={() => handleSignup("sticky_bar")}
                   className="h-10 px-6 bg-brand text-bg-primary font-semibold text-[14px] rounded-[8px] hover:bg-brand-hover transition-colors cursor-pointer whitespace-nowrap shrink-0"
                 >
-                  무료로 시작하기
+                  {t.common.freeStart}
                 </button>
               </div>
             </div>
@@ -259,25 +261,25 @@ export default function AddressPage() {
                   </div>
 
                   <h3 className="text-[22px] font-bold text-text-primary mb-2">
-                    분석이 완료되었습니다!
+                    {t.scan.result.popupTitle}
                   </h3>
                   <p className="text-[14px] text-text-secondary mb-6">
-                    지금 무료 가입하면 PnL 분석, 세금 리포트 등<br />
-                    모든 기능을 이용할 수 있습니다.
+                    {t.scan.result.popupDesc}<br />
+                    {t.scan.result.popupDesc2}
                   </p>
 
                   <div className="flex flex-col gap-2 mb-5">
                     <div className="flex items-center gap-2 text-[13px] text-text-secondary">
                       <Check className="w-4 h-4 text-brand shrink-0" />
-                      분석 결과 저장 및 대시보드
+                      {t.scan.result.popupFeature1}
                     </div>
                     <div className="flex items-center gap-2 text-[13px] text-text-secondary">
                       <Check className="w-4 h-4 text-brand shrink-0" />
-                      PnL 분석 · 세금 리포트
+                      {t.scan.result.popupFeature2}
                     </div>
                     <div className="flex items-center gap-2 text-[13px] text-text-secondary">
                       <Check className="w-4 h-4 text-brand shrink-0" />
-                      가입 즉시 100P 지급
+                      {t.scan.result.popupFeature3}
                     </div>
                   </div>
 
@@ -288,10 +290,10 @@ export default function AddressPage() {
                     }}
                     className="w-full h-12 bg-brand text-bg-primary font-semibold text-[16px] rounded-[8px] hover:bg-brand-hover transition-colors cursor-pointer mb-3"
                   >
-                    무료로 시작하기
+                    {t.common.freeStart}
                   </button>
                   <p className="text-[12px] text-text-muted">
-                    Google 또는 지갑으로 10초만에 가입
+                    {t.common.signupGoogle}
                   </p>
                 </div>
               </div>

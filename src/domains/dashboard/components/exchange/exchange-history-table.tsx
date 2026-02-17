@@ -2,6 +2,7 @@
 
 import { History, DollarSign, ShoppingBag } from "lucide-react";
 import type { ExchangeHistoryItem } from "@/core/types";
+import { useT } from "@/core/i18n";
 
 const STATUS_STYLES = {
   completed: "bg-positive/10 text-positive",
@@ -9,23 +10,25 @@ const STATUS_STYLES = {
   failed: "bg-negative/10 text-negative",
 } as const;
 
-const STATUS_LABELS = {
-  completed: "완료",
-  processing: "처리중",
-  failed: "실패",
-} as const;
-
 interface ExchangeHistoryTableProps {
   history: ExchangeHistoryItem[];
 }
 
 export function ExchangeHistoryTable({ history }: ExchangeHistoryTableProps) {
+  const t = useT();
+
+  const statusLabels = {
+    completed: t.dashboard.exchange.statusCompleted,
+    processing: t.dashboard.exchange.statusProcessing,
+    failed: t.dashboard.exchange.statusFailed,
+  } as const;
+
   return (
     <div className="rounded-[12px] bg-bg-surface border border-border-default p-5">
       <div className="flex items-center gap-2 mb-4">
         <History className="w-5 h-5 text-brand" />
         <h3 className="text-[16px] font-semibold text-text-primary">
-          교환 내역
+          {t.dashboard.exchange.exchangeHistory}
         </h3>
       </div>
 
@@ -35,22 +38,22 @@ export function ExchangeHistoryTable({ history }: ExchangeHistoryTableProps) {
           <thead>
             <tr className="border-b border-border-subtle">
               <th className="text-left text-[12px] font-medium text-text-muted pb-3 pr-4">
-                날짜
+                {t.dashboard.exchange.colDate}
               </th>
               <th className="text-left text-[12px] font-medium text-text-muted pb-3 pr-4">
-                유형
+                {t.dashboard.exchange.colType}
               </th>
               <th className="text-left text-[12px] font-medium text-text-muted pb-3 pr-4">
-                설명
+                {t.dashboard.exchange.colDescription}
               </th>
               <th className="text-right text-[12px] font-medium text-text-muted pb-3 pr-4">
-                사용 포인트
+                {t.dashboard.exchange.colPointsUsed}
               </th>
               <th className="text-left text-[12px] font-medium text-text-muted pb-3 pr-4">
-                수령
+                {t.dashboard.exchange.colReceived}
               </th>
               <th className="text-left text-[12px] font-medium text-text-muted pb-3">
-                상태
+                {t.dashboard.exchange.colStatus}
               </th>
             </tr>
           </thead>
@@ -85,7 +88,7 @@ export function ExchangeHistoryTable({ history }: ExchangeHistoryTableProps) {
                   <span
                     className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-medium ${STATUS_STYLES[item.status]}`}
                   >
-                    {STATUS_LABELS[item.status]}
+                    {statusLabels[item.status]}
                   </span>
                 </td>
               </tr>
@@ -117,7 +120,7 @@ export function ExchangeHistoryTable({ history }: ExchangeHistoryTableProps) {
               <span
                 className={`px-2 py-0.5 rounded-full text-[11px] font-medium ${STATUS_STYLES[item.status]}`}
               >
-                {STATUS_LABELS[item.status]}
+                {statusLabels[item.status]}
               </span>
             </div>
             <div className="flex justify-between text-[12px]">
@@ -135,7 +138,7 @@ export function ExchangeHistoryTable({ history }: ExchangeHistoryTableProps) {
 
       {history.length === 0 && (
         <div className="py-12 text-center text-text-muted text-[14px]">
-          교환 내역이 없습니다
+          {t.dashboard.exchange.noHistory}
         </div>
       )}
     </div>

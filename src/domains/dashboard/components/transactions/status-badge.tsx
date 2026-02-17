@@ -1,20 +1,31 @@
+"use client";
+
+import { useT } from "@/core/i18n";
+
 interface StatusBadgeProps {
   status: "completed" | "pending" | "failed";
 }
 
-const STATUS_CONFIG = {
-  completed: { label: "완료", className: "bg-positive-bg text-positive" },
-  pending: { label: "대기", className: "bg-[rgba(245,158,11,0.1)] text-warning" },
-  failed: { label: "실패", className: "bg-negative-bg text-negative" },
+const STATUS_CLASS = {
+  completed: "bg-positive-bg text-positive",
+  pending: "bg-[rgba(245,158,11,0.1)] text-warning",
+  failed: "bg-negative-bg text-negative",
 } as const;
 
 export function StatusBadge({ status }: StatusBadgeProps) {
-  const config = STATUS_CONFIG[status];
+  const t = useT();
+
+  const statusLabels = {
+    completed: t.dashboard.transactions.statusCompleted,
+    pending: t.dashboard.transactions.statusPending,
+    failed: t.dashboard.transactions.statusFailed,
+  } as const;
+
   return (
     <span
-      className={`inline-flex items-center px-2 py-0.5 text-[12px] leading-[16px] font-medium rounded-[4px] ${config.className}`}
+      className={`inline-flex items-center px-2 py-0.5 text-[12px] leading-[16px] font-medium rounded-[4px] ${STATUS_CLASS[status]}`}
     >
-      {config.label}
+      {statusLabels[status]}
     </span>
   );
 }

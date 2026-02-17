@@ -1,17 +1,21 @@
+"use client";
+
 import type { PortfolioData } from "@/core/types";
 import { formatCurrency, formatPercent } from "@/core/utils";
+import { useT } from "@/core/i18n";
 
 interface PortfolioSummaryProps {
   data: PortfolioData;
 }
 
 export function PortfolioSummary({ data }: PortfolioSummaryProps) {
+  const t = useT();
   const isPositive = data.change24h >= 0;
 
   return (
     <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
       <p className="text-[14px] leading-[20px] text-text-secondary mb-2">
-        총 자산
+        {t.dashboard.portfolio.totalAssets}
       </p>
       <p className="text-[36px] leading-[44px] font-bold text-text-primary tabular-nums tracking-[-0.02em]">
         {formatCurrency(data.totalValue)}

@@ -7,19 +7,21 @@ import { StatsCardSkeleton } from "@/shared/ui";
 import { Link2, Users, Copy, Check } from "lucide-react";
 import { useState } from "react";
 import { toast } from "@/shared/ui";
+import { useT } from "@/core/i18n";
 
 function LinkShareCard({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
   const referralUrl = `https://cryptree.xyz?ref=${code}`;
+  const t = useT();
 
   async function handleCopy() {
     try {
       await navigator.clipboard.writeText(referralUrl);
       setCopied(true);
-      toast.success("링크가 복사되었습니다");
+      toast.success(t.common.linkCopied);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      toast.error("복사에 실패했습니다");
+      toast.error(t.common.copyFailed);
     }
   }
 
@@ -27,10 +29,10 @@ function LinkShareCard({ code }: { code: string }) {
     <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
       <div className="flex items-center gap-2 mb-4">
         <Link2 className="w-5 h-5 text-text-muted" />
-        <h3 className="text-[16px] font-semibold text-text-primary">링크 공유</h3>
+        <h3 className="text-[16px] font-semibold text-text-primary">{t.dashboard.referral.linkShare}</h3>
       </div>
       <p className="text-[14px] text-text-secondary mb-4">
-        아래 링크를 공유하여 친구를 초대하세요.
+        {t.dashboard.referral.linkShareDesc}
       </p>
       <div className="flex items-center gap-2">
         <div className="flex-1 h-10 px-3 bg-bg-surface-2 border border-border-default rounded-[6px] flex items-center">
@@ -43,7 +45,7 @@ function LinkShareCard({ code }: { code: string }) {
           className="h-10 px-4 bg-brand text-bg-primary text-[13px] font-semibold rounded-[6px] hover:bg-brand-hover transition-colors cursor-pointer flex items-center gap-2 shrink-0"
         >
           {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-          {copied ? "복사됨" : "링크 복사"}
+          {copied ? t.common.copied : t.dashboard.referral.linkCopy}
         </button>
       </div>
     </div>
@@ -52,6 +54,7 @@ function LinkShareCard({ code }: { code: string }) {
 
 export default function ReferralPage() {
   const { data, isLoading, isError, refetch } = useReferral();
+  const t = useT();
 
   if (isLoading) {
     return (
@@ -66,7 +69,7 @@ export default function ReferralPage() {
   if (isError || !data) {
     return (
       <div className="space-y-6 max-w-[1200px]">
-        <h1 className="text-[24px] leading-[32px] font-semibold text-text-primary">추천</h1>
+        <h1 className="text-[24px] leading-[32px] font-semibold text-text-primary">{t.dashboard.referral.title}</h1>
         <ErrorState onRetry={() => refetch()} />
       </div>
     );
@@ -75,7 +78,7 @@ export default function ReferralPage() {
   return (
     <div className="space-y-6 max-w-[1200px]">
       <h1 className="text-[24px] leading-[32px] font-semibold text-text-primary">
-        추천
+        {t.dashboard.referral.title}
       </h1>
 
       {/* 추천 코드 등록 */}
@@ -93,9 +96,9 @@ export default function ReferralPage() {
             <Users className="w-6 h-6 text-brand" />
           </div>
           <div>
-            <p className="text-[12px] text-text-muted">총 추천</p>
+            <p className="text-[12px] text-text-muted">{t.dashboard.referral.totalReferred}</p>
             <p className="text-[24px] font-bold text-text-primary tabular-nums">
-              {data.stats?.totalReferred ?? 0}명
+              {data.stats?.totalReferred ?? 0}
             </p>
           </div>
         </div>

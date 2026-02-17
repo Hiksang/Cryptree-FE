@@ -9,6 +9,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import type { PnlDataPoint } from "@/core/types";
+import { useT } from "@/core/i18n";
 
 interface PnlOverviewChartProps {
   data: PnlDataPoint[];
@@ -28,10 +29,11 @@ function ChartTooltip({ active, payload, label }: { active?: boolean; payload?: 
 }
 
 export function PnlOverviewChart({ data }: PnlOverviewChartProps) {
+  const t = useT();
   return (
     <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
       <h3 className="text-[14px] leading-[20px] text-text-secondary mb-4">
-        PnL 추이 (7일)
+        {t.dashboard.overview.pnlTrend7d}
       </h3>
       <div className="h-[200px]">
         <ResponsiveContainer width="100%" height="100%">

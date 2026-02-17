@@ -1,6 +1,7 @@
 "use client";
 
 import { Sparkles, TrendingUp, ArrowDownCircle, Coins } from "lucide-react";
+import { useT } from "@/core/i18n";
 
 interface PointsBalanceHeroProps {
   balance: number;
@@ -13,6 +14,7 @@ export function PointsBalanceHero({
   lifetimeEarned,
   lifetimeSpent,
 }: PointsBalanceHeroProps) {
+  const t = useT();
   return (
     <div className="relative overflow-hidden rounded-[12px] bg-gradient-to-br from-brand/15 via-brand/5 to-transparent border border-brand/20 p-6 animate-glow-pulse">
       {/* Background decorative elements */}
@@ -23,7 +25,7 @@ export function PointsBalanceHero({
         <div className="flex items-center gap-2 mb-2">
           <Sparkles className="w-5 h-5 text-brand" />
           <span className="text-[14px] font-medium text-text-secondary">
-            내 포인트 잔고
+            {t.dashboard.exchange.myPointsBalance}
           </span>
         </div>
 
@@ -42,7 +44,7 @@ export function PointsBalanceHero({
               <TrendingUp className="w-4 h-4 text-positive" />
             </div>
             <div>
-              <p className="text-[11px] text-text-muted">총 적립</p>
+              <p className="text-[11px] text-text-muted">{t.dashboard.exchange.totalEarned}</p>
               <p className="text-[14px] font-semibold text-text-primary tabular-nums">
                 {lifetimeEarned.toLocaleString()}P
               </p>
@@ -53,7 +55,7 @@ export function PointsBalanceHero({
               <ArrowDownCircle className="w-4 h-4 text-negative" />
             </div>
             <div>
-              <p className="text-[11px] text-text-muted">총 사용</p>
+              <p className="text-[11px] text-text-muted">{t.dashboard.exchange.totalSpent}</p>
               <p className="text-[14px] font-semibold text-text-primary tabular-nums">
                 {lifetimeSpent.toLocaleString()}P
               </p>
@@ -64,7 +66,7 @@ export function PointsBalanceHero({
               <Coins className="w-4 h-4 text-brand" />
             </div>
             <div>
-              <p className="text-[11px] text-text-muted">현재 잔고</p>
+              <p className="text-[11px] text-text-muted">{t.dashboard.exchange.currentBalance}</p>
               <p className="text-[14px] font-semibold text-brand tabular-nums">
                 {balance.toLocaleString()}P
               </p>

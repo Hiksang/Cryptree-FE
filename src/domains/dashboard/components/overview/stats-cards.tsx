@@ -1,5 +1,8 @@
+"use client";
+
 import type { DashboardStats } from "@/core/types";
 import { formatCurrency, formatPercent } from "@/core/utils";
+import { useT } from "@/core/i18n";
 import { DollarSign, TrendingUp, Layers } from "lucide-react";
 
 interface StatsCardsProps {
@@ -7,23 +10,24 @@ interface StatsCardsProps {
 }
 
 export function StatsCards({ stats }: StatsCardsProps) {
+  const t = useT();
   const cards = [
     {
-      label: "총 자산",
+      label: t.dashboard.overview.totalAssets,
       value: formatCurrency(stats.totalValue),
       change: formatPercent(stats.totalValueChange),
       positive: stats.totalValueChange >= 0,
       icon: DollarSign,
     },
     {
-      label: "총 수익 (PnL)",
+      label: t.dashboard.overview.totalPnl,
       value: formatCurrency(stats.totalPnl),
       change: formatPercent(stats.totalPnlPercent),
       positive: stats.totalPnl >= 0,
       icon: TrendingUp,
     },
     {
-      label: "활성 포지션",
+      label: t.dashboard.overview.activePositions,
       value: stats.activePositions.toString(),
       change: `+${stats.activePositionsChange}`,
       positive: true,

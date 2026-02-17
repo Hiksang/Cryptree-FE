@@ -8,10 +8,12 @@ import { DistributionHistory } from "@/domains/dashboard";
 import { MyPosition, RankingsTable } from "@/domains/dashboard";
 import { ErrorState } from "@/shared/ui";
 import { StatsCardSkeleton, TableCardSkeleton } from "@/shared/ui";
+import { useT } from "@/core/i18n";
 
 export default function RewardsPage() {
   const { data, isLoading, isError, refetch } = useRewards();
   const { data: leaderboardData, isLoading: leaderboardLoading } = useLeaderboard("activity");
+  const t = useT();
 
   if (isLoading) {
     return (
@@ -30,7 +32,7 @@ export default function RewardsPage() {
   if (isError || !data) {
     return (
       <div className="space-y-6 max-w-[1200px]">
-        <h1 className="text-[24px] leading-[32px] font-semibold text-text-primary">리워드</h1>
+        <h1 className="text-[24px] leading-[32px] font-semibold text-text-primary">{t.dashboard.rewards.title}</h1>
         <ErrorState onRetry={() => refetch()} />
       </div>
     );
@@ -39,7 +41,7 @@ export default function RewardsPage() {
   return (
     <div className="space-y-6 max-w-[1200px]">
       <h1 className="text-[24px] leading-[32px] font-semibold text-text-primary">
-        리워드
+        {t.dashboard.rewards.title}
       </h1>
 
       <SeasonSummary season={data.season} />
@@ -56,7 +58,7 @@ export default function RewardsPage() {
       {/* Leaderboard Section */}
       <div className="space-y-4">
         <h2 className="text-[20px] leading-[28px] font-semibold text-text-primary">
-          리더보드
+          {t.dashboard.rewards.leaderboard}
         </h2>
 
         {leaderboardLoading ? (

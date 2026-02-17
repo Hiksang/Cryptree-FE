@@ -2,6 +2,7 @@
 
 import type { TaxCountry } from "@/core/types";
 import { TAX_COUNTRIES } from "@/core/constants";
+import { useT } from "@/core/i18n";
 
 interface CountrySelectorProps {
   selected: TaxCountry;
@@ -9,6 +10,8 @@ interface CountrySelectorProps {
 }
 
 export function CountrySelector({ selected, onChange }: CountrySelectorProps) {
+  const t = useT();
+
   return (
     <div className="flex flex-wrap gap-2">
       {TAX_COUNTRIES.map((country) => (
@@ -22,7 +25,7 @@ export function CountrySelector({ selected, onChange }: CountrySelectorProps) {
           }`}
         >
           <span>{country.flag}</span>
-          <span>{country.label}</span>
+          <span>{t.countries[country.labelKey as keyof typeof t.countries]}</span>
         </button>
       ))}
     </div>

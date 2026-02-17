@@ -10,6 +10,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import type { PnlDataPoint } from "@/core/types";
+import { useT } from "@/core/i18n";
 
 interface PnlAreaChartProps {
   data: PnlDataPoint[];
@@ -30,11 +31,12 @@ function ChartTooltip({ active, payload, label }: { active?: boolean; payload?: 
 }
 
 export function PnlAreaChart({ data, totalPnl }: PnlAreaChartProps) {
+  const t = useT();
   return (
     <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
       <div className="mb-6">
         <p className="text-[14px] leading-[20px] text-text-secondary mb-1">
-          총 수익 (PnL)
+          {t.dashboard.pnl.totalPnl}
         </p>
         <p
           className={`text-[36px] leading-[44px] font-bold tabular-nums tracking-[-0.02em] ${

@@ -6,9 +6,11 @@ import { ConnectedWallets } from "@/domains/dashboard";
 import { TierDisplay } from "@/domains/dashboard";
 import { ErrorState } from "@/shared/ui";
 import { StatsCardSkeleton, TableCardSkeleton } from "@/shared/ui";
+import { useT } from "@/core/i18n";
 
 export default function SettingsPage() {
   const { data, isLoading, isError, refetch } = useSettings();
+  const t = useT();
 
   if (isLoading) {
     return (
@@ -26,7 +28,7 @@ export default function SettingsPage() {
   if (isError || !data) {
     return (
       <div className="space-y-6 max-w-[1200px]">
-        <h1 className="text-[24px] leading-[32px] font-semibold text-text-primary">설정</h1>
+        <h1 className="text-[24px] leading-[32px] font-semibold text-text-primary">{t.dashboard.settings.title}</h1>
         <ErrorState onRetry={() => refetch()} />
       </div>
     );
@@ -35,7 +37,7 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6 max-w-[1200px]">
       <h1 className="text-[24px] leading-[32px] font-semibold text-text-primary">
-        설정
+        {t.dashboard.settings.title}
       </h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

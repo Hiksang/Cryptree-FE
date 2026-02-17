@@ -3,3 +3,4 @@ export { StatsCardSkeleton, ChartCardSkeleton, TableCardSkeleton } from "./card-
 export { EmptyState } from "./empty-state";
 export { ErrorState } from "./error-state";
 export { toast } from "./toast";
+export { LanguageToggle } from "./language-toggle";

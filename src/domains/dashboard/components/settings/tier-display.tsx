@@ -1,5 +1,8 @@
+"use client";
+
 import type { UserProfile } from "@/core/types";
 import { TIER_CONFIG } from "@/core/constants";
+import { useT } from "@/core/i18n";
 
 interface TierDisplayProps {
   profile: UserProfile;
@@ -8,6 +11,7 @@ interface TierDisplayProps {
 const TIER_ORDER = ["bronze", "silver", "gold", "diamond"] as const;
 
 export function TierDisplay({ profile }: TierDisplayProps) {
+  const t = useT();
   const currentTier = TIER_CONFIG[profile.tier];
   const currentIndex = TIER_ORDER.indexOf(profile.tier);
   const nextTierKey = TIER_ORDER[currentIndex + 1];
@@ -20,7 +24,7 @@ export function TierDisplay({ profile }: TierDisplayProps) {
   return (
     <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
       <h3 className="text-[16px] leading-[24px] font-semibold text-text-primary mb-4">
-        티어
+        {t.dashboard.settings.tier}
       </h3>
 
       <div className="flex items-center gap-4 mb-4">
@@ -38,7 +42,7 @@ export function TierDisplay({ profile }: TierDisplayProps) {
             {currentTier.label}
           </p>
           <p className="text-[14px] text-text-secondary">
-            {profile.tierPoints.toLocaleString()}건 트랜잭션
+            {profile.tierPoints.toLocaleString()}{t.dashboard.settings.tierTx}
           </p>
         </div>
       </div>
@@ -47,7 +51,7 @@ export function TierDisplay({ profile }: TierDisplayProps) {
         <div>
           <div className="flex items-center justify-between text-[12px] mb-2">
             <span className="text-text-muted">
-              다음 티어: {nextTier.icon} {nextTier.label}
+              {t.dashboard.settings.nextTier} {nextTier.icon} {nextTier.label}
             </span>
             <span className="text-text-secondary tabular-nums">
               {profile.tierPoints.toLocaleString()} /{" "}
@@ -68,7 +72,7 @@ export function TierDisplay({ profile }: TierDisplayProps) {
 
       {!nextTier && (
         <p className="text-[14px] text-brand font-medium">
-          최고 티어에 도달했습니다!
+          {t.dashboard.settings.maxTier}
         </p>
       )}
     </div>

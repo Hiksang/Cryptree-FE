@@ -15,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import { NAV_ITEMS } from "@/core/constants";
+import { useT } from "@/core/i18n";
 
 const ICON_MAP = {
   LayoutDashboard,
@@ -30,6 +31,7 @@ const MAIN_NAV = NAV_ITEMS.slice(0, 4);
 const MORE_NAV = NAV_ITEMS.slice(4);
 
 export function BottomNav() {
+  const t = useT();
   const pathname = usePathname();
   const [moreOpen, setMoreOpen] = useState(false);
 
@@ -47,7 +49,7 @@ export function BottomNav() {
           <div className="absolute bottom-16 left-0 right-0 bg-bg-surface border-t border-border-default rounded-t-[12px] p-4 space-y-1">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[14px] font-semibold text-text-primary">
-                더보기
+                {t.nav.more}
               </span>
               <button
                 onClick={() => setMoreOpen(false)}
@@ -71,7 +73,7 @@ export function BottomNav() {
                   }`}
                 >
                   <Icon className="w-5 h-5" />
-                  <span className="text-[14px] font-medium">{item.label}</span>
+                  <span className="text-[14px] font-medium">{t.nav[item.labelKey]}</span>
                 </Link>
               );
             })}
@@ -97,7 +99,7 @@ export function BottomNav() {
               }`}
             >
               <Icon className="w-5 h-5" />
-              <span className="text-[10px] leading-[12px]">{item.label}</span>
+              <span className="text-[10px] leading-[12px]">{t.nav[item.labelKey]}</span>
             </Link>
           );
         })}
@@ -110,7 +112,7 @@ export function BottomNav() {
           }`}
         >
           <MoreHorizontal className="w-5 h-5" />
-          <span className="text-[10px] leading-[12px]">더보기</span>
+          <span className="text-[10px] leading-[12px]">{t.nav.more}</span>
         </button>
       </nav>
     </>

@@ -2,7 +2,7 @@
 
 import type { ChainId, TransactionType } from "@/core/types";
 import { CHAIN_NAMES, CHAIN_COLORS } from "@/core/constants";
-import { TRANSACTION_TYPE_LABELS } from "@/core/constants";
+import { useT } from "@/core/i18n";
 
 const CHAINS: ChainId[] = ["hyperliquid", "hyperevm", "arbitrum", "base", "ethereum"];
 const TYPES: TransactionType[] = ["swap", "transfer", "bridge", "stake", "lp_add", "claim"];
@@ -20,10 +20,12 @@ export function TransactionFilters({
   onChainChange,
   onTypeChange,
 }: TransactionFiltersProps) {
+  const t = useT();
+
   return (
     <div className="flex flex-col md:flex-row gap-4">
       <div>
-        <p className="text-[12px] text-text-muted mb-1.5">체인</p>
+        <p className="text-[12px] text-text-muted mb-1.5">{t.dashboard.transactions.chain}</p>
         <div className="flex flex-wrap gap-1.5">
           <button
             onClick={() => onChainChange("all")}
@@ -33,7 +35,7 @@ export function TransactionFilters({
                 : "border-border-default text-text-muted hover:text-text-secondary"
             }`}
           >
-            전체
+            {t.common.all}
           </button>
           {CHAINS.map((chain) => (
             <button
@@ -56,7 +58,7 @@ export function TransactionFilters({
       </div>
 
       <div>
-        <p className="text-[12px] text-text-muted mb-1.5">유형</p>
+        <p className="text-[12px] text-text-muted mb-1.5">{t.dashboard.transactions.type}</p>
         <div className="flex flex-wrap gap-1.5">
           <button
             onClick={() => onTypeChange("all")}
@@ -66,7 +68,7 @@ export function TransactionFilters({
                 : "border-border-default text-text-muted hover:text-text-secondary"
             }`}
           >
-            전체
+            {t.common.all}
           </button>
           {TYPES.map((type) => (
             <button
@@ -78,7 +80,7 @@ export function TransactionFilters({
                   : "border-border-default text-text-muted hover:text-text-secondary"
               }`}
             >
-              {TRANSACTION_TYPE_LABELS[type]}
+              {t.transactionTypes[type as keyof typeof t.transactionTypes]}
             </button>
           ))}
         </div>
