@@ -46,20 +46,12 @@ function AuthButtons() {
   }
 
   return (
-    <>
-      <button
-        onClick={() => login()}
-        className="h-8 px-4 text-[14px] text-text-secondary hover:text-text-primary hover:bg-bg-surface rounded-[6px] transition-colors cursor-pointer"
-      >
-        로그인
-      </button>
-      <button
-        onClick={() => login()}
-        className="h-8 px-4 bg-brand text-bg-primary text-[14px] font-semibold rounded-[6px] hover:bg-brand-hover transition-colors cursor-pointer"
-      >
-        시작하기
-      </button>
-    </>
+    <button
+      onClick={() => login()}
+      className="h-8 px-4 bg-brand text-bg-primary text-[14px] font-semibold rounded-[6px] hover:bg-brand-hover transition-colors cursor-pointer"
+    >
+      시작하기
+    </button>
   );
 }
 
@@ -90,26 +82,15 @@ function MobileAuthButtons({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <>
-      <button
-        onClick={() => {
-          login();
-          onClose();
-        }}
-        className="block w-full px-4 py-2 text-left text-[14px] text-text-secondary hover:text-text-primary cursor-pointer"
-      >
-        로그인
-      </button>
-      <button
-        onClick={() => {
-          login();
-          onClose();
-        }}
-        className="block w-full px-4 py-2 bg-brand text-bg-primary text-[14px] font-semibold rounded-[6px] text-center cursor-pointer"
-      >
-        시작하기
-      </button>
-    </>
+    <button
+      onClick={() => {
+        login();
+        onClose();
+      }}
+      className="block w-full px-4 py-2 bg-brand text-bg-primary text-[14px] font-semibold rounded-[6px] text-center cursor-pointer"
+    >
+      시작하기
+    </button>
   );
 }
 
