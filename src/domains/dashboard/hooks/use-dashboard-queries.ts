@@ -50,3 +50,21 @@ export function useExchange() {
     queryFn: api.getExchange,
   });
 }
+
+export function useTransactions(params: {
+  page: number;
+  chain: string;
+  type: string;
+  search: string;
+}) {
+  return useQuery({
+    queryKey: ["dashboard", "transactions", params],
+    queryFn: () =>
+      api.getTransactions({
+        page: String(params.page),
+        chain: params.chain,
+        type: params.type,
+        q: params.search,
+      }),
+  });
+}

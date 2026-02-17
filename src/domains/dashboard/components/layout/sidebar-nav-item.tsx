@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
+  ArrowLeftRight,
   FileText,
   Gift,
   Users,
@@ -13,6 +14,7 @@ import {
 
 const ICON_MAP = {
   LayoutDashboard,
+  ArrowLeftRight,
   FileText,
   Gift,
   Users,

@@ -43,6 +43,8 @@ export const api = {
     fetchApi<import("@/core/types").LeaderboardData>("/leaderboard", { tab }),
   getExchange: () =>
     fetchApi<import("@/core/types").ExchangeData>("/exchange"),
+  getTransactions: (params: { page?: string; chain?: string; type?: string; q?: string }) =>
+    fetchApi<{ transactions: import("@/core/types").TransactionFull[]; total: number; page: number; totalPages: number }>("/transactions", params),
 
   // Mutations
   exchangeProduct: (productId: string) =>

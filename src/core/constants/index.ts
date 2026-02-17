@@ -42,6 +42,7 @@ export const TIER_CONFIG = {
 
 export const NAV_ITEMS = [
   { href: "/dashboard", label: "대시보드", icon: "LayoutDashboard" },
+  { href: "/dashboard/transactions", label: "거래 내역", icon: "ArrowLeftRight" },
   { href: "/dashboard/tax", label: "세금 보고서", icon: "FileText" },
   { href: "/dashboard/rewards", label: "리워드", icon: "Gift" },
   { href: "/dashboard/referral", label: "추천", icon: "Users" },

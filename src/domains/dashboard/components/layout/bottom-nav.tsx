@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
+  ArrowLeftRight,
   FileText,
   Gift,
   Users,
@@ -17,6 +18,7 @@ import { NAV_ITEMS } from "@/core/constants";
 
 const ICON_MAP = {
   LayoutDashboard,
+  ArrowLeftRight,
   FileText,
   Gift,
   Users,
