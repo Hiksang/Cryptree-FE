@@ -165,6 +165,35 @@
   animation: glow-pulse 3s ease-in-out infinite;
 }
 
+/* Fade in/out for scan transitions */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@utility animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+@utility animate-fade-out {
+  animation: fade-out 0.3s ease-out forwards;
+}
+
+/* Tip message crossfade */
+@keyframes tip-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@utility animate-tip-fade {
+  animation: tip-fade-in 0.5s ease-out forwards;
+}
+
 /* Sonner toast dark theme overrides */
 [data-sonner-toaster] [data-sonner-toast] {
   --normal-bg: #141414;

@@ -2,23 +2,51 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Search, Loader2 } from "lucide-react";
+import { getScanResult } from "../lib/api";
+import { SCAN_QUERY_KEY } from "../hooks/use-scan";
 
 interface ScanInputProps {
   size?: "md" | "lg";
   className?: string;
 }
 
+function isValidEthAddress(addr: string): boolean {
+  return /^0x[0-9a-fA-F]{40}$/.test(addr);
+}
+
 export function ScanInput({ size = "lg", className }: ScanInputProps) {
   const [address, setAddress] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
+  const queryClient = useQueryClient();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = address.trim();
-    if (trimmed) {
-      router.push(`/address/${trimmed}`);
+
+    if (!trimmed) return;
+
+    // Validate Ethereum address format
+    if (!isValidEthAddress(trimmed)) {
+      setError("올바른 이더리움 주소 형식이 아닙니다 (0x + 40자리 hex)");
+      return;
     }
+
+    setError(null);
+    setSubmitting(true);
+
+    // Start prefetching before navigation
+    queryClient.prefetchQuery({
+      queryKey: SCAN_QUERY_KEY(trimmed),
+      queryFn: () => getScanResult(trimmed),
+      staleTime: 5 * 60 * 1000,
+    });
+
+    // Navigate immediately (prefetch continues in background)
+    router.push(`/address/${trimmed}`);
   };
 
   const inputHeight = size === "lg" ? "h-14" : "h-12";
@@ -31,18 +59,36 @@ export function ScanInput({ size = "lg", className }: ScanInputProps) {
           <input
             type="text"
             value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            onChange={(e) => {
+              setAddress(e.target.value);
+              if (error) setError(null);
+            }}
             placeholder="0x... 지갑 주소 입력"
-            className={`w-full ${inputHeight} pl-11 pr-4 bg-bg-surface-3 border border-border-default rounded-l-[6px] text-[16px] text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-colors`}
+            className={`w-full ${inputHeight} pl-11 pr-4 bg-bg-surface-3 border ${
+              error ? "border-negative" : "border-border-default"
+            } rounded-l-[6px] text-[16px] text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-colors`}
           />
         </div>
         <button
           type="submit"
-          className={`${inputHeight} px-6 bg-brand text-bg-primary font-semibold text-[16px] rounded-r-[6px] hover:bg-brand-hover transition-colors whitespace-nowrap cursor-pointer`}
+          disabled={submitting}
+          className={`${inputHeight} px-6 bg-brand text-bg-primary font-semibold text-[16px] rounded-r-[6px] hover:bg-brand-hover transition-colors whitespace-nowrap cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2`}
         >
-          분석하기
+          {submitting ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              분석 시작...
+            </>
+          ) : (
+            "분석하기"
+          )}
         </button>
       </div>
+      {error && (
+        <p className="mt-2 text-[13px] text-negative animate-fade-in-up">
+          {error}
+        </p>
+      )}
     </form>
   );
 }
