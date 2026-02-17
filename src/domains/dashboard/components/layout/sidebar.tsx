@@ -10,9 +10,10 @@ export function Sidebar() {
     <>
       {/* Desktop sidebar — 240px */}
       <aside className="hidden lg:flex flex-col w-[240px] h-screen fixed left-0 top-0 bg-bg-surface border-r border-border-default z-40">
-        <div className="h-16 flex items-center px-5">
-          <Link href="/dashboard" className="text-[20px] leading-[28px] font-bold text-brand">
-            Cryptree
+        <div className="h-16 flex items-center px-5 gap-2.5">
+          <Link href="/dashboard" className="flex items-center gap-2.5">
+            <Image src="/icon.png" alt="Cryptree" width={24} height={28} className="shrink-0" />
+            <span className="text-[20px] leading-[28px] font-bold text-brand">Cryptree</span>
           </Link>
         </div>
         <nav className="flex-1 px-3 py-2 space-y-1">
