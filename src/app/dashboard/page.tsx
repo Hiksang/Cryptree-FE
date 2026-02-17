@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useDashboardStats, useSettings } from "@/domains/dashboard/hooks/use-dashboard-queries";
 import { TIER_CONFIG } from "@/core/constants";
 import { ErrorState } from "@/shared/ui";
 import { StatsCardSkeleton } from "@/shared/ui";
 import { Wallet, Plus, Activity, Link2 } from "lucide-react";
 import Link from "next/link";
+import { AddWalletModal } from "@/domains/dashboard/components/add-wallet-modal";
 
 function getGreeting(name: string): string {
   const hour = new Date().getHours();
@@ -29,6 +30,7 @@ export default function DashboardPage() {
     );
   }
 
+  const [walletModalOpen, setWalletModalOpen] = useState(false);
   const isLoading = statsLoading || settingsLoading;
   const walletCount = settingsData?.wallets?.length ?? 0;
   const tier = settingsData?.profile?.tier ?? "bronze";
@@ -85,7 +87,7 @@ export default function DashboardPage() {
 
       {/* Wallet CTA Card */}
       {walletCount === 0 ? (
-        <Link href="/dashboard/settings" className="block">
+        <button onClick={() => setWalletModalOpen(true)} className="w-full text-left cursor-pointer">
           <div className="bg-brand-muted border border-brand/30 rounded-[8px] p-6 hover:border-brand/50 transition-colors">
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-full bg-brand/20 flex items-center justify-center shrink-0">
@@ -96,31 +98,41 @@ export default function DashboardPage() {
                   지갑을 추가해 주세요
                 </h3>
                 <p className="text-[14px] text-text-secondary">
-                  온체인 활동 분석을 시작하려면 지갑 주소를 연결해야 합니다. 설정에서 지갑을 추가해 보세요.
+                  온체인 활동 분석을 시작하려면 지갑 주소를 연결해야 합니다.
                 </p>
               </div>
             </div>
           </div>
-        </Link>
+        </button>
       ) : (
-        <Link href="/dashboard/settings" className="block">
-          <div className="bg-bg-surface border border-border-default rounded-[8px] p-6 hover:border-brand/30 transition-colors">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full bg-bg-surface-2 flex items-center justify-center shrink-0">
-                <Wallet className="w-6 h-6 text-brand" />
-              </div>
-              <div>
-                <h3 className="text-[16px] font-semibold text-text-primary mb-1">
-                  지갑 관리
-                </h3>
-                <p className="text-[14px] text-text-secondary">
-                  {walletCount}개의 지갑이 연결되어 있습니다. 추가 지갑을 연결하거나 스캔 상태를 확인하세요.
-                </p>
-              </div>
+        <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-full bg-bg-surface-2 flex items-center justify-center shrink-0">
+              <Wallet className="w-6 h-6 text-brand" />
             </div>
+            <div className="flex-1">
+              <h3 className="text-[16px] font-semibold text-text-primary mb-1">
+                지갑 관리
+              </h3>
+              <p className="text-[14px] text-text-secondary">
+                {walletCount}개의 지갑이 연결되어 있습니다.
+              </p>
+            </div>
+            <button
+              onClick={() => setWalletModalOpen(true)}
+              className="flex items-center gap-1.5 h-9 px-3.5 text-[13px] font-medium text-brand border border-brand/30 rounded-[6px] hover:bg-brand-muted transition-colors cursor-pointer shrink-0"
+            >
+              <Plus className="w-4 h-4" />
+              지갑 추가
+            </button>
           </div>
-        </Link>
+        </div>
       )}
+
+      <AddWalletModal
+        open={walletModalOpen}
+        onClose={() => setWalletModalOpen(false)}
+      />
 
       {/* Activity Grade & Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
