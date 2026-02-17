@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAuthUserId, unauthorizedResponse } from "@/core/auth";
+import { ensureUserExists } from "@/core/auth/ensure-user";
 import { db } from "@/core/db";
 import { users, wallets } from "@/core/db/schema";
 import { eq } from "drizzle-orm";
@@ -9,9 +10,8 @@ export async function GET() {
   const userId = await getAuthUserId();
   if (!userId) return unauthorizedResponse();
 
-  const user = await db.query.users.findFirst({
-    where: eq(users.authId, userId),
-  });
+  // Webhook 실패 시에도 유저 레코드 보장
+  const user = await ensureUserExists(userId);
 
   const userWallets = await db
     .select()

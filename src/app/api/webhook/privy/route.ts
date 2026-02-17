@@ -66,7 +66,7 @@ export async function POST(request: Request) {
     );
     const address = walletAccount?.address || null;
 
-    const SIGNUP_BONUS = 100;
+    const SIGNUP_BONUS = 500;
 
     await db
       .insert(users)
