@@ -9,19 +9,26 @@ export async function GET() {
   const userId = await getAuthUserId();
   if (!userId) return unauthorizedResponse();
 
-  const [balance, breakdown] = await Promise.all([
-    db.query.pointBalances.findFirst({
-      where: eq(pointBalances.userId, userId),
-    }),
-    db
-      .select({
-        type: pointLedger.type,
-        total: sql<number>`sum(${pointLedger.amount})::int`,
-      })
-      .from(pointLedger)
-      .where(eq(pointLedger.userId, userId))
-      .groupBy(pointLedger.type),
-  ]);
+  let balance: { lifetimeEarned: number } | undefined;
+  let breakdown: { type: string; total: number }[] = [];
+
+  try {
+    [balance, breakdown] = await Promise.all([
+      db.query.pointBalances.findFirst({
+        where: eq(pointBalances.userId, userId),
+      }),
+      db
+        .select({
+          type: pointLedger.type,
+          total: sql<number>`sum(${pointLedger.amount})::int`,
+        })
+        .from(pointLedger)
+        .where(eq(pointLedger.userId, userId))
+        .groupBy(pointLedger.type),
+    ]);
+  } catch {
+    // 테이블이 없을 수 있음
+  }
 
   const CATEGORY_ICONS: Record<string, string> = {
     scan: "Search",

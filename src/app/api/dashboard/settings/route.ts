@@ -18,29 +18,33 @@ export async function GET() {
     .from(wallets)
     .where(eq(wallets.userId, userId));
 
-  // 지갑별 스캔 상태 조회
+  // 지갑별 스캔 상태 조회 (scan_jobs 테이블이 없을 수 있으므로 graceful fallback)
   const walletIds = userWallets.map((w) => w.id);
   const scanStatusMap = new Map<string, { completed: number; total: number; failed: number; txCount: number }>();
 
   if (walletIds.length > 0) {
-    const jobStats = await db
-      .select({
-        walletId: scanJobs.walletId,
-        status: scanJobs.status,
-        txCount: sql<number>`COALESCE(SUM(${scanJobs.txCount}), 0)`.as("tx_count_sum"),
-        jobCount: sql<number>`COUNT(*)`.as("job_count"),
-      })
-      .from(scanJobs)
-      .where(inArray(scanJobs.walletId, walletIds))
-      .groupBy(scanJobs.walletId, scanJobs.status);
+    try {
+      const jobStats = await db
+        .select({
+          walletId: scanJobs.walletId,
+          status: scanJobs.status,
+          txCount: sql<number>`COALESCE(SUM(${scanJobs.txCount}), 0)`.as("tx_count_sum"),
+          jobCount: sql<number>`COUNT(*)`.as("job_count"),
+        })
+        .from(scanJobs)
+        .where(inArray(scanJobs.walletId, walletIds))
+        .groupBy(scanJobs.walletId, scanJobs.status);
 
-    for (const row of jobStats) {
-      const existing = scanStatusMap.get(row.walletId) || { completed: 0, total: 0, failed: 0, txCount: 0 };
-      existing.total += Number(row.jobCount);
-      existing.txCount += Number(row.txCount);
-      if (row.status === "completed") existing.completed += Number(row.jobCount);
-      if (row.status === "failed") existing.failed += Number(row.jobCount);
-      scanStatusMap.set(row.walletId, existing);
+      for (const row of jobStats) {
+        const existing = scanStatusMap.get(row.walletId) || { completed: 0, total: 0, failed: 0, txCount: 0 };
+        existing.total += Number(row.jobCount);
+        existing.txCount += Number(row.txCount);
+        if (row.status === "completed") existing.completed += Number(row.jobCount);
+        if (row.status === "failed") existing.failed += Number(row.jobCount);
+        scanStatusMap.set(row.walletId, existing);
+      }
+    } catch {
+      // scan_jobs 테이블이 없거나 쿼리 실패 시 무시 — 스캔 상태 없이 진행
     }
   }
 
