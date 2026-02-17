@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import type { ConnectedWallet } from "@/core/types";
+import type { ConnectedWallet, WalletScanStatus } from "@/core/types";
 import { CHAIN_COLORS, CHAIN_NAMES } from "@/core/constants";
-import { Plus, Trash2, Star, Loader2, Copy, Check } from "lucide-react";
+import { Plus, Trash2, Star, Loader2, Copy, Check, CheckCircle2, AlertCircle } from "lucide-react";
 import { toast } from "@/shared/ui";
 import { api } from "@/domains/dashboard/lib/api-client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -35,6 +35,37 @@ function CopyAddressButton({ address }: { address: string }) {
     >
       {copied ? <Check className="w-4 h-4 text-positive" /> : <Copy className="w-4 h-4" />}
     </button>
+  );
+}
+
+const STATUS_CONFIG: Record<WalletScanStatus, {
+  label: string;
+  className: string;
+  icon?: "spinner" | "check" | "alert";
+}> = {
+  idle: { label: "대기 중", className: "text-text-muted bg-bg-surface" },
+  scanning: { label: "스캔 중", className: "text-brand bg-brand/10", icon: "spinner" },
+  completed: { label: "완료", className: "text-positive bg-positive/10", icon: "check" },
+  failed: { label: "실패", className: "text-negative bg-negative/10", icon: "alert" },
+};
+
+function ScanStatusBadge({ wallet }: { wallet: ConnectedWallet }) {
+  const config = STATUS_CONFIG[wallet.scanStatus];
+  const progress = wallet.scanProgress;
+
+  return (
+    <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium ${config.className}`}>
+      {config.icon === "spinner" && <Loader2 className="w-3 h-3 animate-spin" />}
+      {config.icon === "check" && <CheckCircle2 className="w-3 h-3" />}
+      {config.icon === "alert" && <AlertCircle className="w-3 h-3" />}
+      <span>
+        {wallet.scanStatus === "scanning" && progress
+          ? `스캔 중 ${progress.completed}/${progress.total}`
+          : wallet.scanStatus === "completed" && wallet.txCount
+            ? `${wallet.txCount.toLocaleString()}건 수집`
+            : config.label}
+      </span>
+    </div>
   );
 }
 
@@ -106,10 +137,10 @@ export function ConnectedWallets({ wallets }: ConnectedWalletsProps) {
                     <Star className="w-3 h-3 text-warning fill-warning shrink-0" />
                   )}
                 </div>
-                <div className="flex items-center gap-2 text-[12px] text-text-muted">
-                  <span>{wallet.label}</span>
-                  <span>&middot;</span>
-                  <span>{CHAIN_NAMES[wallet.chainId]}</span>
+                <div className="flex items-center gap-2 mt-0.5 text-[12px] text-text-muted">
+                  {wallet.label && <span>{wallet.label}</span>}
+                  {wallet.label && <span>&middot;</span>}
+                  <ScanStatusBadge wallet={wallet} />
                 </div>
               </div>
             </div>

@@ -10,10 +10,17 @@ export function useDashboardStats() {
 }
 
 export function useSettings() {
-  return useQuery({
+  const query = useQuery({
     queryKey: ["dashboard", "settings"],
     queryFn: api.getSettings,
+    // 스캔 중인 지갑이 있으면 5초마다 폴링
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      const hasScanning = data?.wallets?.some((w) => w.scanStatus === "scanning");
+      return hasScanning ? 5000 : false;
+    },
   });
+  return query;
 }
 
 export function useRewards() {

@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { getAuthUserId, unauthorizedResponse } from "@/core/auth";
 import { ensureUserExists } from "@/core/auth/ensure-user";
 import { db } from "@/core/db";
-import { users, wallets } from "@/core/db/schema";
-import { eq } from "drizzle-orm";
-import type { SettingsData, Tier, TaxCountry, TaxMethod } from "@/core/types";
+import { users, wallets, scanJobs } from "@/core/db/schema";
+import { eq, inArray, sql } from "drizzle-orm";
+import type { SettingsData, Tier, TaxCountry, TaxMethod, WalletScanStatus } from "@/core/types";
 
 export async function GET() {
   const userId = await getAuthUserId();
@@ -17,6 +17,32 @@ export async function GET() {
     .select()
     .from(wallets)
     .where(eq(wallets.userId, userId));
+
+  // 지갑별 스캔 상태 조회
+  const walletIds = userWallets.map((w) => w.id);
+  const scanStatusMap = new Map<string, { completed: number; total: number; failed: number; txCount: number }>();
+
+  if (walletIds.length > 0) {
+    const jobStats = await db
+      .select({
+        walletId: scanJobs.walletId,
+        status: scanJobs.status,
+        txCount: sql<number>`COALESCE(SUM(${scanJobs.txCount}), 0)`.as("tx_count_sum"),
+        jobCount: sql<number>`COUNT(*)`.as("job_count"),
+      })
+      .from(scanJobs)
+      .where(inArray(scanJobs.walletId, walletIds))
+      .groupBy(scanJobs.walletId, scanJobs.status);
+
+    for (const row of jobStats) {
+      const existing = scanStatusMap.get(row.walletId) || { completed: 0, total: 0, failed: 0, txCount: 0 };
+      existing.total += Number(row.jobCount);
+      existing.txCount += Number(row.txCount);
+      if (row.status === "completed") existing.completed += Number(row.jobCount);
+      if (row.status === "failed") existing.failed += Number(row.jobCount);
+      scanStatusMap.set(row.walletId, existing);
+    }
+  }
 
   const displayName = user?.name
     || (user?.address
@@ -32,14 +58,29 @@ export async function GET() {
       nextTierPoints: 1000,
       joinedAt: user?.createdAt?.toISOString() || new Date().toISOString(),
     },
-    wallets: userWallets.map((w) => ({
-      id: w.id,
-      address: w.address,
-      label: w.label || "",
-      chainId: "hyperevm" as const,
-      isPrimary: w.isPrimary || false,
-      connectedAt: w.createdAt?.toISOString() || new Date().toISOString(),
-    })),
+    wallets: userWallets.map((w) => {
+      const scan = scanStatusMap.get(w.id);
+      let scanStatus: WalletScanStatus = "idle";
+      if (scan) {
+        if (scan.completed + scan.failed >= scan.total) {
+          scanStatus = scan.failed > 0 && scan.completed === 0 ? "failed" : "completed";
+        } else {
+          scanStatus = "scanning";
+        }
+      }
+
+      return {
+        id: w.id,
+        address: w.address,
+        label: w.label || "",
+        chainId: "hyperevm" as const,
+        isPrimary: w.isPrimary || false,
+        connectedAt: w.createdAt?.toISOString() || new Date().toISOString(),
+        scanStatus,
+        scanProgress: scan ? { completed: scan.completed, total: scan.total } : undefined,
+        txCount: scan?.txCount ?? 0,
+      };
+    }),
     preferences: {
       country: (user?.taxCountry as TaxCountry) || "kr",
       method: (user?.taxMethod as TaxMethod) || "fifo",

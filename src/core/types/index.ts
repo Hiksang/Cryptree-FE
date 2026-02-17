@@ -209,6 +209,8 @@ export interface UserProfile {
   avatarUrl?: string;
 }
 
+export type WalletScanStatus = "idle" | "scanning" | "completed" | "failed";
+
 export interface ConnectedWallet {
   id: string;
   address: string;
@@ -216,6 +218,9 @@ export interface ConnectedWallet {
   chainId: ChainId;
   isPrimary: boolean;
   connectedAt: string;
+  scanStatus: WalletScanStatus;
+  scanProgress?: { completed: number; total: number };
+  txCount?: number;
 }
 
 export interface SettingsData {
