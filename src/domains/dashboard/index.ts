@@ -48,6 +48,7 @@ export {
 
 /* ───── Referral ───── */
 export {
+  ReferralClaimCard,
   ReferralCodeCard,
   ReferralStats,
   ShareButtons,

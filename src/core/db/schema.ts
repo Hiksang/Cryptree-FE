@@ -117,6 +117,20 @@ export const shopProducts = pgTable("shop_products", {
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
+export const referrals = pgTable("referrals", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  referrerId: text("referrer_id")
+    .notNull()
+    .references(() => users.authId, { onDelete: "cascade" }),
+  referredId: text("referred_id")
+    .notNull()
+    .references(() => users.authId, { onDelete: "cascade" }),
+  bonusAwarded: integer("bonus_awarded").notNull().default(0),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+}, (table) => [
+  unique("referrals_pair_uniq").on(table.referrerId, table.referredId),
+]);
+
 export const exchangeHistory = pgTable("exchange_history", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: text("user_id")

@@ -38,7 +38,7 @@ export function TierDisplay({ profile }: TierDisplayProps) {
             {currentTier.label}
           </p>
           <p className="text-[14px] text-text-secondary">
-            {profile.tierPoints.toLocaleString()} 포인트
+            {profile.tierPoints.toLocaleString()}건 트랜잭션
           </p>
         </div>
       </div>

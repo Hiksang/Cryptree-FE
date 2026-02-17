@@ -53,6 +53,8 @@ export const api = {
     mutateApi<{ success: boolean }>(`${BASE}/settings`, "PUT", prefs),
   updateProfile: (name: string) =>
     mutateApi<{ success: boolean }>(`${BASE}/settings`, "PUT", { name }),
+  claimReferral: (code: string) =>
+    mutateApi<{ success: boolean; bonus: number }>(`${BASE}/referral/claim`, "POST", { code }),
   addWallet: (address: string, label?: string) =>
     mutateApi<{ id: string; address: string }>("/api/wallets", "POST", { address, label }),
   deleteWallet: (walletId: string) =>

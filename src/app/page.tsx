@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Header } from "@/shared/layout";
 import { Footer } from "@/shared/layout";
 import { Hero } from "@/domains/landing";
@@ -5,10 +6,12 @@ import { Features } from "@/domains/landing";
 import { ComparisonTable } from "@/domains/landing";
 import { Integrate } from "@/domains/landing";
 import { ScanInput } from "@/domains/scan";
+import { ReferralCapture } from "@/shared/ui/referral-capture";
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-bg-primary">
+      <Suspense><ReferralCapture /></Suspense>
       <Header />
 
       <main className="pt-16">

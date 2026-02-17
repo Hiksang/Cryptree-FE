@@ -49,14 +49,27 @@ export async function GET() {
   }
 
   // 트랜잭션 수 기반 티어 계산
-  let tierPoints = 0;
+  let txTotal = 0;
   try {
     const [{ txCount }] = await db
       .select({ txCount: sql<number>`count(*)::int` })
       .from(transactions)
       .where(eq(transactions.userId, userId));
-    tierPoints = txCount;
+    txTotal = txCount;
   } catch { /* ignore */ }
+
+  // 트랜잭션 수로 티어 재계산 (DB 값이 오래됐을 수 있으므로)
+  const computedTier: Tier = txTotal >= 2000 ? "diamond" : txTotal >= 500 ? "gold" : txTotal >= 100 ? "silver" : "bronze";
+  const dbTier = (user?.tier as Tier) || "bronze";
+
+  // DB tier가 실제와 다르면 업데이트
+  if (computedTier !== dbTier) {
+    try {
+      await db.update(users).set({ tier: computedTier }).where(eq(users.authId, userId));
+    } catch { /* ignore */ }
+  }
+
+  const currentTier = computedTier;
 
   // 티어 임계값 (트랜잭션 수 기준)
   const TIER_THRESHOLDS: Record<string, number> = {
@@ -65,7 +78,6 @@ export async function GET() {
     gold: 2000,
     diamond: Infinity,
   };
-  const currentTier = (user?.tier as Tier) || "bronze";
   const tierOrder: Tier[] = ["bronze", "silver", "gold", "diamond"];
   const currentIdx = tierOrder.indexOf(currentTier);
   const nextTier = currentIdx < tierOrder.length - 1 ? tierOrder[currentIdx + 1] : currentTier;
@@ -104,7 +116,7 @@ export async function GET() {
       name: displayName,
       email: "",
       tier: currentTier,
-      tierPoints,
+      tierPoints: txTotal,
       nextTierPoints,
       joinedAt: user?.createdAt?.toISOString() || new Date().toISOString(),
     },

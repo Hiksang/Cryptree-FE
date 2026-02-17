@@ -1,7 +1,7 @@
 "use client";
 
 import { useReferral } from "@/domains/dashboard/hooks/use-dashboard-queries";
-import { ReferralCodeCard } from "@/domains/dashboard";
+import { ReferralCodeCard, ReferralClaimCard } from "@/domains/dashboard";
 import { ErrorState } from "@/shared/ui";
 import { StatsCardSkeleton } from "@/shared/ui";
 import { Link2, Users, Copy, Check } from "lucide-react";
@@ -77,6 +77,9 @@ export default function ReferralPage() {
       <h1 className="text-[24px] leading-[32px] font-semibold text-text-primary">
         추천
       </h1>
+
+      {/* 추천 코드 등록 */}
+      <ReferralClaimCard />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ReferralCodeCard code={data.code} />
