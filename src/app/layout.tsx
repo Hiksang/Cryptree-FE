@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ConditionalPrivyProvider } from "@/shared/providers";
 import { QueryProvider } from "@/shared/providers";
+import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -34,6 +35,7 @@ export default function RootLayout({
             />
           </QueryProvider>
         </ConditionalPrivyProvider>
+        <Analytics />
       </body>
     </html>
   );

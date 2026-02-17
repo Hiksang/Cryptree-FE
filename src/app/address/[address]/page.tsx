@@ -5,7 +5,8 @@ import { useParams, useRouter } from "next/navigation";
 import { Header } from "@/shared/layout";
 import { ScanProgress, ScanResultSkeleton, ScanTabs, useScan } from "@/domains/scan";
 import { shortenAddress } from "@/core/utils";
-import { ArrowLeft, Copy, Check, AlertCircle, Gift, Shield, TrendingUp } from "lucide-react";
+import { track } from "@vercel/analytics";
+import { ArrowLeft, Copy, Check, AlertCircle, Gift, Shield, TrendingUp, X, Sparkles } from "lucide-react";
 
 const hasPrivy = !!process.env.NEXT_PUBLIC_PRIVY_APP_ID;
 
@@ -19,12 +20,14 @@ function usePrivyLogin() {
 type ViewPhase = "scanning" | "skeleton" | "results" | "empty";
 
 const SKELETON_DELAY_MS = 2500;
+const POPUP_DELAY_MS = 8000;
 
 export default function AddressPage() {
   const params = useParams();
   const router = useRouter();
   const address = params.address as string;
   const [copied, setCopied] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
   const login = usePrivyLogin();
 
   const { data, isLoading } = useScan(address);
@@ -43,11 +46,9 @@ export default function AddressPage() {
   // Phase transitions
   useEffect(() => {
     if (isLoading && !data) {
-      // Still loading — start at scanning phase
       setPhase("scanning");
       setFadeClass("animate-fade-in");
 
-      // After SKELETON_DELAY_MS, transition scanning → skeleton (if data hasn't arrived)
       const skeletonTimer = setTimeout(() => {
         if (!dataArrivedRef.current) {
           setFadeClass("animate-fade-out");
@@ -62,7 +63,6 @@ export default function AddressPage() {
     }
 
     if (!isLoading && data) {
-      // Data arrived — transition to final state
       setFadeClass("animate-fade-out");
 
       const timer = setTimeout(() => {
@@ -74,11 +74,26 @@ export default function AddressPage() {
     }
   }, [isLoading, data]);
 
+  // Show popup after delay when results are displayed
+  useEffect(() => {
+    if (phase !== "results") return;
+    const timer = setTimeout(() => {
+      setShowPopup(true);
+      track("cta_popup_shown", { page: "scan_result" });
+    }, POPUP_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [phase]);
+
   const handleCopy = () => {
     navigator.clipboard.writeText(address);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  function handleSignup(source: string) {
+    track("signup_click", { source, page: "scan_result" });
+    login();
+  }
 
   const scanComplete = !isLoading && !!data;
 
@@ -149,7 +164,7 @@ export default function AddressPage() {
               </div>
 
               {/* Tabs */}
-              <ScanTabs data={data} onSignup={() => login()} />
+              <ScanTabs data={data} onSignup={() => handleSignup("tab_lock")} />
 
               {/* Signup CTA inline */}
               <div className="mt-8 mb-24 bg-bg-surface border border-border-default rounded-[8px] overflow-hidden">
@@ -183,7 +198,7 @@ export default function AddressPage() {
                     </div>
                   </div>
                   <button
-                    onClick={() => login()}
+                    onClick={() => handleSignup("inline_card")}
                     className="w-full h-11 bg-brand text-bg-primary font-semibold text-[15px] rounded-[6px] hover:bg-brand-hover transition-colors cursor-pointer"
                   >
                     무료로 시작하기
@@ -210,13 +225,77 @@ export default function AddressPage() {
                   가입하고 전체 분석 보기
                 </p>
                 <button
-                  onClick={() => login()}
+                  onClick={() => handleSignup("sticky_bar")}
                   className="h-10 px-6 bg-brand text-bg-primary font-semibold text-[14px] rounded-[8px] hover:bg-brand-hover transition-colors cursor-pointer whitespace-nowrap shrink-0"
                 >
                   무료로 시작하기
                 </button>
               </div>
             </div>
+
+            {/* Signup popup modal */}
+            {showPopup && (
+              <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+                <div
+                  className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                  onClick={() => {
+                    setShowPopup(false);
+                    track("cta_popup_dismissed", { page: "scan_result" });
+                  }}
+                />
+                <div className="relative bg-bg-surface border border-border-default rounded-[16px] p-8 max-w-[420px] w-full text-center animate-fade-in-up shadow-2xl">
+                  <button
+                    onClick={() => {
+                      setShowPopup(false);
+                      track("cta_popup_dismissed", { page: "scan_result" });
+                    }}
+                    className="absolute top-4 right-4 p-1 text-text-muted hover:text-text-primary transition-colors cursor-pointer"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+
+                  <div className="w-16 h-16 rounded-full bg-brand/10 flex items-center justify-center mx-auto mb-5">
+                    <Sparkles className="w-8 h-8 text-brand" />
+                  </div>
+
+                  <h3 className="text-[22px] font-bold text-text-primary mb-2">
+                    분석이 완료되었습니다!
+                  </h3>
+                  <p className="text-[14px] text-text-secondary mb-6">
+                    지금 무료 가입하면 PnL 분석, 세금 리포트 등<br />
+                    모든 기능을 이용할 수 있습니다.
+                  </p>
+
+                  <div className="flex flex-col gap-2 mb-5">
+                    <div className="flex items-center gap-2 text-[13px] text-text-secondary">
+                      <Check className="w-4 h-4 text-brand shrink-0" />
+                      분석 결과 저장 및 대시보드
+                    </div>
+                    <div className="flex items-center gap-2 text-[13px] text-text-secondary">
+                      <Check className="w-4 h-4 text-brand shrink-0" />
+                      PnL 분석 · 세금 리포트
+                    </div>
+                    <div className="flex items-center gap-2 text-[13px] text-text-secondary">
+                      <Check className="w-4 h-4 text-brand shrink-0" />
+                      가입 즉시 100P 지급
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setShowPopup(false);
+                      handleSignup("popup");
+                    }}
+                    className="w-full h-12 bg-brand text-bg-primary font-semibold text-[16px] rounded-[8px] hover:bg-brand-hover transition-colors cursor-pointer mb-3"
+                  >
+                    무료로 시작하기
+                  </button>
+                  <p className="text-[12px] text-text-muted">
+                    Google 또는 지갑으로 10초만에 가입
+                  </p>
+                </div>
+              </div>
+            )}
             </>
           ) : null}
         </div>
