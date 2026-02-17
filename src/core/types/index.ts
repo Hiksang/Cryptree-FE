@@ -287,6 +287,8 @@ export interface ReferralData {
   code: string;
   stats: ReferralStats;
   friends: ReferredFriend[];
+  /** 나를 추천한 사람 정보 (null이면 아직 추천 코드 미등록) */
+  referredBy: { address: string; code: string; registeredAt: string } | null;
 }
 
 // Leaderboard

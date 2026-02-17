@@ -79,7 +79,7 @@ export default function ReferralPage() {
       </h1>
 
       {/* 추천 코드 등록 */}
-      <ReferralClaimCard />
+      <ReferralClaimCard referredBy={data.referredBy} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ReferralCodeCard code={data.code} />

@@ -1,12 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Ticket, Loader2 } from "lucide-react";
+import { Ticket, Loader2, CheckCircle } from "lucide-react";
 import { toast } from "@/shared/ui";
 import { api } from "@/domains/dashboard/lib/api-client";
 import { useQueryClient } from "@tanstack/react-query";
+import type { ReferralData } from "@/core/types";
 
-export function ReferralClaimCard() {
+interface ReferralClaimCardProps {
+  referredBy: ReferralData["referredBy"];
+}
+
+export function ReferralClaimCard({ referredBy }: ReferralClaimCardProps) {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [claimed, setClaimed] = useState(false);
@@ -14,12 +19,13 @@ export function ReferralClaimCard() {
 
   // ?ref= 파라미터로 저장된 pendingReferral 자동 입력
   useEffect(() => {
+    if (referredBy) return; // 이미 등록된 경우 무시
     const pending = localStorage.getItem("pendingReferral");
     if (pending) {
       setCode(pending);
       localStorage.removeItem("pendingReferral");
     }
-  }, []);
+  }, [referredBy]);
 
   async function handleClaim() {
     const trimmed = code.trim().toUpperCase();
@@ -51,16 +57,26 @@ export function ReferralClaimCard() {
     }
   }
 
-  if (claimed) {
+  // 이미 추천 코드를 등록한 상태
+  if (referredBy || claimed) {
     return (
       <div className="bg-bg-surface border border-positive/30 rounded-[8px] p-6">
         <div className="flex items-center gap-2 mb-2">
-          <Ticket className="w-5 h-5 text-positive" />
+          <CheckCircle className="w-5 h-5 text-positive" />
           <h3 className="text-[16px] font-semibold text-text-primary">추천 코드 등록 완료</h3>
         </div>
-        <p className="text-[14px] text-text-secondary">
-          추천 코드가 성공적으로 등록되었습니다.
-        </p>
+        {referredBy ? (
+          <div className="flex items-center gap-4 text-[14px] text-text-secondary">
+            <span>추천인: <span className="font-mono text-text-primary">{referredBy.code || referredBy.address}</span></span>
+            <span className="text-text-muted">
+              {new Date(referredBy.registeredAt).toLocaleDateString("ko-KR")}
+            </span>
+          </div>
+        ) : (
+          <p className="text-[14px] text-text-secondary">
+            추천 코드가 성공적으로 등록되었습니다.
+          </p>
+        )}
       </div>
     );
   }
