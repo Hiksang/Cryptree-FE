@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { UserProfile } from "@/core/types";
 import { TIER_CONFIG } from "@/core/constants";
 import { User, Pencil, Check, X, Loader2 } from "lucide-react";
@@ -19,14 +19,19 @@ export function ProfileCard({ profile }: ProfileCardProps) {
   const [name, setName] = useState(profile.name);
   const [saving, setSaving] = useState(false);
 
+  // profile prop이 바뀌면 name state도 동기화
+  useEffect(() => {
+    setName(profile.name);
+  }, [profile.name]);
+
   async function handleSave() {
     if (!name.trim()) return;
     setSaving(true);
     try {
       await api.updateProfile(name.trim());
+      await queryClient.invalidateQueries({ queryKey: ["dashboard", "settings"] });
       toast.success("이름이 변경되었습니다");
       setEditing(false);
-      queryClient.invalidateQueries({ queryKey: ["dashboard", "settings"] });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "이름 변경에 실패했습니다");
     } finally {

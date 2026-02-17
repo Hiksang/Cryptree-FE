@@ -61,6 +61,9 @@ export async function PUT(request: Request) {
   const userId = await getAuthUserId();
   if (!userId) return unauthorizedResponse();
 
+  // Webhook 미작동 시에도 유저 레코드 보장
+  await ensureUserExists(userId);
+
   const body = await request.json();
   const { country, method, name } = body as {
     country?: string;

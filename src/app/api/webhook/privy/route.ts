@@ -8,6 +8,8 @@ interface PrivyLinkedAccount {
   type: string;
   address?: string;
   chain_type?: string;
+  name?: string;
+  email?: string;
 }
 
 interface PrivyWebhookEvent {
@@ -66,11 +68,25 @@ export async function POST(request: Request) {
     );
     const address = walletAccount?.address || null;
 
+    // Google/이메일 계정에서 이름 추출
+    const googleAccount = user.linked_accounts.find(
+      (a) => a.type === "google_oauth" && a.name,
+    );
+    const emailAccount = user.linked_accounts.find(
+      (a) =>
+        (a.type === "google_oauth" && a.email) ||
+        (a.type === "email" && a.address),
+    );
+    const userName =
+      googleAccount?.name ||
+      (emailAccount?.email || emailAccount?.address)?.split("@")[0] ||
+      null;
+
     const SIGNUP_BONUS = 500;
 
     await db
       .insert(users)
-      .values({ authId, address, referralCode })
+      .values({ authId, address, referralCode, name: userName })
       .onConflictDoNothing();
     await db
       .insert(pointBalances)
