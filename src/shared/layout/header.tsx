@@ -31,9 +31,7 @@ function usePrivyAuth() {
 function AuthButtons() {
   const { ready, authenticated, login, logout } = usePrivyAuth();
 
-  if (!ready) return null;
-
-  if (authenticated) {
+  if (ready && authenticated) {
     return (
       <div className="relative group">
         <button className="w-8 h-8 rounded-full bg-brand-muted flex items-center justify-center text-brand text-[14px] font-semibold cursor-pointer">
@@ -80,9 +78,7 @@ function AuthButtons() {
 function MobileAuthButtons({ onClose }: { onClose: () => void }) {
   const { ready, authenticated, login, logout } = usePrivyAuth();
 
-  if (!ready) return null;
-
-  if (authenticated) {
+  if (ready && authenticated) {
     return (
       <>
         <Link
