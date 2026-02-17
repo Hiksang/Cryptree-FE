@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 import { Menu, X, LogOut, LayoutDashboard } from "lucide-react";
 import { usePrivy } from "@privy-io/react-auth";
 
@@ -18,6 +19,16 @@ function usePrivyAuth() {
 
 function AuthButtons() {
   const { ready, authenticated, login, logout } = usePrivyAuth();
+  const router = useRouter();
+  const pathname = usePathname();
+  const wasAuthenticated = useRef(false);
+
+  useEffect(() => {
+    if (ready && authenticated && !wasAuthenticated.current && pathname === "/") {
+      router.push("/dashboard");
+    }
+    wasAuthenticated.current = authenticated;
+  }, [ready, authenticated, router, pathname]);
 
   if (ready && authenticated) {
     return (
