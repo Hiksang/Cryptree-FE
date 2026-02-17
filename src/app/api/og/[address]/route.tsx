@@ -60,7 +60,7 @@ export async function GET(
               display: "flex",
             }}
           >
-            DeFi Identity 2024
+            DeFi Identity 2025
           </div>
 
           <div
@@ -187,7 +187,7 @@ export async function GET(
             justifyContent: "center",
           }}
         >
-          hyperview.xyz
+          cryptree.xyz
         </div>
       </div>
     ),

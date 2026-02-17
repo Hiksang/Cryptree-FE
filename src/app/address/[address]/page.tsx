@@ -112,6 +112,7 @@ export default function AddressPage() {
               </button>
             </div>
           ) : phase === "results" && data ? (
+            <>
             <div className="max-w-[960px] mx-auto px-4 py-6">
               {/* Top navigation */}
               <div className="flex items-center justify-between mb-4 gap-2">
@@ -148,10 +149,10 @@ export default function AddressPage() {
               </div>
 
               {/* Tabs */}
-              <ScanTabs data={data} />
+              <ScanTabs data={data} onSignup={() => login()} />
 
-              {/* Signup CTA */}
-              <div className="mt-8 bg-bg-surface border border-border-default rounded-[8px] overflow-hidden">
+              {/* Signup CTA inline */}
+              <div className="mt-8 mb-24 bg-bg-surface border border-border-default rounded-[8px] overflow-hidden">
                 <div className="bg-gradient-to-r from-brand/10 to-brand-hover/10 px-6 py-4 border-b border-border-default">
                   <h3 className="text-[18px] font-semibold text-text-primary">
                     지금 가입하고 더 많은 기능을 이용하세요
@@ -193,6 +194,30 @@ export default function AddressPage() {
                 </div>
               </div>
             </div>
+
+            {/* Sticky bottom CTA bar */}
+            <div className="fixed bottom-0 left-0 right-0 z-50 bg-bg-surface/95 backdrop-blur-md border-t border-border-default">
+              <div className="max-w-[960px] mx-auto px-4 py-3 flex items-center justify-between gap-4">
+                <div className="hidden sm:block">
+                  <p className="text-[14px] font-medium text-text-primary">
+                    무료 가입하고 전체 분석 결과를 확인하세요
+                  </p>
+                  <p className="text-[12px] text-text-muted">
+                    PnL 분석 · 세금 리포트 · 100P 즉시 지급
+                  </p>
+                </div>
+                <p className="sm:hidden text-[13px] font-medium text-text-primary">
+                  가입하고 전체 분석 보기
+                </p>
+                <button
+                  onClick={() => login()}
+                  className="h-10 px-6 bg-brand text-bg-primary font-semibold text-[14px] rounded-[8px] hover:bg-brand-hover transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                >
+                  무료로 시작하기
+                </button>
+              </div>
+            </div>
+            </>
           ) : null}
         </div>
       </main>

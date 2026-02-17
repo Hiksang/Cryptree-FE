@@ -7,15 +7,16 @@ import { PnlChart, PnlByChain } from "@/domains/pnl";
 import { TaxPreview } from "@/domains/tax";
 import { CHAIN_COLORS } from "@/core/constants";
 import { formatCurrency } from "@/core/utils";
-import { Download, Link2, Share2, Clock } from "lucide-react";
+import { Download, Link2, Share2, Clock, Lock } from "lucide-react";
 
 const TABS = ["활동 분석", "PnL 분석", "세금 미리보기"] as const;
 
 interface ScanTabsProps {
   data: ScanResult;
+  onSignup?: () => void;
 }
 
-export function ScanTabs({ data }: ScanTabsProps) {
+export function ScanTabs({ data, onSignup }: ScanTabsProps) {
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>("활동 분석");
 
   return (
@@ -39,21 +40,64 @@ export function ScanTabs({ data }: ScanTabsProps) {
 
       {/* Tab content */}
       <div className="animate-fade-in-up">
-        {activeTab === "활동 분석" && <ActivityTab data={data} />}
-        {activeTab === "PnL 분석" && <PnlTab data={data} />}
-        {activeTab === "세금 미리보기" && (
-          data.taxSummary.totalGains === 0 && data.taxSummary.totalLosses === 0 ? (
-            <ComingSoonCard message="세금 미리보기는 준비 중입니다." />
-          ) : (
-            <TaxPreview data={data.taxSummary} />
-          )
-        )}
+        {activeTab === "활동 분석" && <ActivityTab data={data} onSignup={onSignup} />}
+        {activeTab === "PnL 분석" && <LockedContent onSignup={onSignup} />}
+        {activeTab === "세금 미리보기" && <LockedContent onSignup={onSignup} />}
       </div>
     </div>
   );
 }
 
-function ActivityTab({ data }: { data: ScanResult }) {
+function LockedContent({ onSignup }: { onSignup?: () => void }) {
+  return (
+    <div className="relative">
+      {/* Blurred placeholder content */}
+      <div className="blur-sm pointer-events-none select-none opacity-50">
+        <div className="space-y-6">
+          <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
+            <div className="h-6 w-32 bg-bg-surface-2 rounded mb-4" />
+            <div className="h-[200px] bg-bg-surface-2 rounded" />
+          </div>
+          <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
+            <div className="h-6 w-40 bg-bg-surface-2 rounded mb-4" />
+            <div className="space-y-3">
+              <div className="h-10 bg-bg-surface-2 rounded" />
+              <div className="h-10 bg-bg-surface-2 rounded" />
+              <div className="h-10 bg-bg-surface-2 rounded" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Overlay CTA */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="bg-bg-surface/95 backdrop-blur-sm border border-border-default rounded-[12px] p-8 max-w-[400px] text-center shadow-lg">
+          <div className="w-14 h-14 rounded-full bg-brand/10 flex items-center justify-center mx-auto mb-4">
+            <Lock className="w-7 h-7 text-brand" />
+          </div>
+          <h3 className="text-[20px] font-bold text-text-primary mb-2">
+            가입 후 이용 가능
+          </h3>
+          <p className="text-[14px] text-text-secondary mb-6">
+            PnL 분석, 세금 리포트 등 상세 기능은<br />
+            무료 가입 후 이용할 수 있습니다.
+          </p>
+          <button
+            onClick={() => onSignup?.()}
+            className="w-full h-12 bg-brand text-bg-primary font-semibold text-[15px] rounded-[8px] hover:bg-brand-hover transition-colors cursor-pointer mb-3"
+          >
+            무료로 시작하기
+          </button>
+          <p className="text-[12px] text-text-muted">
+            Google 또는 지갑으로 10초만에 가입
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ActivityTab({ data, onSignup }: { data: ScanResult; onSignup?: () => void }) {
   return (
     <div className="space-y-6">
       {/* Two column layout */}
@@ -142,11 +186,14 @@ function ActivityTab({ data }: { data: ScanResult }) {
         </div>
 
         <div className="mt-4 pt-4 border-t border-border-default text-center">
-          <p className="text-[14px] text-text-muted mb-2">
+          <p className="text-[14px] text-text-muted mb-3">
             전체 내역은 가입 후 확인 가능
           </p>
-          <button className="text-[14px] text-brand hover:text-brand-hover transition-colors cursor-pointer">
-            무료 가입하기 →
+          <button
+            onClick={() => onSignup?.()}
+            className="h-10 px-6 bg-brand text-bg-primary font-semibold text-[14px] rounded-[6px] hover:bg-brand-hover transition-colors cursor-pointer"
+          >
+            무료 가입하고 전체 보기
           </button>
         </div>
       </div>

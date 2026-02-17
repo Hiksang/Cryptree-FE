@@ -27,7 +27,7 @@ export function IdentityCard({ data }: IdentityCardProps) {
       }}
     >
       <h2 className="text-[18px] leading-[28px] font-semibold text-text-primary mb-8">
-        DeFi Identity 2024
+        DeFi Identity 2025
       </h2>
 
       {/* Stats Grid */}
@@ -64,7 +64,7 @@ export function IdentityCard({ data }: IdentityCardProps) {
 
       {/* Footer */}
       <p className="text-[12px] leading-[16px] text-text-muted text-center">
-        hyperview.xyz
+        cryptree.xyz
       </p>
     </div>
   );
