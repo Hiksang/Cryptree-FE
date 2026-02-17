@@ -8,7 +8,7 @@ import { TaxPreview } from "@/domains/tax";
 import { CHAIN_COLORS } from "@/core/constants";
 import { formatCurrency } from "@/core/utils";
 import { useT } from "@/core/i18n";
-import { Download, Link2, Share2, Clock, Lock } from "lucide-react";
+import { Clock, Lock } from "lucide-react";
 
 interface ScanTabsProps {
   data: ScanResult;
@@ -110,19 +110,6 @@ function ActivityTab({ data, onSignup }: { data: ScanResult; onSignup?: () => vo
         {/* Left: Identity Card */}
         <div>
           <IdentityCard data={data.identity} />
-          <div className="flex gap-2 mt-4">
-            <button className="h-8 px-3 bg-bg-surface-2 border border-border-default rounded-[6px] text-[14px] text-text-secondary hover:text-text-primary hover:border-border-hover transition-colors flex items-center gap-1.5 cursor-pointer">
-              <Download className="w-4 h-4" />
-              {t.scan.tabs.saveImage}
-            </button>
-            <button className="h-8 px-3 bg-bg-surface-2 border border-border-default rounded-[6px] text-[14px] text-text-secondary hover:text-text-primary hover:border-border-hover transition-colors flex items-center gap-1.5 cursor-pointer">
-              <Link2 className="w-4 h-4" />
-              {t.scan.tabs.copyLink}
-            </button>
-            <button className="h-8 px-3 bg-bg-surface-2 border border-border-default rounded-[6px] text-[14px] text-text-secondary hover:text-text-primary hover:border-border-hover transition-colors flex items-center gap-1.5 cursor-pointer">
-              <Share2 className="w-4 h-4" />{t.scan.tabs.shareX}
-            </button>
-          </div>
         </div>
 
         {/* Right: Chain breakdown + Insights */}

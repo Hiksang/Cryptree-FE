@@ -173,6 +173,10 @@ export const ko = {
       popupFeature2: "PnL 분석 · 세금 리포트",
       popupFeature3: "가입 즉시 100P 지급",
     },
+    insights: {
+      heavyWallet: "매우 활발한 지갑입니다",
+      heavyWalletDetail: "분석에 시간이 필요한 대규모 활동 이력이 감지되었습니다",
+    },
     chainBreakdown: "체인별 활동",
     taxPreview: {
       yearSummary: "2024 세금 요약",

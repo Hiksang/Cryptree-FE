@@ -176,6 +176,10 @@ export const en: Translations = {
       popupFeature2: "PnL Analysis · Tax Report",
       popupFeature3: "100P instant reward on signup",
     },
+    insights: {
+      heavyWallet: "This is a very active wallet",
+      heavyWalletDetail: "Large-scale activity history detected that requires extended analysis",
+    },
     chainBreakdown: "Chain Activity",
     taxPreview: {
       yearSummary: "2024 Tax Summary",
