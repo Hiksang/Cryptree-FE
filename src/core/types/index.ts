@@ -317,13 +317,16 @@ export type ShopCategory = "digital" | "service" | "nft" | "physical";
 export interface ShopProduct {
   id: string;
   name: string;
+  nameEn?: string;
   description: string;
+  descriptionEn?: string;
   category: ShopCategory;
   pointsCost: number;
   imageUrl?: string;
   stock: number | null;
   tag?: "hot" | "new" | "limited" | "soldout";
   badgeLabel?: string;
+  badgeLabelEn?: string;
 }
 
 export interface ExchangeRate {

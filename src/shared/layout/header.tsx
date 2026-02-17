@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { Menu, X, LogOut, LayoutDashboard } from "lucide-react";
 import { usePrivy } from "@privy-io/react-auth";
@@ -131,8 +132,9 @@ export function Header() {
       <div className="max-w-[1280px] mx-auto h-full flex items-center justify-between px-4 md:px-8">
         <Link
           href="/"
-          className="text-[20px] leading-[28px] font-bold text-brand"
+          className="flex items-center gap-2 text-[20px] leading-[28px] font-bold text-brand"
         >
+          <Image src="/icon.png" alt="Cryptree" width={28} height={28} />
           Cryptree
         </Link>
 

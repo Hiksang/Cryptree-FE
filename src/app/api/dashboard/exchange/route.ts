@@ -25,6 +25,14 @@ export async function GET() {
       .where(eq(exchangeHistory.userId, userId)),
   ]);
 
+  // 오늘 사용한 포인트 계산
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const todayHistory = history.filter(
+    (h) => h.createdAt && h.createdAt >= todayStart && h.type === "usdc",
+  );
+  const dailyUsed = todayHistory.reduce((sum, h) => sum + h.pointsSpent, 0);
+
   const data: ExchangeData = {
     pointsBalance: balance?.balance ?? 0,
     lifetimeEarned: balance?.lifetimeEarned ?? 0,
@@ -39,18 +47,21 @@ export async function GET() {
       minPoints: 1000,
       maxPoints: 50000,
       dailyLimit: 50000,
-      dailyUsed: 0,
+      dailyUsed,
       fee: 0,
     },
     products: products.map((p) => ({
       id: p.id,
       name: p.name,
+      nameEn: p.nameEn || undefined,
       description: p.description || "",
+      descriptionEn: p.descriptionEn || undefined,
       category: p.category as ShopCategory,
       pointsCost: p.pointsCost,
       stock: p.stock,
       tag: (p.tag as "hot" | "new" | "limited" | "soldout") || undefined,
       badgeLabel: p.badgeLabel || undefined,
+      badgeLabelEn: p.badgeLabelEn || undefined,
     })),
     history: history.map((h) => ({
       id: h.id,

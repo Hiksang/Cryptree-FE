@@ -1,4 +1,4 @@
--- Cryptree DB Schema
+-- HyperView DB Schema
 -- Initialized via Docker entrypoint
 
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
@@ -105,15 +105,23 @@ CREATE TABLE IF NOT EXISTS point_ledger (
 CREATE TABLE IF NOT EXISTS shop_products (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
+  name_en TEXT,
   description TEXT,
+  description_en TEXT,
   category TEXT NOT NULL,
   points_cost INTEGER NOT NULL,
   stock INTEGER,
   tag TEXT,
   badge_label TEXT,
+  badge_label_en TEXT,
   is_active BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- i18n migration: add English columns to existing shop_products
+ALTER TABLE shop_products ADD COLUMN IF NOT EXISTS name_en TEXT;
+ALTER TABLE shop_products ADD COLUMN IF NOT EXISTS description_en TEXT;
+ALTER TABLE shop_products ADD COLUMN IF NOT EXISTS badge_label_en TEXT;
 
 -- 교환 기록
 CREATE TABLE IF NOT EXISTS exchange_history (

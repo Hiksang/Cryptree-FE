@@ -14,6 +14,7 @@ import { api } from "@/domains/dashboard/lib/api-client";
 import { useQueryClient } from "@tanstack/react-query";
 import type { ShopProduct } from "@/core/types";
 import { useT } from "@/core/i18n";
+import { useHyperViewStore } from "@/shared/store";
 
 const CATEGORY_CONFIG = {
   digital: {
@@ -52,6 +53,11 @@ interface ProductCardProps {
 
 export function ProductCard({ product, pointsBalance }: ProductCardProps) {
   const t = useT();
+  const locale = useHyperViewStore((s) => s.locale);
+  const isEn = locale === "en";
+  const name = (isEn && product.nameEn) || product.name;
+  const description = (isEn && product.descriptionEn) || product.description;
+  const badgeLabel = (isEn && product.badgeLabelEn) || product.badgeLabel;
   const config = CATEGORY_CONFIG[product.category];
   const Icon = config.icon;
   const canAfford = pointsBalance >= product.pointsCost;
@@ -84,7 +90,7 @@ export function ProductCard({ product, pointsBalance }: ProductCardProps) {
           <span
             className={`absolute top-2 right-2 px-2 py-0.5 rounded-full text-[10px] font-semibold ${TAG_STYLES[product.tag]}`}
           >
-            {product.badgeLabel || product.tag.toUpperCase()}
+            {badgeLabel || product.tag.toUpperCase()}
           </span>
         )}
         {isSoldOut && (
@@ -99,10 +105,10 @@ export function ProductCard({ product, pointsBalance }: ProductCardProps) {
       {/* Content */}
       <div className="p-4 flex-1 flex flex-col">
         <h4 className="text-[14px] font-semibold text-text-primary mb-1 line-clamp-1">
-          {product.name}
+          {name}
         </h4>
         <p className="text-[12px] text-text-muted mb-3 line-clamp-2 flex-1">
-          {product.description}
+          {description}
         </p>
 
         <div className="flex items-center justify-between">

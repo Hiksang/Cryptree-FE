@@ -16,17 +16,17 @@ INSERT INTO point_balances (user_id, balance, lifetime_earned, lifetime_spent) V
 ON CONFLICT (user_id) DO NOTHING;
 
 -- Shop products
-INSERT INTO shop_products (name, description, category, points_cost, stock, tag, badge_label) VALUES
-  ('커피 쿠폰 (스타벅스)', '스타벅스 아메리카노 1잔 교환권', 'physical', 5000, NULL, 'hot', '인기'),
-  ('USDC $1 교환권', '1 USDC를 지갑으로 수령합니다', 'digital', 1000, NULL, 'hot', '인기'),
-  ('HyperView Pro (1개월)', 'HyperView 프로 구독 1개월 이용권. 고급 분석 + 무제한 알림', 'service', 500, NULL, NULL, NULL),
-  ('HyperView Genesis NFT', '한정판 Genesis 컬렉션 NFT. 홀더 전용 혜택 포함', 'nft', 2000, 50, 'limited', '50개 한정'),
-  ('Discord 프리미엄 역할', '프리미엄 디스코드 역할 부여 (3개월)', 'digital', 300, NULL, 'new', '신규'),
-  ('HYPE 스티커 팩', '실물 HYPE 스티커 팩 (10종)', 'physical', 800, NULL, NULL, NULL),
-  ('세금 보고서 PDF', '연간 세금 보고서 PDF 자동 생성', 'service', 1500, NULL, NULL, NULL),
-  ('HyperView 후드티', '한정판 HyperView 브랜드 후드티', 'physical', 3000, 30, 'limited', '30개 한정'),
-  ('AI 포트폴리오 리뷰', 'AI 기반 포트폴리오 분석 리포트', 'service', 1000, NULL, NULL, NULL),
-  ('커스텀 프로필 프레임', '대시보드 프로필 커스텀 프레임', 'digital', 400, NULL, 'new', '신규')
+INSERT INTO shop_products (name, name_en, description, description_en, category, points_cost, stock, tag, badge_label, badge_label_en) VALUES
+  ('커피 쿠폰 (스타벅스)', 'Coffee Coupon (Starbucks)', '스타벅스 아메리카노 1잔 교환권', 'Starbucks Americano 1 cup voucher', 'physical', 5000, NULL, 'hot', '인기', 'Popular'),
+  ('USDC $1 교환권', 'USDC $1 Voucher', '1 USDC를 지갑으로 수령합니다', 'Receive 1 USDC to your wallet', 'digital', 1000, NULL, 'hot', '인기', 'Popular'),
+  ('HyperView Pro (1개월)', 'HyperView Pro (1 Month)', 'HyperView 프로 구독 1개월 이용권. 고급 분석 + 무제한 알림', 'HyperView Pro 1-month subscription. Advanced analytics + unlimited alerts', 'service', 500, NULL, NULL, NULL, NULL),
+  ('HyperView Genesis NFT', 'HyperView Genesis NFT', '한정판 Genesis 컬렉션 NFT. 홀더 전용 혜택 포함', 'Limited edition Genesis Collection NFT. Exclusive holder perks included', 'nft', 2000, 50, 'limited', '50개 한정', '50 Limited'),
+  ('Discord 프리미엄 역할', 'Discord Premium Role', '프리미엄 디스코드 역할 부여 (3개월)', 'Premium Discord role for 3 months', 'digital', 300, NULL, 'new', '신규', 'New'),
+  ('HYPE 스티커 팩', 'HYPE Sticker Pack', '실물 HYPE 스티커 팩 (10종)', 'Physical HYPE sticker pack (10 types)', 'physical', 800, NULL, NULL, NULL, NULL),
+  ('세금 보고서 PDF', 'Tax Report PDF', '연간 세금 보고서 PDF 자동 생성', 'Auto-generated annual tax report PDF', 'service', 1500, NULL, NULL, NULL, NULL),
+  ('HyperView 후드티', 'HyperView Hoodie', '한정판 HyperView 브랜드 후드티', 'Limited edition HyperView branded hoodie', 'physical', 3000, 30, 'limited', '30개 한정', '30 Limited'),
+  ('AI 포트폴리오 리뷰', 'AI Portfolio Review', 'AI 기반 포트폴리오 분석 리포트', 'AI-powered portfolio analysis report', 'service', 1000, NULL, NULL, NULL, NULL),
+  ('커스텀 프로필 프레임', 'Custom Profile Frame', '대시보드 프로필 커스텀 프레임', 'Custom frame for your dashboard profile', 'digital', 400, NULL, 'new', '신규', 'New')
 ON CONFLICT DO NOTHING;
 
 -- Sample point ledger entries

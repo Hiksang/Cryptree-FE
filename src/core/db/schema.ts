@@ -107,13 +107,30 @@ export const pointLedger = pgTable("point_ledger", {
 export const shopProducts = pgTable("shop_products", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
+  nameEn: text("name_en"),
   description: text("description"),
+  descriptionEn: text("description_en"),
   category: text("category").notNull(),
   pointsCost: integer("points_cost").notNull(),
   stock: integer("stock"),
   tag: text("tag"),
   badgeLabel: text("badge_label"),
+  badgeLabelEn: text("badge_label_en"),
   isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+
+export const exchangeHistory = pgTable("exchange_history", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.authId, { onDelete: "cascade" }),
+  type: text("type").notNull(),
+  productId: uuid("product_id").references(() => shopProducts.id),
+  pointsSpent: integer("points_spent").notNull(),
+  received: text("received").notNull(),
+  status: text("status").notNull().default("processing"),
+  txHash: text("tx_hash"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
@@ -130,17 +147,3 @@ export const referrals = pgTable("referrals", {
 }, (table) => [
   unique("referrals_pair_uniq").on(table.referrerId, table.referredId),
 ]);
-
-export const exchangeHistory = pgTable("exchange_history", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => users.authId, { onDelete: "cascade" }),
-  type: text("type").notNull(),
-  productId: uuid("product_id").references(() => shopProducts.id),
-  pointsSpent: integer("points_spent").notNull(),
-  received: text("received").notNull(),
-  status: text("status").notNull().default("processing"),
-  txHash: text("tx_hash"),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
-});
