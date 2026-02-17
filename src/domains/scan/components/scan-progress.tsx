@@ -40,11 +40,10 @@ function computeProgress(elapsedMs: number): number {
 
 export function ScanProgress({ address, isComplete = false }: ScanProgressProps) {
   const [progress, setProgress] = useState(0);
-  const [completedChains, setCompletedChains] = useState<Set<string>>(new Set());
   const [tipIndex, setTipIndex] = useState(0);
   const [tipKey, setTipKey] = useState(0);
 
-  // Time-based progress bar (1A)
+  // Time-based progress bar
   useEffect(() => {
     if (isComplete) {
       setProgress(100);
@@ -60,31 +59,7 @@ export function ScanProgress({ address, isComplete = false }: ScanProgressProps)
     return () => clearInterval(interval);
   }, [isComplete]);
 
-  // Chain-by-chain sequential completion (1B)
-  useEffect(() => {
-    if (isComplete) {
-      // All chains complete at once when data arrives
-      setCompletedChains(new Set(SCAN_CHAIN_IDS));
-      return;
-    }
-
-    // Start completing chains from 1.5s with staggered timing
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    const shuffled = [...SCAN_CHAIN_IDS].sort(() => Math.random() - 0.5);
-
-    shuffled.forEach((chainId, i) => {
-      // 1.5s base + 1~2.5s per chain (with randomness)
-      const delay = 1500 + i * 1500 + Math.random() * 1000;
-      const timer = setTimeout(() => {
-        setCompletedChains((prev) => new Set([...prev, chainId]));
-      }, delay);
-      timers.push(timer);
-    });
-
-    return () => timers.forEach(clearTimeout);
-  }, [isComplete]);
-
-  // Rotating tip messages (1C)
+  // Rotating tip messages
   useEffect(() => {
     if (isComplete) return;
 
@@ -109,17 +84,15 @@ export function ScanProgress({ address, isComplete = false }: ScanProgressProps)
         </h2>
       </div>
 
-      {/* Chain list with sequential completion */}
+      {/* Chain list — all chains scan simultaneously, complete together */}
       <div className="space-y-0 mb-6">
-        {SCAN_CHAIN_IDS.map((chainId) => {
-          const done = completedChains.has(chainId);
-          return (
+        {SCAN_CHAIN_IDS.map((chainId) => (
             <div
               key={chainId}
               className="flex items-center h-12 gap-3 animate-fade-in-up"
             >
               <div className="flex items-center justify-center w-5">
-                {done ? (
+                {isComplete ? (
                   <Check className="w-4 h-4 text-positive animate-scale-in" />
                 ) : (
                   <Loader2 className="w-4 h-4 text-warning animate-spin" />
@@ -130,14 +103,13 @@ export function ScanProgress({ address, isComplete = false }: ScanProgressProps)
               </span>
               <span
                 className={`text-[14px] transition-colors duration-300 ${
-                  done ? "text-positive" : "text-text-secondary"
+                  isComplete ? "text-positive" : "text-text-secondary"
                 }`}
               >
-                {done ? "완료" : "스캔 중..."}
+                {isComplete ? "완료" : "스캔 중..."}
               </span>
             </div>
-          );
-        })}
+        ))}
       </div>
 
       {/* Time-based progress bar */}

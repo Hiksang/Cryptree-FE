@@ -11,12 +11,16 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE TABLE IF NOT EXISTS users (
   auth_id TEXT PRIMARY KEY,
   address TEXT,
+  name TEXT,
   tier TEXT DEFAULT 'bronze',
   referral_code TEXT UNIQUE,
   tax_country TEXT DEFAULT 'kr',
   tax_method TEXT DEFAULT 'fifo',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- users 테이블에 name 컬럼 추가 (기존 DB 마이그레이션용)
+ALTER TABLE users ADD COLUMN IF NOT EXISTS name TEXT;
 
 -- 지갑 테이블 (1 유저 : N 지갑)
 CREATE TABLE IF NOT EXISTS wallets (
@@ -125,6 +129,19 @@ CREATE TABLE IF NOT EXISTS exchange_history (
 );
 
 -- =============================================
+-- Referrals (추천 시스템)
+-- =============================================
+
+CREATE TABLE IF NOT EXISTS referrals (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  referrer_id TEXT NOT NULL REFERENCES users(auth_id) ON DELETE CASCADE,
+  referred_id TEXT NOT NULL REFERENCES users(auth_id) ON DELETE CASCADE,
+  bonus_awarded INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(referrer_id, referred_id)
+);
+
+-- =============================================
 -- Indexes
 -- =============================================
 
@@ -142,3 +159,5 @@ CREATE INDEX IF NOT EXISTS idx_exchange_history_user ON exchange_history(user_id
 CREATE INDEX IF NOT EXISTS idx_exchange_history_created ON exchange_history(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_shop_products_category ON shop_products(category);
 CREATE INDEX IF NOT EXISTS idx_shop_products_active ON shop_products(is_active);
+CREATE INDEX IF NOT EXISTS idx_referrals_referrer ON referrals(referrer_id);
+CREATE INDEX IF NOT EXISTS idx_referrals_referred ON referrals(referred_id);

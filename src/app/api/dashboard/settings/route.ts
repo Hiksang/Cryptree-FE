@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { getAuthUserId, unauthorizedResponse } from "@/core/auth";
 import { ensureUserExists } from "@/core/auth/ensure-user";
 import { db } from "@/core/db";
-import { users, wallets, scanJobs } from "@/core/db/schema";
+import { users, wallets, scanJobs, transactions } from "@/core/db/schema";
 import { eq, inArray, sql } from "drizzle-orm";
-import type { SettingsData, Tier, TaxCountry, TaxMethod, WalletScanStatus } from "@/core/types";
+import type { SettingsData, Tier, TaxCountry, TaxMethod, WalletScanStatus, ChainId } from "@/core/types";
 
 export async function GET() {
   const userId = await getAuthUserId();
@@ -48,6 +48,52 @@ export async function GET() {
     }
   }
 
+  // 트랜잭션 수 기반 티어 계산
+  let tierPoints = 0;
+  try {
+    const [{ txCount }] = await db
+      .select({ txCount: sql<number>`count(*)::int` })
+      .from(transactions)
+      .where(eq(transactions.userId, userId));
+    tierPoints = txCount;
+  } catch { /* ignore */ }
+
+  // 티어 임계값 (트랜잭션 수 기준)
+  const TIER_THRESHOLDS: Record<string, number> = {
+    bronze: 100,
+    silver: 500,
+    gold: 2000,
+    diamond: Infinity,
+  };
+  const currentTier = (user?.tier as Tier) || "bronze";
+  const tierOrder: Tier[] = ["bronze", "silver", "gold", "diamond"];
+  const currentIdx = tierOrder.indexOf(currentTier);
+  const nextTier = currentIdx < tierOrder.length - 1 ? tierOrder[currentIdx + 1] : currentTier;
+  const nextTierPoints = TIER_THRESHOLDS[nextTier] ?? TIER_THRESHOLDS.diamond;
+
+  // 지갑별 주요 체인 조회
+  const walletChainMap = new Map<string, ChainId>();
+  if (walletIds.length > 0) {
+    try {
+      const chainRows = await db
+        .select({
+          walletId: transactions.walletId,
+          chainId: transactions.chainId,
+          count: sql<number>`count(*)::int`,
+        })
+        .from(transactions)
+        .where(sql`${transactions.walletId} IN (${sql.join(walletIds.map((id) => sql`${id}`), sql`, `)})`)
+        .groupBy(transactions.walletId, transactions.chainId)
+        .orderBy(sql`count(*) DESC`);
+
+      for (const row of chainRows) {
+        if (!walletChainMap.has(row.walletId)) {
+          walletChainMap.set(row.walletId, row.chainId as ChainId);
+        }
+      }
+    } catch { /* ignore */ }
+  }
+
   const displayName = user?.name
     || (user?.address
       ? `${user.address.slice(0, 6)}...${user.address.slice(-4)}`
@@ -57,9 +103,9 @@ export async function GET() {
     profile: {
       name: displayName,
       email: "",
-      tier: (user?.tier as Tier) || "bronze",
-      tierPoints: 0,
-      nextTierPoints: 1000,
+      tier: currentTier,
+      tierPoints,
+      nextTierPoints,
       joinedAt: user?.createdAt?.toISOString() || new Date().toISOString(),
     },
     wallets: userWallets.map((w) => {
@@ -77,7 +123,7 @@ export async function GET() {
         id: w.id,
         address: w.address,
         label: w.label || "",
-        chainId: "hyperevm" as const,
+        chainId: walletChainMap.get(w.id) || ("hyperevm" as const),
         isPrimary: w.isPrimary || false,
         connectedAt: w.createdAt?.toISOString() || new Date().toISOString(),
         scanStatus,
