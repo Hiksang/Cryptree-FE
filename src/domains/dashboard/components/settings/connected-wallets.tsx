@@ -3,7 +3,8 @@
 import { useState } from "react";
 import type { ConnectedWallet, WalletScanStatus } from "@/core/types";
 import { CHAIN_COLORS, CHAIN_NAMES } from "@/core/constants";
-import { Plus, Trash2, Star, Loader2, Copy, Check, CheckCircle2, AlertCircle } from "lucide-react";
+import { Plus, Trash2, Star, Loader2, Copy, Check, CheckCircle2, AlertCircle, ExternalLink } from "lucide-react";
+import Link from "next/link";
 import { toast } from "@/shared/ui";
 import { api } from "@/domains/dashboard/lib/api-client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -150,6 +151,13 @@ export function ConnectedWallets({ wallets }: ConnectedWalletsProps) {
             </div>
 
             <div className="flex items-center gap-1 shrink-0">
+              <Link
+                href={`/address/${wallet.address}`}
+                className="w-8 h-8 flex items-center justify-center text-text-muted hover:text-brand transition-colors"
+                title={t.dashboard.overview.viewAnalysis}
+              >
+                <ExternalLink className="w-4 h-4" />
+              </Link>
               <CopyAddressButton address={wallet.address} />
               {!wallet.isPrimary && (
                 <button

@@ -147,3 +147,13 @@ export const referrals = pgTable("referrals", {
 }, (table) => [
   unique("referrals_pair_uniq").on(table.referrerId, table.referredId),
 ]);
+
+export const feedbacks = pgTable("feedbacks", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id"),
+  email: text("email"),
+  category: text("category").notNull().default("general"),
+  message: text("message").notNull(),
+  page: text("page"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});

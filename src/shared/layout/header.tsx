@@ -28,8 +28,21 @@ function AuthButtons() {
   const t = useT();
 
   useEffect(() => {
-    if (ready && authenticated && !wasAuthenticated.current && pathname === "/") {
-      router.push("/dashboard");
+    if (ready && authenticated && !wasAuthenticated.current) {
+      if (pathname === "/" || pathname.startsWith("/address/")) {
+        // If the user was scanning an address before signup, redirect back there
+        try {
+          const savedAddress = localStorage.getItem("lastScanAddress");
+          if (savedAddress) {
+            localStorage.removeItem("lastScanAddress");
+            router.push(`/address/${savedAddress}`);
+          } else {
+            router.push("/dashboard");
+          }
+        } catch {
+          router.push("/dashboard");
+        }
+      }
     }
     wasAuthenticated.current = authenticated;
   }, [ready, authenticated, router, pathname]);

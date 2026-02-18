@@ -5,7 +5,7 @@ import { useDashboardStats, useSettings } from "@/domains/dashboard/hooks/use-da
 import { TIER_CONFIG } from "@/core/constants";
 import { ErrorState } from "@/shared/ui";
 import { StatsCardSkeleton } from "@/shared/ui";
-import { Wallet, Plus, Activity, Link2 } from "lucide-react";
+import { Wallet, Plus, Activity, Link2, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { AddWalletModal } from "@/domains/dashboard/components/add-wallet-modal";
 import { useT } from "@/core/i18n";
@@ -108,17 +108,19 @@ export default function DashboardPage() {
         </button>
       ) : (
         <div className="bg-bg-surface border border-border-default rounded-[8px] p-6">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-full bg-bg-surface-2 flex items-center justify-center shrink-0">
-              <Wallet className="w-6 h-6 text-brand" />
-            </div>
-            <div className="flex-1">
-              <h3 className="text-[16px] font-semibold text-text-primary mb-1">
-                {t.dashboard.overview.walletManage}
-              </h3>
-              <p className="text-[14px] text-text-secondary">
-                {t.dashboard.overview.walletConnected(walletCount)}
-              </p>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-bg-surface-2 flex items-center justify-center shrink-0">
+                <Wallet className="w-5 h-5 text-brand" />
+              </div>
+              <div>
+                <h3 className="text-[16px] font-semibold text-text-primary">
+                  {t.dashboard.overview.myWallets}
+                </h3>
+                <p className="text-[13px] text-text-secondary">
+                  {t.dashboard.overview.walletConnected(walletCount)}
+                </p>
+              </div>
             </div>
             <button
               onClick={() => setWalletModalOpen(true)}
@@ -127,6 +129,32 @@ export default function DashboardPage() {
               <Plus className="w-4 h-4" />
               {t.dashboard.overview.addWallet}
             </button>
+          </div>
+          <div className="space-y-2">
+            {settingsData?.wallets?.map((wallet) => (
+              <Link
+                key={wallet.address}
+                href={`/address/${wallet.address}`}
+                className="flex items-center justify-between p-3 bg-bg-surface-2 rounded-[6px] hover:bg-bg-surface-2/80 transition-colors group"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-2 h-2 rounded-full bg-brand shrink-0" />
+                  <span className="text-[14px] font-mono text-text-primary truncate">
+                    <span className="hidden md:inline">{wallet.address}</span>
+                    <span className="md:hidden">
+                      {wallet.address.slice(0, 6)}...{wallet.address.slice(-4)}
+                    </span>
+                  </span>
+                  {wallet.label && (
+                    <span className="text-[12px] text-text-muted shrink-0">{wallet.label}</span>
+                  )}
+                </div>
+                <div className="flex items-center gap-1.5 text-[13px] text-text-muted group-hover:text-brand transition-colors shrink-0">
+                  <span className="hidden sm:inline">{t.dashboard.overview.viewAnalysis}</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       )}

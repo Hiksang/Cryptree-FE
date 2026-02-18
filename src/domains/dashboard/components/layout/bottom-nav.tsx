@@ -41,12 +41,12 @@ export function BottomNav() {
     <>
       {/* More menu overlay */}
       {moreOpen && (
-        <div className="md:hidden fixed inset-0 z-50">
+        <div className="md:hidden fixed inset-0 bottom-16 z-50">
           <div
             className="absolute inset-0 bg-black/50"
             onClick={() => setMoreOpen(false)}
           />
-          <div className="absolute bottom-16 left-0 right-0 bg-bg-surface border-t border-border-default rounded-t-[12px] p-4 space-y-1">
+          <div className="absolute bottom-0 left-0 right-0 bg-bg-surface border-t border-border-default rounded-t-[12px] p-4 space-y-1">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[14px] font-semibold text-text-primary">
                 {t.nav.more}

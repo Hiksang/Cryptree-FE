@@ -8,15 +8,7 @@ import { shortenAddress } from "@/core/utils";
 import { useT } from "@/core/i18n";
 import { track } from "@vercel/analytics";
 import { ArrowLeft, Copy, Check, AlertCircle, Gift, Shield, TrendingUp, X, Sparkles } from "lucide-react";
-
-const hasPrivy = !!process.env.NEXT_PUBLIC_PRIVY_APP_ID;
-
-function usePrivyLogin() {
-  if (!hasPrivy) return () => {};
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { login } = require("@privy-io/react-auth").usePrivy();
-  return login;
-}
+import { usePrivy } from "@privy-io/react-auth";
 
 type ViewPhase = "scanning" | "skeleton" | "results" | "empty";
 
@@ -30,7 +22,17 @@ export default function AddressPage() {
   const address = params.address as string;
   const [copied, setCopied] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const login = usePrivyLogin();
+  const { ready, authenticated, login } = usePrivy();
+  const isLoggedIn = ready && authenticated;
+
+  // Store scanned address so post-signup redirect can return here
+  useEffect(() => {
+    if (!isLoggedIn) {
+      try {
+        localStorage.setItem("lastScanAddress", address);
+      } catch {}
+    }
+  }, [address, isLoggedIn]);
 
   const { data, isLoading } = useScan(address);
 
@@ -76,15 +78,15 @@ export default function AddressPage() {
     }
   }, [isLoading, data]);
 
-  // Show popup after delay when results are displayed
+  // Show popup after delay when results are displayed (only for unauthenticated)
   useEffect(() => {
-    if (phase !== "results") return;
+    if (phase !== "results" || isLoggedIn) return;
     const timer = setTimeout(() => {
       setShowPopup(true);
       track("cta_popup_shown", { page: "scan_result" });
     }, POPUP_DELAY_MS);
     return () => clearTimeout(timer);
-  }, [phase]);
+  }, [phase, isLoggedIn]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(address);
@@ -134,11 +136,11 @@ export default function AddressPage() {
               {/* Top navigation */}
               <div className="flex items-center justify-between mb-4 gap-2">
                 <button
-                  onClick={() => router.push("/")}
+                  onClick={() => router.push(isLoggedIn ? "/dashboard" : "/")}
                   className="text-[14px] text-text-secondary hover:text-text-primary transition-colors flex items-center gap-1 cursor-pointer shrink-0"
                 >
                   <ArrowLeft className="w-4 h-4" />
-                  {t.common.home}
+                  {isLoggedIn ? t.scan.result.backToDashboard : t.common.home}
                 </button>
                 <button
                   onClick={() => router.push("/")}
@@ -168,7 +170,8 @@ export default function AddressPage() {
               {/* Tabs */}
               <ScanTabs data={data} onSignup={() => handleSignup("tab_lock")} />
 
-              {/* Signup CTA inline */}
+              {/* Signup CTA inline — only for unauthenticated */}
+              {!isLoggedIn && (
               <div className="mt-8 mb-24 bg-bg-surface border border-border-default rounded-[8px] overflow-hidden">
                 <div className="bg-gradient-to-r from-brand/10 to-brand-hover/10 px-6 py-4 border-b border-border-default">
                   <h3 className="text-[18px] font-semibold text-text-primary">
@@ -210,9 +213,11 @@ export default function AddressPage() {
                   </p>
                 </div>
               </div>
+              )}
             </div>
 
-            {/* Sticky bottom CTA bar */}
+            {/* Sticky bottom CTA bar — only for unauthenticated */}
+            {!isLoggedIn && (
             <div className="fixed bottom-0 left-0 right-0 z-50 bg-bg-surface/95 backdrop-blur-md border-t border-border-default">
               <div className="max-w-[960px] mx-auto px-4 py-3 flex items-center justify-between gap-4">
                 <div className="hidden sm:block">
@@ -234,9 +239,10 @@ export default function AddressPage() {
                 </button>
               </div>
             </div>
+            )}
 
-            {/* Signup popup modal */}
-            {showPopup && (
+            {/* Signup popup modal — only for unauthenticated */}
+            {!isLoggedIn && showPopup && (
               <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
                 <div
                   className="absolute inset-0 bg-black/60 backdrop-blur-sm"
