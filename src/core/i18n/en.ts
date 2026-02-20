@@ -33,6 +33,8 @@ export const en: Translations = {
     unit: "",
     count: "",
     person: "",
+    offline: "You are offline",
+    offlineDesc: "Please check your network connection.",
   },
   header: {
     dashboard: "Dashboard",

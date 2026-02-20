@@ -1,4 +1,4 @@
-# Cryptree Figma 디자인 스펙
+# HyperView Figma 디자인 스펙
 
 > PRD v4.0 기반 | HyperEVM 온체인 활동 분석 & 보상
 > Phase 0 → Phase 1 → Phase 2 순서로 디자인
@@ -33,7 +33,7 @@ text-disabled:   #52525B     ← 비활성
 
 Brand
 ──────
-brand-primary:   #00D4AA     ← Cryptree 메인 (민트/그린)
+brand-primary:   #00D4AA     ← HyperView 메인 (민트/그린)
 brand-hover:     #00B894     ← 호버
 brand-muted:     #00D4AA/20  ← 배경 틴트 (20% 불투명)
 
@@ -358,7 +358,7 @@ Z-index: 50
 Padding: 0 32px
 
 Logo:
-  "Cryptree" 텍스트 로고 + 아이콘 (24px)
+  "HyperView" 텍스트 로고 + 아이콘 (24px)
   Font: H4 / Bold / brand color
 
 Right Actions:
@@ -468,10 +468,10 @@ Grid: 3 columns (desktop) → 1 column (mobile)
 Padding: 3xl top/bottom
 Max-width: 800px, 가운데
 
-Title: "왜 Cryptree인가?" ← H2 (30px) / center / 아래 gap 2xl
+Title: "왜 HyperView인가?" ← H2 (30px) / center / 아래 gap 2xl
 
 ┌────────────────┬──────────┬──────────┬──────────┐
-│                │ DeBank   │ Koinly   │ Cryptree│ ← Header row
+│                │ DeBank   │ Koinly   │ HyperView│ ← Header row
 ├────────────────┼──────────┼──────────┼──────────┤   bg: surface-2
 │ HyperEVM 해석  │    ❌    │    ❌    │  ✅ 완벽 │   text: Caption/Medium
 ├────────────────┼──────────┼──────────┼──────────┤
@@ -481,14 +481,14 @@ Title: "왜 Cryptree인가?" ← H2 (30px) / center / 아래 gap 2xl
 ├────────────────┼──────────┼──────────┼──────────┤   ❌: text-muted
 │ 크로스체인 PnL │    ❌    │    ✅    │  ✅ 무료 │   ✅: positive
 ├────────────────┼──────────┼──────────┼──────────┤
-│ 세금 리포트    │    ❌    │    ✅    │  ✅ 무료 │   Cryptree 열:
+│ 세금 리포트    │    ❌    │    ✅    │  ✅ 무료 │   HyperView 열:
 ├────────────────┼──────────┼──────────┼──────────┤   배경 brand-muted
 │ 비용           │   무료   │ $49+/년  │   무료   │   border brand
 └────────────────┴──────────┴──────────┴──────────┘
 
 Table: bg-surface, border, radius md
 Header: bg-surface-2
-Cryptree 열: 강조 (border-top brand 2px or 열 배경 brand-muted)
+HyperView 열: 강조 (border-top brand 2px or 열 배경 brand-muted)
 
 Mobile: 가로 스크롤 or 카드형 레이아웃으로 전환
 ```
@@ -520,7 +520,7 @@ Border-top: border-default
 Padding: xl
 Display: flex, space-between, align center
 
-Left:  "© 2025 Cryptree" / Caption / text-muted
+Left:  "© 2025 HyperView" / Caption / text-muted
 Right: "Twitter" "Discord" "Docs" / Ghost links / Caption
 ```
 
@@ -802,7 +802,7 @@ gap: xl
 │                                                                   │
 │  [무료 가입하고 전체 세금 리포트 받기 →]  ← Primary Button (lg)   │
 │                                                                   │
-│  Koinly에서는 $49/년. Cryptree에서는 무료.                       │
+│  Koinly에서는 $49/년. HyperView에서는 무료.                       │
 │  ↑ Caption / text-muted                                           │
 │                                                                   │
 └──────────────────────────────────────────────────────────────────┘
@@ -855,7 +855,7 @@ Border:   1px border-default, radius lg (12px)
 │   └────────────────────────────┘  │     Icon + H4/Semibold + Caption/text-muted
 │                                    │     padding: lg, radius md
 │                                    │     gap: 2xl
-│   cryptree.xyz                    │  ← Caption / text-muted / center
+│   hyperview.xyz                    │  ← Caption / text-muted / center
 │                                    │
 └────────────────────────────────────┘
 
@@ -908,7 +908,7 @@ Privy 모달 기반 인증 (별도 페이지 없음, 모달 전용):
 
 ┌──────────────────────────────────────┐
 │                                      │
-│          [Cryptree Logo]            │
+│          [HyperView Logo]            │
 │                                      │
 │     HyperEVM 활동 분석 시작하기      │  ← H3 / text-primary
 │                                      │
@@ -968,7 +968,7 @@ Privy Theme Config (PrivyProvider에서 설정):
 │  │                                │ │                    │ │
 │  └────────────────────────────────┘ └────────────────────┘ │
 │                                                            │
-│                    cryptree.xyz                            │
+│                    hyperview.xyz                            │
 │                    ↑ Caption / text-muted                   │
 │                                                            │
 └────────────────────────────────────────────────────────────┘
@@ -1008,7 +1008,7 @@ Background: bg-surface
 Border-right: border-default
 
 ┌────────────────────────┐
-│  [Cryptree Logo]      │  ← padding lg
+│  [HyperView Logo]      │  ← padding lg
 │                        │
 │  ─── 구분선 ───        │
 │                        │

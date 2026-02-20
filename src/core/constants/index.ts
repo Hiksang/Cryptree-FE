@@ -42,7 +42,7 @@ export const TIER_CONFIG = {
 
 export const NAV_ITEMS = [
   { href: "/dashboard", labelKey: "dashboard" as const, icon: "LayoutDashboard" },
-  // { href: "/dashboard/transactions", labelKey: "transactions" as const, icon: "ArrowLeftRight" },  // 추후 공개
+  { href: "/dashboard/transactions", labelKey: "transactions" as const, icon: "ArrowLeftRight" },
   { href: "/dashboard/tax", labelKey: "taxReport" as const, icon: "FileText" },
   { href: "/dashboard/rewards", labelKey: "rewards" as const, icon: "Gift" },
   { href: "/dashboard/referral", labelKey: "referral" as const, icon: "Users" },

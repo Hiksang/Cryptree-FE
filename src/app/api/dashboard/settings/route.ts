@@ -99,6 +99,7 @@ export async function GET() {
         .orderBy(sql`count(*) DESC`);
 
       for (const row of chainRows) {
+        // 첫 번째(가장 많은) 체인만 저장
         if (!walletChainMap.has(row.walletId)) {
           walletChainMap.set(row.walletId, row.chainId as ChainId);
         }

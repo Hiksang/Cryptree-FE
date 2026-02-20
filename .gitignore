@@ -1,34 +1,30 @@
 # dependencies
 node_modules/
-.pnp
-.pnp.js
 
 # next.js
 .next/
 out/
 
-# production
-build/
-
-# env files
+# misc
+.DS_Store
+*.pem
 .env
-.env.local
-.env.production
-.env.development
+.env*.local
+.env.docker
 
 # debug
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
-# misc
-.DS_Store
+# lock files
+package-lock.json
+package-lock.json
+
+# typescript
 *.tsbuildinfo
 next-env.d.ts
 
-# IDE
-.vscode/
-.idea/
+# test/dev scripts
+screenshot.mjs
 
-# serena
-.serena/
+# worker build output
+worker/dist/

@@ -12,9 +12,10 @@ export async function GET() {
   let result = { activePositions: 0, totalTx: 0 };
   let walletCount = 0;
   let chainBreakdown: { chainId: string; txCount: number }[] = [];
+  let totalVolume = 0;
 
   try {
-    [result, walletCount, chainBreakdown] = await Promise.all([
+    [result, walletCount, chainBreakdown, totalVolume] = await Promise.all([
       db
         .select({
           activePositions: sql<number>`count(distinct ${transactions.protocol})::int`,
@@ -36,6 +37,13 @@ export async function GET() {
         .from(transactions)
         .where(eq(transactions.userId, userId))
         .groupBy(transactions.chainId),
+      db
+        .select({
+          vol: sql<number>`coalesce(sum(${transactions.amount}::numeric), 0)::float8`,
+        })
+        .from(transactions)
+        .where(eq(transactions.userId, userId))
+        .then((r) => Number(r[0]?.vol) || 0),
     ]);
   } catch {
     // transactions 테이블이 없을 수 있음 — wallets만 조회
@@ -49,7 +57,7 @@ export async function GET() {
   }
 
   const stats: DashboardStats = {
-    totalValue: 0,
+    totalValue: totalVolume,
     totalValueChange: 0,
     totalPnl: 0,
     totalPnlPercent: 0,
@@ -61,6 +69,7 @@ export async function GET() {
     stats,
     insights: [],
     walletCount,
+    totalTransactions: result.totalTx,
     chainBreakdown: chainBreakdown.map((c) => ({
       chainId: c.chainId,
       txCount: c.txCount,

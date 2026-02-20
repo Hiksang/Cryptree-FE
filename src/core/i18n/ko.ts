@@ -30,6 +30,8 @@ export const ko = {
     unit: "개",
     count: "건",
     person: "명",
+    offline: "인터넷 연결이 끊겼습니다",
+    offlineDesc: "네트워크 연결을 확인해 주세요.",
   },
   header: {
     dashboard: "대시보드",

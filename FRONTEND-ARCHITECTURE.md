@@ -1,4 +1,4 @@
-# Frontend Architecture: Cryptree
+# Frontend Architecture: HyperView
 
 > Phase 0 MVP 중심 프론트엔드 설계
 > PRD v4.0 기반 | HyperEVM 온체인 활동 분석 & 보상 포지셔닝
@@ -36,7 +36,7 @@ Deploy:       Vercel (무료 티어 → Pro)
 ## 2. 프로젝트 구조
 
 ```
-cryptree-web/
+hyperview-web/
 ├── app/
 │   ├── layout.tsx                    # 루트 레이아웃 (PrivyProvider, 폰트, 메타데이터)
 │   ├── page.tsx                      # 랜딩 페이지
@@ -89,7 +89,7 @@ cryptree-web/
 │   ├── landing/
 │   │   ├── hero.tsx                  # 히어로 섹션 + 지갑 입력
 │   │   ├── features.tsx              # 3개 가치 카드
-│   │   ├── comparison-table.tsx      # DeBank vs Koinly vs Cryptree
+│   │   ├── comparison-table.tsx      # DeBank vs Koinly vs HyperView
 │   │   └── waitlist-form.tsx         # 이메일 수집
 │   │
 │   ├── scan/
@@ -244,7 +244,7 @@ Wide:     > 1440px  → max-w-7xl 센터
 │  │  🥇 Gold DeFi Explorer      │   │
 │  │  Top 8%                      │   │
 │  │                              │   │
-│  │  cryptree.xyz               │   │  ← 브랜딩 (레퍼럴 코드 없음 Phase 0)
+│  │  hyperview.xyz               │   │  ← 브랜딩 (레퍼럴 코드 없음 Phase 0)
 │  └──────────────────────────────┘   │
 │                                      │
 │  [📥 저장]  [🔗 복사]  [𝕏 공유]     │
@@ -338,7 +338,7 @@ Props: { chains: Array<{ name, volume, txCount, percentage }> }
    └── 등급 측정 & 보상
 
 3. Comparison Table
-   └── DeBank vs Koinly vs Cryptree
+   └── DeBank vs Koinly vs HyperView
 
 4. (Phase 2+) Social Proof
    ├── 분석된 HyperEVM 트랜잭션 수
@@ -362,7 +362,7 @@ Props: { chains: Array<{ name, volume, txCount, percentage }> }
   4. 결과 도착 시 탭 렌더링
 
 메타데이터 (SEO/OG):
-  title: "0xA3b7...F2d4 | Gold DeFi Explorer | Cryptree"
+  title: "0xA3b7...F2d4 | Gold DeFi Explorer | HyperView"
   description: "5 chains, 2,847 trades, $1.2M volume"
   og:image: /api/og/0xA3b7...F2d4
 
@@ -405,7 +405,7 @@ Edge Runtime (Vercel Edge Function)
   │                                        │
   │   🥇 Gold Explorer · Top 8%           │
   │                                        │
-  │              cryptree.xyz             │
+  │              hyperview.xyz             │
   └────────────────────────────────────────┘
 ```
 
@@ -592,7 +592,7 @@ export const api = {
 --text-muted:     #71717a;
 
 /* 브랜드 */
---brand:          #00D4AA;    /* Cryptree 그린 */
+--brand:          #00D4AA;    /* HyperView 그린 */
 --brand-hover:    #00B894;
 
 /* DeFi DNA 색상 */
@@ -749,13 +749,13 @@ Week 2:
 ```
 퍼블릭 프로필 SEO:
   /address/0xAbc...
-  → title: "0xAbc... | Gold DeFi Explorer | Cryptree"
+  → title: "0xAbc... | Gold DeFi Explorer | HyperView"
   → description: "5 chains, $1.2M volume, Perp trader"
   → og:image: /api/og/0xAbc...
   → ISR: 30분 revalidate
 
 랜딩 SEO:
-  title: "Cryptree - HyperEVM On-chain Activity Analysis & Rewards"
+  title: "HyperView - HyperEVM On-chain Activity Analysis & Rewards"
   → "hyperevm transaction analysis", "hyperevm activity tracker", "hyperchain rewards" 타겟
 
 robots.txt:

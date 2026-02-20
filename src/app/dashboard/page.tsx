@@ -22,6 +22,14 @@ export default function DashboardPage() {
   const { data: statsData, isLoading: statsLoading, isError: statsError, refetch: refetchStats } = useDashboardStats();
   const { data: settingsData, isLoading: settingsLoading } = useSettings();
   const t = useT();
+  const [walletModalOpen, setWalletModalOpen] = useState(false);
+
+  const isLoading = statsLoading || settingsLoading;
+  const walletCount = settingsData?.wallets?.length ?? 0;
+  const tier = settingsData?.profile?.tier ?? "bronze";
+  const tierConfig = TIER_CONFIG[tier];
+  const profileName = settingsData?.profile?.name ?? "User";
+  const greeting = useMemo(() => getGreeting(profileName, t), [profileName, t]);
 
   if (statsError) {
     return (
@@ -31,14 +39,6 @@ export default function DashboardPage() {
       </div>
     );
   }
-
-  const [walletModalOpen, setWalletModalOpen] = useState(false);
-  const isLoading = statsLoading || settingsLoading;
-  const walletCount = settingsData?.wallets?.length ?? 0;
-  const tier = settingsData?.profile?.tier ?? "bronze";
-  const tierConfig = TIER_CONFIG[tier];
-  const profileName = settingsData?.profile?.name ?? "User";
-  const greeting = useMemo(() => getGreeting(profileName, t), [profileName, t]);
 
   if (isLoading) {
     return (

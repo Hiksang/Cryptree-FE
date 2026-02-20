@@ -3,7 +3,7 @@ import { ConditionalPrivyProvider } from "@/shared/providers";
 import { QueryProvider } from "@/shared/providers";
 import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "sonner";
-import { FeedbackButton } from "@/shared/ui";
+import { FeedbackButton, OfflineBanner } from "@/shared/ui";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -22,6 +22,7 @@ export default function RootLayout({
       <body>
         <ConditionalPrivyProvider>
           <QueryProvider>
+            <OfflineBanner />
             {children}
             <FeedbackButton />
             <Toaster

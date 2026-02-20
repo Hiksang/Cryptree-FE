@@ -1,6 +1,6 @@
 # 외부 API 키 발급 가이드
 
-Cryptree 운영에 필요한 4개 외부 서비스 API 키 발급 방법.
+HyperView 운영에 필요한 4개 외부 서비스 API 키 발급 방법.
 
 ---
 
@@ -12,7 +12,7 @@ Cryptree 운영에 필요한 4개 외부 서비스 API 키 발급 방법.
 
 1. https://privy.io 접속 → **Sign up**
 2. 대시보드에서 **Create app** 클릭
-3. App name: `Cryptree` 입력
+3. App name: `HyperView` 입력
 4. Login methods: **Wallet** + **Email** 활성화
 5. 생성 완료 후 **Settings** → **API Keys** 에서 키 복사:
    - `App ID` → `clxxx...` 형식
@@ -46,7 +46,7 @@ PRIVY_WEBHOOK_SECRET=whsec_여기에_시크릿
 1. https://etherscan.io 접속 → 우측 상단 **Sign In** → 계정 없으면 **Register**
 2. 이메일 인증 완료
 3. 로그인 후 **My Account** → **API Keys** → **Add**
-4. App Name: `Cryptree` 입력
+4. App Name: `HyperView` 입력
 5. API Key 생성 완료 → `ABCDEF1234567890...` 형식 키 복사
 
 ### 중요: 하나의 키로 모든 체인 지원
@@ -105,7 +105,7 @@ Etherscan API 제한에 걸릴 때 fallback으로 사용. API 키 불필요.
 2. **New Project** 클릭
 3. 설정:
    - Organization: 기존 org 선택 또는 새로 생성
-   - Project name: `cryptree`
+   - Project name: `hyperview`
    - Database Password: 안전한 비밀번호 입력 (나중에 사용)
    - Region: `Northeast Asia (Tokyo)` — 한국 서비스라면 가장 가까움
 4. 프로젝트 생성 후 **Settings** → **Database**
@@ -158,13 +158,13 @@ Worker를 외부에서 접근 가능하게 만들어 Privy webhook 수신용.
 
 1. https://ngrok.com 접속 → **Sign up** (GitHub 계정으로 가능)
 2. 대시보드 → **Your Authtoken** 복사
-3. **Domains** → **New Domain** → 고정 도메인 생성 (예: `cryptree-dev.ngrok-free.app`)
+3. **Domains** → **New Domain** → 고정 도메인 생성 (예: `hyperview-dev.ngrok-free.app`)
 
 ### .env.docker에 설정
 
 ```bash
 NGROK_AUTHTOKEN=여기에_토큰
-NGROK_DOMAIN=cryptree-dev.ngrok-free.app
+NGROK_DOMAIN=hyperview-dev.ngrok-free.app
 ```
 
 ---
@@ -180,7 +180,7 @@ PRIVY_APP_SECRET=secret_...
 PRIVY_WEBHOOK_SECRET=whsec_...
 
 # DB (Docker 기본값)
-DATABASE_URL=postgresql://cryptree:cryptree_dev_password@localhost:5432/cryptree
+DATABASE_URL=postgresql://hyperview:hyperview_dev_password@localhost:5432/hyperview
 
 # Worker
 WORKER_URL=http://localhost:4000
@@ -190,9 +190,9 @@ WORKER_URL=http://localhost:4000
 
 ```bash
 # DB
-DB_USER=cryptree
-DB_PASSWORD=cryptree_dev_password
-DB_NAME=cryptree
+DB_USER=hyperview
+DB_PASSWORD=hyperview_dev_password
+DB_NAME=hyperview
 
 # Worker
 ETHERSCAN_API_KEY=발급받은_키
@@ -213,13 +213,13 @@ Clerk와 Supabase 없이도 개발 가능:
 
 ```bash
 # 1. Docker로 DB + Worker 시작
-cd cryptree
+cd hyper-ad-platform
 cp .env.docker.example .env.docker  # 위 값들로 수정
 docker compose up -d postgres redis
 
 # 2. DB 초기화
-docker exec -i $(docker ps -q -f name=postgres) psql -U cryptree -d cryptree < db/init.sql
-docker exec -i $(docker ps -q -f name=postgres) psql -U cryptree -d cryptree < db/seed.sql
+docker exec -i $(docker ps -q -f name=postgres) psql -U hyperview -d hyperview < db/init.sql
+docker exec -i $(docker ps -q -f name=postgres) psql -U hyperview -d hyperview < db/seed.sql
 
 # 3. Next.js 실행
 cd web

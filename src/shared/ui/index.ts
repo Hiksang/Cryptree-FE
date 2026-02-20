@@ -5,3 +5,5 @@ export { ErrorState } from "./error-state";
 export { toast } from "./toast";
 export { LanguageToggle } from "./language-toggle";
 export { FeedbackButton } from "./feedback-button";
+export { AuthGuard } from "./auth-guard";
+export { OfflineBanner } from "./offline-banner";

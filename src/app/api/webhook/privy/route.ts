@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { Webhook } from "svix";
 import { db } from "@/core/db";
 import { users, pointBalances, pointLedger, wallets } from "@/core/db/schema";
-import { eq, sql } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 
 interface PrivyLinkedAccount {
   type: string;
@@ -120,15 +120,21 @@ export async function POST(request: Request) {
     }
   } else if (type === "user.linked_account") {
     if (account?.type === "wallet" && account.address) {
+      const addr = account.address.toLowerCase();
       await db
         .insert(wallets)
         .values({
           userId: authId,
-          address: account.address.toLowerCase(),
+          address: addr,
           label: "",
         })
         .onConflictDoNothing();
 
+      // insert 후 walletId 조회 (onConflictDoNothing은 returning 안 됨)
+      const insertedWallet = await db.query.wallets.findFirst({
+        where: and(eq(wallets.userId, authId), eq(wallets.address, addr)),
+      });
+
       // 지갑 추가 보너스 50P
       const WALLET_BONUS = 50;
       await db
@@ -148,26 +154,38 @@ export async function POST(request: Request) {
           description: "지갑 추가 보너스",
         });
 
-      // Worker에 스캔 요청
+      // Worker에 스캔 요청 (walletId 포함)
       const workerUrl = process.env.WORKER_URL;
-      if (workerUrl) {
+      if (workerUrl && insertedWallet) {
         fetch(`${workerUrl}/webhook/wallet-added`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ address: account.address.toLowerCase(), userId: authId }),
-        }).catch(() => {});
+          body: JSON.stringify({
+            walletId: insertedWallet.id,
+            address: addr,
+            userId: authId,
+          }),
+        }).catch((err) => {
+          console.error("[webhook] Worker scan request failed:", err);
+        });
       }
     }
   } else if (type === "user.wallet_created") {
     if (wallet?.address) {
+      const addr = wallet.address.toLowerCase();
       await db
         .insert(wallets)
         .values({
           userId: authId,
-          address: wallet.address.toLowerCase(),
+          address: addr,
           label: "Embedded",
         })
         .onConflictDoNothing();
+
+      // insert 후 walletId 조회
+      const insertedWallet = await db.query.wallets.findFirst({
+        where: and(eq(wallets.userId, authId), eq(wallets.address, addr)),
+      });
 
       // 지갑 추가 보너스 50P
       const WALLET_BONUS = 50;
@@ -189,12 +207,18 @@ export async function POST(request: Request) {
         });
 
       const workerUrl = process.env.WORKER_URL;
-      if (workerUrl) {
+      if (workerUrl && insertedWallet) {
         fetch(`${workerUrl}/webhook/wallet-added`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ address: wallet.address.toLowerCase(), userId: authId }),
-        }).catch(() => {});
+          body: JSON.stringify({
+            walletId: insertedWallet.id,
+            address: addr,
+            userId: authId,
+          }),
+        }).catch((err) => {
+          console.error("[webhook] Worker scan request failed:", err);
+        });
       }
     }
   }
